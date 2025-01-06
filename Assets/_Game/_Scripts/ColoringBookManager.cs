@@ -370,15 +370,15 @@ public class ColoringBookManager : MonoBehaviour
 
         foreach (RectTransform panel in PanelColors)
         {
-            panel.offsetMax = new Vector2(w * 3, 0);
-            panel.offsetMin = new Vector2(w * 2, 0);
+            // panel.offsetMax = new Vector2(w * 3, 0);
+            // panel.offsetMin = new Vector2(w * 2, 0);
         }
 
-        panelEndPos = PanelColors[current].localPosition;
-        panelStartPos = panelEndPos;
-        panelStartPos.x -= (w * 2);
+        //panelEndPos = PanelColors[current].localPosition;
+        //panelStartPos = panelEndPos;
+       // panelStartPos.x -= (w * 0.5f);
 
-        PanelColors[current].localPosition = panelStartPos;
+//PanelColors[current].localPosition = panelStartPos;
     }
 
     private void LoadSetting()
@@ -767,9 +767,9 @@ public class ColoringBookManager : MonoBehaviour
 
         SetPanelsUIScale(currentDrawMode);
 
-        PanelColors[currentDrawMode].GetComponent<ButtonScript>().StartMyMoveAction(PanelColors[currentDrawMode].localPosition, panelEndPos, 0.5f);
+      //  PanelColors[currentDrawMode].GetComponent<ButtonScript>().StartMyMoveAction(PanelColors[currentDrawMode].localPosition, panelEndPos, 0.5f);
 
-        PanelColors[drawModeIndex].GetComponent<ButtonScript>().StartMyMoveAction(PanelColors[drawModeIndex].localPosition, panelStartPos, 0.5f);
+       // PanelColors[drawModeIndex].GetComponent<ButtonScript>().StartMyMoveAction(PanelColors[drawModeIndex].localPosition, panelStartPos, 0.5f);
 
         drawMode = (DrawMode)drawModeIndex;
     }
@@ -803,8 +803,8 @@ public class ColoringBookManager : MonoBehaviour
                         max.x = 0.88f;
                     }
 
-                    PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMin = min;
-                    PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMax = max;
+                    // PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMin = min;
+                    //[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMax = max;
 
                     ////////////////////////////////////////
 
@@ -822,8 +822,8 @@ public class ColoringBookManager : MonoBehaviour
                         max.x = 0.88f;
                     }
 
-                    PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMin = min;
-                    PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMax = max;
+                    // PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMin = min;
+                    // PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMax = max;
                 }
 
                 for (int i = 0; i < PanelColors[(int)DrawMode.PaintBucket].childCount; i++)
