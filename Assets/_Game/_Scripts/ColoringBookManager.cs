@@ -29,6 +29,7 @@ public class ColoringBookManager : MonoBehaviour
 
     //	*** Default settings ***
     private Color32 paintColor = new Color32(255, 0, 0, 255);
+    [SerializeField]
     private int brushSize = 8; // default brush size
     private DrawMode drawMode = DrawMode.Pencil;
     private bool useLockArea = true;
@@ -777,7 +778,7 @@ public class ColoringBookManager : MonoBehaviour
     public void OnBrushButtonClicked(ButtonScript sender)
     {
         paintColor = sender.GetComponent<Image>().color;
-        brushSizeButton.image.color = paintColor; // set current color image
+       // brushSizeButton.image.color = paintColor; // set current color image
 
         switch (drawMode)
         {

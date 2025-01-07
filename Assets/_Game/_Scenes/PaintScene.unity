@@ -364,6 +364,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: dbfebdf6b88247bf9832f56de8dfc7e8, type: 3}
   - {fileID: 21300000, guid: c0b3924337e564cde953e66392237a6f, type: 3}
   - {fileID: 21300000, guid: e8f20ea88d9f74890b02d2a4a39390bc, type: 3}
+  brushSize: 8
   stickers:
   - {fileID: 2800000, guid: 8a03e516a09a430dbf94d750c8b39dc6, type: 3}
   - {fileID: 2800000, guid: 4c1f370cde894b8b88ec95b3e2890af5, type: 3}
@@ -414,11 +415,11 @@ MonoBehaviour:
     - {fileID: 21300000, guid: a81f2b70317842d9a44ed2bb76a8f46b, type: 3}
   brushSizeButton:
     name: ButtonBrushSize
-    image: {fileID: 515587076082223710}
+    image: {fileID: 5069845688639594278}
     sprites:
-    - {fileID: 21300000, guid: 5a4e08b160b34c92b881de47f47eb056, type: 3}
-    - {fileID: 21300000, guid: ddb96dfbd159475dafed76ec1585a361, type: 3}
-    - {fileID: 21300000, guid: bf476daf609b4a35b2072e2d2828e126, type: 3}
+    - {fileID: 21300000, guid: 75cad80199fe94077bcb14443a5ccf31, type: 3}
+    - {fileID: 21300000, guid: 9cc73786c43554104a51536e4ecb2438, type: 3}
+    - {fileID: 21300000, guid: 1e86c54570096435ea0fa425d2f70bff, type: 3}
   musicButtonController:
     name: ButtonMusicController
     image: {fileID: 3503222196076760369}
@@ -18458,7 +18459,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1e86c54570096435ea0fa425d2f70bff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9cc73786c43554104a51536e4ecb2438, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
