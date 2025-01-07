@@ -12,170 +12,109 @@ public class ScreenshotManager : MonoBehaviour
     public static event Action ScreenshotFinishedSaving;
 
 #if UNITY_IPHONE
-	[DllImport("__Internal")]
-    private static extern bool saveToGallery( string path );
+    [DllImport("__Internal")]
+    private static extern bool saveToGallery(string path);
 #elif UNITY_WEBGL
     [DllImport("__Internal")]
     private static extern void ImageDownloader(string str, string fn);
 
     private static void DownloadScreenshot(byte[] imageData, string imageFilename)
     {
-        ImageDownloader(System.Convert.ToBase64String(imageData), imageFilename);
+        ImageDownloader(Convert.ToBase64String(imageData), imageFilename);
     }
 #endif
 
     public static IEnumerator SaveForPaint(string fileName, string albumName = "MyScreenshots", bool callback = false)
     {
-        bool photoSaved = false;
+        string date = DateTime.Now.ToString("dd-MM-yy");
+        ScreenShotNumber++;
 
-        string date = System.DateTime.Now.ToString("dd-MM-yy");
-
-        ScreenshotManager.ScreenShotNumber++;
-
-        string screenshotFilename = fileName + "_" + ScreenshotManager.ScreenShotNumber + "_" + date + ".jpg";
-
-        Rect rect = new Rect(0, 0, Screen.width * 0.8f, Screen.height * 0.8f);
+        string screenshotFilename = $"{fileName}_{ScreenShotNumber}_{date}.jpg";
+        Rect rect = new Rect(0, 0, Screen.width, Screen.height);
 
         Debug.Log("Save screenshot " + screenshotFilename);
 
-        string share = "I drew this painting! ^_^";
-        share += '\n' + "Do you like drawing too? Then install Coloring Book!";
+        string shareText = "I drew this painting! ^_^\nDo you like drawing too? Then install Coloring Book!";
 
 #if UNITY_IPHONE
-		
-			if(Application.platform == RuntimePlatform.IPhonePlayer) 
-			{
-				Debug.Log("iOS platform detected");
-				
-				string iosPath = Application.persistentDataPath + "/" + screenshotFilename;
-		
-				//Application.CaptureScreenshot(screenshotFilename);
-                
-                //////////////
-                yield return new WaitForEndOfFrame();
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            Debug.Log("iOS platform detected");
 
-                Texture2D texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, false);
-                texture.ReadPixels(rect, 0, 0);
-
-                texture.Apply();
-
-                yield return 0;
-
-                byte[] bytes = texture.EncodeToJPG();
-                File.WriteAllBytes(iosPath, bytes);
-
-                Destroy(texture);
-                //////////////
-				
-				while(!photoSaved) 
-				{
-					photoSaved = saveToGallery( iosPath );
-					
-					yield return new WaitForSeconds(.5f);
-				}
-			
-				UnityEngine.iOS.Device.SetNoBackupFlag( iosPath );
-			
-                new NativeShare().AddFile(iosPath).SetSubject(albumName).SetText(share).Share();
-			} 
-            else
-            {
-                //Application.CaptureScreenshot(screenshotFilename);
-
-                //////////////
-                yield return new WaitForEndOfFrame();
-
-                Texture2D texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, false);
-                texture.ReadPixels(rect, 0, 0);
-
-                texture.Apply();
-
-                yield return 0;
-
-                byte[] bytes = texture.EncodeToJPG();
-                File.WriteAllBytes(Application.persistentDataPath + "/" + screenshotFilename, bytes);
-
-                Destroy(texture);
-                //////////////
-            }
-			
+            yield return CaptureAndSaveScreenshot(rect, screenshotFilename, albumName, shareText, callback);
+        }
+        else
+        {
+            yield return CaptureScreenshot(rect, screenshotFilename);
+        }
 #elif UNITY_ANDROID
-
         if (Application.platform == RuntimePlatform.Android)
         {
             Debug.Log("Android platform detected");
 
-            yield return new WaitForEndOfFrame();
-
-            Texture2D texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, false);
-            texture.ReadPixels(rect, 0, 0);
-            texture.Apply();
-
-            yield return 0;
-
-            byte[] bytes = texture.EncodeToJPG();
-
-            string path = Path.Combine(Application.temporaryCachePath, screenshotFilename);
-            File.WriteAllBytes(path, bytes);
-
-            NativeGallery.SaveImageToGallery(bytes, albumName, screenshotFilename);
-
-            Destroy(texture);
-
-            new NativeShare().AddFile(path).SetSubject(albumName).SetText(share).Share();
+            yield return CaptureAndSaveScreenshot(rect, screenshotFilename, albumName, shareText, callback);
         }
         else
         {
-            //////////////
-            yield return new WaitForEndOfFrame();
-
-            Texture2D texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, false);
-            texture.ReadPixels(rect, 0, 0);
-
-            texture.Apply();
-
-            yield return 0;
-
-            byte[] bytes = texture.EncodeToJPG();
-            File.WriteAllBytes(Application.persistentDataPath + "/" + screenshotFilename, bytes);
-
-            Destroy(texture);
-            //////////////
+            yield return CaptureScreenshot(rect, screenshotFilename);
         }
-
 #elif UNITY_WEBGL
+        yield return CaptureScreenshotWebGL(rect, screenshotFilename);
+#else
+        Debug.LogWarning("Platform not supported for this operation.");
+#endif
+    }
 
+    private static IEnumerator CaptureScreenshot(Rect rect, string screenshotFilename)
+    {
         yield return new WaitForEndOfFrame();
 
         Texture2D texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, false);
         texture.ReadPixels(rect, 0, 0);
-
         texture.Apply();
 
-        yield return 0;
+        byte[] bytes = texture.EncodeToJPG();
+
+        string path = Path.Combine(Application.persistentDataPath, screenshotFilename);
+        File.WriteAllBytes(path, bytes);
+
+        Destroy(texture);
+    }
+
+    private static IEnumerator CaptureAndSaveScreenshot(Rect rect, string screenshotFilename, string albumName, string shareText, bool callback)
+    {
+        yield return CaptureScreenshot(rect, screenshotFilename);
+
+        string path = Path.Combine(Application.temporaryCachePath, screenshotFilename);
+        byte[] bytes = File.ReadAllBytes(path);
+
+        NativeGallery.SaveImageToGallery(bytes, albumName, screenshotFilename);
+        new NativeShare().AddFile(path).SetSubject(albumName).SetText(shareText).Share();
+
+        if (callback)
+            ScreenshotFinishedSaving?.Invoke();
+    }
+
+#if UNITY_WEBGL
+    private static IEnumerator CaptureScreenshotWebGL(Rect rect, string screenshotFilename)
+    {
+        yield return new WaitForEndOfFrame();
+
+        Texture2D texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, false);
+        texture.ReadPixels(rect, 0, 0);
+        texture.Apply();
 
         byte[] bytes = texture.EncodeToJPG();
 
         DownloadScreenshot(bytes, screenshotFilename);
 
         Destroy(texture);
-
-#else
-        while (!photoSaved)
-        {
-            yield return new WaitForSeconds(.5f);
-
-            photoSaved = true;
-        }
-#endif
-        if (callback)
-            ScreenshotFinishedSaving();
     }
+#endif
 
     public static int ScreenShotNumber
     {
-        set { PlayerPrefs.SetInt("screenShotNumber", value); }
-
-        get { return PlayerPrefs.GetInt("screenShotNumber"); }
+        get => PlayerPrefs.GetInt("screenShotNumber", 0);
+        set => PlayerPrefs.SetInt("screenShotNumber", value);
     }
 }
