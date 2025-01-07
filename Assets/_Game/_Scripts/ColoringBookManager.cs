@@ -843,10 +843,10 @@ public class ColoringBookManager : MonoBehaviour
 
         for (int i = 0; i < PanelColors[(int)DrawMode.Sticker].childCount; i++)
         {
-            PanelColors[(int)DrawMode.Sticker].GetChild(i).GetChild(0).gameObject.SetActive(false);
+//PanelColors[(int)DrawMode.Sticker].GetChild(i).GetChild(0).gameObject.SetActive(false);
         }
 
-        PanelColors[(int)DrawMode.Sticker].GetChild(selectedSticker).GetChild(0).gameObject.SetActive(true);
+//        PanelColors[(int)DrawMode.Sticker].GetChild(selectedSticker).GetChild(0).gameObject.SetActive(true);
 
         // tell mobile paint to read sticker pixel data
         stickerWidth = stickers[selectedSticker].width;
