@@ -18,6 +18,9 @@ public class ColoringBookManager : MonoBehaviour
     public static int maskTexIndex = -1;
     public static string ID = "0";
 
+    public Sprite[] patternSprites; 
+
+
     // list of drawmodes
     public enum DrawMode
     {
@@ -34,6 +37,11 @@ public class ColoringBookManager : MonoBehaviour
     private DrawMode drawMode = DrawMode.Pencil;
     private bool useLockArea = true;
     private byte[] lockMaskPixels; // locking mask pixels
+    
+    [SerializeField]
+    private int patternWidth;
+    [SerializeField]
+    private int patternHeight;
 
     // Stickers
     public Texture2D[] stickers;
@@ -171,6 +179,9 @@ public class ColoringBookManager : MonoBehaviour
 
         InitializeEverything();
     }
+
+    
+    
 
     private Texture2D DuplicateTexture(Texture2D source)
     {
@@ -363,6 +374,7 @@ public class ColoringBookManager : MonoBehaviour
         OnStickerButtonClicked(PanelColors[(int)DrawMode.Sticker].GetChild(0).GetComponent<ButtonScript>());
 
         LoadSetting();
+        
     }
 
     private void SetPanelsUIScale(int current)
@@ -1053,6 +1065,42 @@ public class ColoringBookManager : MonoBehaviour
             }
         }
     }
+
+
+    private void DrawCircleWithPattern(int x, int y)
+{
+    int pixel = 0;
+    int r2 = brushSize * brushSize;
+    int area = r2 << 2;
+    int rr = brushSize << 1;
+
+    for (int i = 0; i < area; i++)
+    {
+        int tx = (i % rr) - brushSize;
+        int ty = (i / rr) - brushSize;
+        if (tx * tx + ty * ty < r2)
+        {
+            if (x + tx < 0 || y + ty < 0 || x + tx >= texWidth || y + ty >= texHeight) continue;
+
+            pixel = (texWidth * (y + ty) + x + tx) * 4;
+
+            if (!useLockArea || (useLockArea && lockMaskPixels[pixel] == 1))
+            {
+                // Calculate the corresponding pattern pixel
+                int patternX = (x + tx) % patternWidth;
+                int patternY = (y + ty) % patternHeight;
+                int patternPixel = (patternWidth * patternY + patternX) * 4;
+
+                // Use the pattern color
+            pixels[pixel] = (byte)Mathf.Lerp(pixels[pixel], paintColor.r, paintColor.a / 255f * 0.1f);
+            pixels[pixel + 1] = (byte)Mathf.Lerp(pixels[pixel + 1], paintColor.g, paintColor.a / 255f * 0.1f);
+            pixels[pixel + 2] = (byte)Mathf.Lerp(pixels[pixel + 2], paintColor.b, paintColor.a / 255f * 0.1f);
+            pixels[pixel + 3] = (byte)Mathf.Lerp(pixels[pixel + 3], paintColor.a, paintColor.a / 255f * 0.1f);
+
+            }
+        }
+    }
+}
 
     private void DrawSticker(int px, int py)
     {
