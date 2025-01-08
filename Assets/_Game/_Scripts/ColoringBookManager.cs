@@ -994,11 +994,21 @@ public class ColoringBookManager : MonoBehaviour
     }
 
     public void OnHomeButtonClicked()
-    {
-        SaveImage(ID);
+{
+    SaveImage(ID);
+    Debug.Log("----->");
+    UIManager.Instance.ReturnToPreviousScreen();
+    SceneManager.LoadScene("MainScene");
 
-        SceneManager.LoadScene("MainScene");
-    }
+    //StartCoroutine(ReturnToPreviousScreenAfterSceneLoad());
+}
+
+private IEnumerator ReturnToPreviousScreenAfterSceneLoad()
+{
+    yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "MainScene");
+
+    UIManager.Instance.ReturnToPreviousScreen();
+}
 
     #endregion
 

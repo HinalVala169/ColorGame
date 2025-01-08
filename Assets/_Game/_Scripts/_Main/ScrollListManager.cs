@@ -614,6 +614,16 @@ public class ScrollListManager : MonoBehaviour
         }
 
         ColoringBookManager.ID = saveIndexString + index.ToString();
+         UIManager.Instance.HidePreviousScreen();
+        //  StartCoroutine(DelayBeforeSceneLoad(0.1f));
         SceneManager.LoadScene("PaintScene");
+
+        //UIManager.Instance.ShowGamePlayScreen();
     }
+
+    private IEnumerator DelayBeforeSceneLoad(float delayTime)
+{
+    yield return new WaitForSeconds(delayTime);
+    SceneManager.LoadScene("PaintScene");
+}
 }
