@@ -5,30 +5,31 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    [SerializeField] private BaseUICanvas[] canvases; // Manually assign canvases 
+    [SerializeField] private BaseUICanvas[] canvases; 
     
     [SerializeField] 
-    private  CanvasType previousCanvasType = CanvasType.None; // To track the last active canvas
+    private  CanvasType previousCanvasType = CanvasType.None;
+
+    [SerializeField] 
+
+    int currentCanvasIndex = 0;
 
     private void Awake()
     {
-        // Ensure that there is only one instance of UIManager in each scene
+     
        if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Prevent UIManager from being destroyed on scene load
+            DontDestroyOnLoad(gameObject); 
         }
         else
         {
-            Destroy(gameObject); // If another instance exists, destroy this one
+            Destroy(gameObject); 
         }
-        // Hide all canvases initially
         foreach (var canvas in canvases)
         {
             canvas.Hide();
         }
-
-        // Show the last active canvas when returning to the UI
         if (previousCanvasType != CanvasType.None)
         {
             ShowCanvas(previousCanvasType);
@@ -37,7 +38,7 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        ShowMainMenu(); // Optionally show the main menu on startup
+        ShowMainMenu(); 
     }
 
     public void ShowCanvas(CanvasType canvasType)
@@ -50,13 +51,13 @@ public class UIManager : MonoBehaviour
             canvas.Hide();
         }
 
-        // Show the specified canvas
-        foreach (var canvas in canvases)
+             for (int i = 0; i < canvases.Length; i++)
         {
-            if (canvas.CanvasType == canvasType)
+            if (canvases[i].CanvasType == canvasType)
             {
-                canvas.Show();
-                previousCanvasType = canvasType; // Update the last active canvas
+                canvases[i].Show();
+                previousCanvasType = canvasType;
+                currentCanvasIndex = i; // Update the current canvas index
                 canvasFound = true;
                 break;
             }
@@ -66,9 +67,24 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogWarning($"Canvas of type {canvasType} not found.");
         }
+
+       
     }
 
-    // Wrapper methods to call from UI buttons
+    public void GoBackToPreviousCanvas()
+    {
+        if (currentCanvasIndex > 0)
+        {
+            currentCanvasIndex--; // Decrement the index to move back
+            ShowCanvas(canvases[currentCanvasIndex].CanvasType);
+            Debug.Log("Going back to canvas index: " + currentCanvasIndex);
+        }
+        else
+        {
+            Debug.LogWarning("No previous canvas to go back to.");
+        }
+    }
+
     public void ShowMainMenu()
     {
         ShowCanvas(CanvasType.MainSCR);
@@ -83,14 +99,9 @@ public class UIManager : MonoBehaviour
     {
         ShowCanvas(CanvasType.SubMenuScreen);
     }
-
-    // Method to load a new scene
     public void LoadScene(string sceneName)
     {
-        // Store the current UI state before loading
-        previousCanvasType = CanvasType.SubMenuScreen; // Adjust as per the current active canvas
-
-        // Load the new scene
+        previousCanvasType = CanvasType.SubMenuScreen;
         SceneManager.LoadScene(sceneName);
     }
 
@@ -101,11 +112,9 @@ public class UIManager : MonoBehaviour
             canvas.Hide();
         }
     }
-
-    // Method to be called on returning to this scene
     public void ReturnToPreviousScreen()
     {
-        ShowCanvas(previousCanvasType); // Show the previous canvas when coming back
+        ShowCanvas(previousCanvasType);
     }
 }
 

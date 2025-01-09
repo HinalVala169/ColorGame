@@ -996,20 +996,25 @@ public class ColoringBookManager : MonoBehaviour
     public void OnHomeButtonClicked()
 {
     SaveImage(ID);
-    Debug.Log("----->");
-    UIManager.Instance.ReturnToPreviousScreen();
+
+    // Load the scene and wait for it to finish loading
     SceneManager.LoadScene("MainScene");
 
-    //StartCoroutine(ReturnToPreviousScreenAfterSceneLoad());
+    // Use the sceneLoaded event to wait for the scene to load completely
+    SceneManager.sceneLoaded += OnSceneLoaded;
 }
 
-private IEnumerator ReturnToPreviousScreenAfterSceneLoad()
+private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 {
-    yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "MainScene");
+    if (scene.name == "MainScene")
+    {
+       // Debug.Log("----->");
+        UIManager.Instance.ReturnToPreviousScreen();
 
-    UIManager.Instance.ReturnToPreviousScreen();
+        // Unsubscribe from the event after it's handled
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 }
-
     #endregion
 
 
