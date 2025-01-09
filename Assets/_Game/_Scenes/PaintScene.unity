@@ -1178,28 +1178,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskTexMaterial: {fileID: 2100000, guid: 0b18c9f7f08448d2bc71c32bb346a29d, type: 2}
   maskTexList:
-  - {fileID: 21300000, guid: de8988b0b1e548be95fc8d18c66fe53c, type: 3}
-  - {fileID: 21300000, guid: 5c414db9776f4a14942318bf15fa28e6, type: 3}
-  - {fileID: 21300000, guid: 6596596fe7fa40649562a47d3e15e9b5, type: 3}
-  - {fileID: 21300000, guid: 7c27816de26540cfb2e5d5f731d7f69c, type: 3}
-  - {fileID: 21300000, guid: cd86fe31b49d43d8a02123b6deb19409, type: 3}
-  - {fileID: 21300000, guid: b457bf3b883a43b181b5a8ecdf25646c, type: 3}
-  - {fileID: 21300000, guid: bf3a36b1fbb14d2688ee1d0b310fb1bf, type: 3}
-  - {fileID: 21300000, guid: a1a6dc684a9c48c1b93810d4e6c32826, type: 3}
-  - {fileID: 21300000, guid: ef6fd15ef11f437bbb430e5c7f652654, type: 3}
-  - {fileID: 21300000, guid: ac856d9f2a734f81a4f6fdf86015a8a5, type: 3}
-  - {fileID: 21300000, guid: d863f15a3eb84532928210df63f899b7, type: 3}
-  - {fileID: 21300000, guid: e77593a01ed14d3d8a8dc873f40cbfc1, type: 3}
-  - {fileID: 21300000, guid: 0238057b879d4716b7d197887679cc82, type: 3}
-  - {fileID: 21300000, guid: 2eb3d736e77c40fcb6c464db51fd5a18, type: 3}
-  - {fileID: 21300000, guid: 1d2fc9882b42434a893783e652282485, type: 3}
-  - {fileID: 21300000, guid: dbfebdf6b88247bf9832f56de8dfc7e8, type: 3}
-  - {fileID: 21300000, guid: c0b3924337e564cde953e66392237a6f, type: 3}
   - {fileID: 21300000, guid: e8f20ea88d9f74890b02d2a4a39390bc, type: 3}
-  patternSprites: []
+  patternSprites:
+  - {fileID: 21300000, guid: abee3f14ecd1e4799981e3b42451973c, type: 3}
+  - {fileID: 21300000, guid: 02604fbc430cf4f158202e5f757fe0ad, type: 3}
+  - {fileID: 21300000, guid: 280b30741da1d4e908cf3e250addb3d8, type: 3}
+  - {fileID: 21300000, guid: dbca5fb525d5c46cc8817e5d0b728afe, type: 3}
+  - {fileID: 21300000, guid: 7a9f0a9ee789f45f7a0fcfd30c2792a4, type: 3}
+  - {fileID: 21300000, guid: 072666cffe5cb4c51be2717223cb2429, type: 3}
+  - {fileID: 21300000, guid: 6913b38ddf6af41afa08735e643e16cd, type: 3}
+  - {fileID: 21300000, guid: 08e974a9f669e4b2cb69b5b1e5a60514, type: 3}
+  - {fileID: 21300000, guid: 9dd18d61fb4e54e32a6df68139c2b3d5, type: 3}
+  - {fileID: 21300000, guid: 42975bdb7e5bd4866930429430c04662, type: 3}
+  - {fileID: 21300000, guid: 377888e42719a466e882c6240e781874, type: 3}
+  - {fileID: 21300000, guid: 8d1e69756fd1547c2b732624a8a3f9ff, type: 3}
+  - {fileID: 21300000, guid: 60b6bf91ea551401aaa51214622fe496, type: 3}
+  - {fileID: 21300000, guid: ad975d9191eff4d329c3eab1cf8909ec, type: 3}
+  - {fileID: 21300000, guid: 26504291e901d4864895e7cd5128bf4a, type: 3}
+  - {fileID: 21300000, guid: c7989abda7874464e8dcbc2a8ce36fa3, type: 3}
+  - {fileID: 21300000, guid: 6cc77697b131f47be9338bdfa5de2f9e, type: 3}
+  - {fileID: 21300000, guid: 1ce01e6fcedcb4d09995a70def3eb60c, type: 3}
+  - {fileID: 21300000, guid: a14df1921f78543f987e64a148fbb665, type: 3}
+  - {fileID: 21300000, guid: 3863b035b6909444588098835f5b7769, type: 3}
+  - {fileID: 21300000, guid: b49372cbde333472e803afe885e5eb48, type: 3}
   brushSize: 8
-  patternWidth: 0
-  patternHeight: 0
+  patternWidth: 100
+  patternHeight: 100
   stickers:
   - {fileID: 2800000, guid: 7bf9e46462bc84877ab394882a3470ee, type: 3}
   - {fileID: 2800000, guid: 3f25503baa06d4b8a824a29c1955a473, type: 3}

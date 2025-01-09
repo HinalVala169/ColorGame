@@ -203,77 +203,94 @@ public class ColoringBookManager : MonoBehaviour
     }
 
     private void InitializeEverything()
+{
+    // Create full-screen quad (assuming this method exists)
+    CreateFullScreenQuad();
+
+    // Initialize texture size based on maskTex or default
+    if (maskTex)
     {
-        CreateFullScreenQuad();
+        GetComponent<Renderer>().material = maskTexMaterial;
 
-        // create texture
-        if (maskTex)
-        {
-            GetComponent<Renderer>().material = maskTexMaterial;
+        texWidth = maskTex.width;
+        texHeight = maskTex.height;
+        GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTex);
 
-            texWidth = maskTex.width;
-            texHeight = maskTex.height;
-            GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTex);
-
-            useLockArea = true;
-        }
-        else
-        {
-            texWidth = 576;
-            texHeight = 1024;
-
-            useLockArea = false;
-        }
-
-        if (!GetComponent<Renderer>().material.HasProperty("_MainTex")) Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex'");
-
-
-        // create new texture
-        tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
-        GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
-
-        // init pixels array
-        pixels = new byte[texWidth * texHeight * 4];
-
-        OnClearButtonClicked();
-
-        // set texture modes
-        tex.filterMode = FilterMode.Point;
-        tex.wrapMode = TextureWrapMode.Clamp;
-        //tex.wrapMode = TextureWrapMode.Repeat;
-
-        if (maskTex)
-        {
-            ReadMaskImage();
-        }
-
-        // undo system
-        undoPixels = new List<byte[]>();
-        undoPixels.Add(new byte[texWidth * texHeight * 4]);
-        RedoIndex = 0;
-
-        byte[] loadPixels = new byte[texWidth * texHeight * 4];
-        loadPixels = LoadImage(ID);
-
-        if (loadPixels != null)
-        {
-            pixels = loadPixels;
-            System.Array.Copy(pixels, undoPixels[0], pixels.Length);
-
-            tex.LoadRawTextureData(pixels);
-            tex.Apply(false);
-        }
-        else
-        {
-            System.Array.Copy(pixels, undoPixels[0], pixels.Length);
-        }
-
-        // locking mask enabled
-        if (useLockArea)
-        {
-            lockMaskPixels = new byte[texWidth * texHeight * 4];
-        }
+        useLockArea = true;
     }
+    else
+    {
+        texWidth = 576;
+        texHeight = 1024;
+
+        useLockArea = false;
+    }
+
+    // Ensure the shader has the required property for _MainTex
+    if (!GetComponent<Renderer>().material.HasProperty("_MainTex"))
+        Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex'");
+
+    // Create a new texture (RGBA32 format)
+    tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
+    GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+
+    // Initialize the pixels array
+    pixels = new byte[texWidth * texHeight * 4];
+
+    // Clear the texture initially
+    OnClearButtonClicked();
+
+    // Set texture filtering and wrapping modes
+    tex.filterMode = FilterMode.Point;
+    tex.wrapMode = TextureWrapMode.Clamp;
+
+    // Read the mask image if available
+    if (maskTex)
+    {
+        ReadMaskImage();
+    }
+
+    // Undo system setup
+    undoPixels = new List<byte[]>();
+    undoPixels.Add(new byte[texWidth * texHeight * 4]);
+    RedoIndex = 0;
+
+    byte[] loadPixels = new byte[texWidth * texHeight * 4];
+    loadPixels = LoadImage(ID);  // Load the image based on ID (make sure LoadImage returns data of the correct size)
+
+    // Debugging the size of the loaded pixels and pixels array
+    Debug.Log($"loadPixels length: {loadPixels.Length}, pixels length: {pixels.Length}");
+
+    if (loadPixels != null && loadPixels.Length == pixels.Length)
+    {
+        // If the loadPixels array is not null and its length matches pixels, copy it over
+        pixels = loadPixels;
+        System.Array.Copy(pixels, undoPixels[0], pixels.Length);
+
+        tex.LoadRawTextureData(pixels);  // Apply the pixel data to the texture
+        tex.Apply(false);
+    }
+    else
+    {
+        // If loadPixels is null or the sizes don't match, ensure we copy empty pixels or the default
+        System.Array.Copy(pixels, undoPixels[0], pixels.Length);
+    }
+
+    // Locking mask enabled
+    if (useLockArea)
+    {
+        lockMaskPixels = new byte[texWidth * texHeight * 4];
+    }
+
+    // Handle RenderTexture.active warning
+    RenderTexture currentRT = RenderTexture.active;
+    if (currentRT != null)
+    {
+        // Release the current active render texture
+        RenderTexture.ReleaseTemporary(currentRT);
+        RenderTexture.active = null;
+    }
+}
 
     private void CreateFullScreenQuad()
     {
