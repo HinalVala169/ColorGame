@@ -208,31 +208,48 @@ public class ColoringBookManager : MonoBehaviour
     CreateFullScreenQuad();
 
     // Initialize texture size based on maskTex or default
-    if (maskTex)
+    if (maskTex != null)
     {
-        GetComponent<Renderer>().material = maskTexMaterial;
-
-        texWidth = maskTex.width;
-        texHeight = maskTex.height;
-        GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTex);
-
-        useLockArea = true;
+        if (maskTexMaterial != null)
+        {
+            Renderer renderer = GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material = maskTexMaterial;
+                texWidth = maskTex.width;
+                texHeight = maskTex.height;
+                renderer.material.SetTexture("_MaskTex", maskTex);
+                useLockArea = true;
+            }
+            else
+            {
+                Debug.LogError("Renderer component is missing.");
+            }
+        }
+        else
+        {
+            Debug.LogError("maskTexMaterial is not assigned.");
+        }
     }
     else
     {
         texWidth = 576;
         texHeight = 1024;
-
         useLockArea = false;
     }
 
     // Ensure the shader has the required property for _MainTex
-    if (!GetComponent<Renderer>().material.HasProperty("_MainTex"))
-        Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex'");
-
-    // Create a new texture (RGBA32 format)
-    tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
-    GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+    Renderer materialRenderer = GetComponent<Renderer>();
+    if (materialRenderer != null && materialRenderer.material.HasProperty("_MainTex"))
+    {
+        tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
+        materialRenderer.material.SetTexture("_MainTex", tex);
+    }
+    else
+    {
+        Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex' or Renderer component is missing.");
+        return; // Prevent further execution if critical errors occurred
+    }
 
     // Initialize the pixels array
     pixels = new byte[texWidth * texHeight * 4];
@@ -245,7 +262,7 @@ public class ColoringBookManager : MonoBehaviour
     tex.wrapMode = TextureWrapMode.Clamp;
 
     // Read the mask image if available
-    if (maskTex)
+    if (maskTex != null)
     {
         ReadMaskImage();
     }
@@ -255,11 +272,10 @@ public class ColoringBookManager : MonoBehaviour
     undoPixels.Add(new byte[texWidth * texHeight * 4]);
     RedoIndex = 0;
 
-    byte[] loadPixels = new byte[texWidth * texHeight * 4];
-    loadPixels = LoadImage(ID);  // Load the image based on ID (make sure LoadImage returns data of the correct size)
+    byte[] loadPixels = LoadImage(ID);  // Load the image based on ID
 
     // Debugging the size of the loaded pixels and pixels array
-    Debug.Log($"loadPixels length: {loadPixels.Length}, pixels length: {pixels.Length}");
+    Debug.Log($"loadPixels length: {loadPixels?.Length}, pixels length: {pixels.Length}");
 
     if (loadPixels != null && loadPixels.Length == pixels.Length)
     {
@@ -291,7 +307,6 @@ public class ColoringBookManager : MonoBehaviour
         RenderTexture.active = null;
     }
 }
-
     private void CreateFullScreenQuad()
     {
         Camera cam = Camera.main;
