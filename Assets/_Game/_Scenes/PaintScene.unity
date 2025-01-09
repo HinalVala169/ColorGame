@@ -1202,10 +1202,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3863b035b6909444588098835f5b7769, type: 3}
   - {fileID: 21300000, guid: b49372cbde333472e803afe885e5eb48, type: 3}
   brushSize: 8
-  patternWidth: 255
-  patternHeight: 255
   stickers:
-  - {fileID: 2800000, guid: 7bf9e46462bc84877ab394882a3470ee, type: 3}
+  - {fileID: 2800000, guid: abee3f14ecd1e4799981e3b42451973c, type: 3}
   - {fileID: 2800000, guid: 3f25503baa06d4b8a824a29c1955a473, type: 3}
   - {fileID: 2800000, guid: d09fca53234124c23b73a94ce99252b7, type: 3}
   - {fileID: 2800000, guid: 2f817e8b561bd4b7ba2e33a2b6b45192, type: 3}
@@ -1228,6 +1226,9 @@ MonoBehaviour:
   - {fileID: 2800000, guid: ecd78f6cac5b0471ebdea46a2e3497fb, type: 3}
   - {fileID: 2800000, guid: 75956d43bba9a4c99b31710d0d7498df, type: 3}
   - {fileID: 2800000, guid: 2526b00a5775a4d5082ba58aabbf86ce, type: 3}
+  stickerWidth: 10
+  stickerHeight: 10
+  patternTextures: []
   PanelColors:
   - {fileID: 3793161549178638070}
   - {fileID: 6068033197320693240}
@@ -43116,8 +43117,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e8f20ea88d9f74890b02d2a4a39390bc, type: 3}
   patternSprites: []
   brushSize: 8
-  patternWidth: 0
-  patternHeight: 0
   stickers:
   - {fileID: 2800000, guid: 7bf9e46462bc84877ab394882a3470ee, type: 3}
   - {fileID: 2800000, guid: 3f25503baa06d4b8a824a29c1955a473, type: 3}
@@ -43142,6 +43141,9 @@ MonoBehaviour:
   - {fileID: 2800000, guid: ecd78f6cac5b0471ebdea46a2e3497fb, type: 3}
   - {fileID: 2800000, guid: 75956d43bba9a4c99b31710d0d7498df, type: 3}
   - {fileID: 2800000, guid: 2526b00a5775a4d5082ba58aabbf86ce, type: 3}
+  stickerWidth: 0
+  stickerHeight: 0
+  patternTextures: []
   PanelColors:
   - {fileID: 8112153375320474152}
   - {fileID: 9063497509608032697}

@@ -38,20 +38,32 @@ public class ColoringBookManager : MonoBehaviour
     private bool useLockArea = true;
     private byte[] lockMaskPixels; // locking mask pixels
     
-    [SerializeField]
-    private int patternWidth;
-    [SerializeField]
-    private int patternHeight;
+   
 
     // Stickers
     public Texture2D[] stickers;
     private int selectedSticker = 0; // currently selected sticker index
     private byte[] stickerBytes;
+
+    [SerializeField]
     private int stickerWidth;
+    [SerializeField]
     private int stickerHeight;
     private int stickerWidthHalf;
     private int texWidthMinusStickerWidth;
     private int texHeightMinusStickerHeight;
+
+
+    //texture
+
+    public Texture2D[] patternTextures;
+    private int selectedPattern = 0; // currently selected sticker index
+    private byte[] patternBytes;
+    private int patternWidth;
+    private int patternHight;
+    private int patternWidthHalf;
+    private int texWidthMinusPatternWidth;
+    private int texHeightMinusPatternHeight;
 
     // UNDO
     private List<byte[]> undoPixels; // undo buffer(s)
@@ -180,6 +192,28 @@ public class ColoringBookManager : MonoBehaviour
         InitializeEverything();
     }
 
+      private void Start()
+    {
+#if UNITY_ANDROID
+        if (JavadRastadAndroidRuntimePermissions.CheckDeniedStoragePermissions())
+        {
+            buttonCamera.image.sprite = buttonCamera.sprites[0];
+            buttonCamera.image.raycastTarget = false;
+        }
+#endif
+        SetPanelsUIScale((int)DrawMode.Sticker);
+
+        OnDrawModeButtonClicked((int)DrawMode.Sticker);
+
+        OnBrushButtonClicked(PanelColors[(int)drawMode].GetChild(0).GetComponent<ButtonScript>());
+
+        OnChangeBrushSizeButtonClicked();
+
+        OnStickerButtonClicked(PanelColors[(int)DrawMode.Sticker].GetChild(0).GetComponent<ButtonScript>());
+
+        LoadSetting();
+        
+    }
     
     
 
@@ -386,28 +420,7 @@ public class ColoringBookManager : MonoBehaviour
 #endif
     }
 
-    private void Start()
-    {
-#if UNITY_ANDROID
-        if (JavadRastadAndroidRuntimePermissions.CheckDeniedStoragePermissions())
-        {
-            buttonCamera.image.sprite = buttonCamera.sprites[0];
-            buttonCamera.image.raycastTarget = false;
-        }
-#endif
-        SetPanelsUIScale((int)DrawMode.Pencil);
-
-        OnDrawModeButtonClicked((int)DrawMode.Pencil);
-
-        OnBrushButtonClicked(PanelColors[(int)drawMode].GetChild(0).GetComponent<ButtonScript>());
-
-        OnChangeBrushSizeButtonClicked();
-
-        OnStickerButtonClicked(PanelColors[(int)DrawMode.Sticker].GetChild(0).GetComponent<ButtonScript>());
-
-        LoadSetting();
-        
-    }
+  
 
     private void SetPanelsUIScale(int current)
     {
@@ -536,9 +549,9 @@ public class ColoringBookManager : MonoBehaviour
                     DrawAdditiveCircle((int)pixelUV.x, (int)pixelUV.y);
                     break;
 
-                //case DrawMode.Sticker: // Sticker
-                //    DrawSticker((int)pixelUV.x, (int)pixelUV.y);
-                //    break;
+                case DrawMode.Sticker: // Sticker
+                   DrawSticker((int)pixelUV.x, (int)pixelUV.y);
+                   break;
 
                 case DrawMode.PaintBucket: // floodfill
                     if (maskTex)
@@ -579,9 +592,9 @@ public class ColoringBookManager : MonoBehaviour
                     DrawAdditiveLine(pixelUVOld, pixelUV);
                     break;
 
-                //case DrawMode.Sticker:
-                //    DrawLineWithSticker(pixelUVOld, pixelUV);
-                //    break;
+                case DrawMode.Sticker:
+                   DrawLineWithSticker(pixelUVOld, pixelUV);
+                   break;
 
                 default: // other modes
                     break;
@@ -1114,90 +1127,61 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     }
 
 
-    private void DrawCircleWithPattern(int x, int y)
+  
+
+     private void DrawSticker(int px, int py, float stickerWidth = 1.0f, float stickerHeight = 1.0f)
 {
-    int pixel = 0;
-    int r2 = brushSize * brushSize;
-    int area = r2 << 2;
-    int rr = brushSize << 1;
+    // Get position where we paint
+    int startX = (int)(px - stickerWidth * 0.5f); // Adjust based on sticker width
+    int startY = (int)(py - stickerHeight * 0.5f); // Adjust based on sticker height
 
-    for (int i = 0; i < area; i++)
+    // Ensure the sticker doesn't go outside texture boundaries
+    if (startX < 0)
     {
-        int tx = (i % rr) - brushSize;
-        int ty = (i / rr) - brushSize;
-        if (tx * tx + ty * ty < r2)
+        startX = 0;
+    }
+    else
+    {
+        if (startX + stickerWidth >= texWidth) startX = texWidth - (int)stickerWidth;
+    }
+
+    if (startY < 1)
+    {
+        startY = 1;
+    }
+    else
+    {
+        if (startY + stickerHeight >= texHeight) startY = texHeight - (int)stickerHeight;
+    }
+
+    int pixel = (texWidth * startY + startX) * 4;
+    int brushPixel = 0;
+
+    // Loop through each pixel in the sticker's width and height
+    for (int y = 0; y < stickerHeight; y++)
+    {
+        for (int x = 0; x < stickerWidth; x++)
         {
-            if (x + tx < 0 || y + ty < 0 || x + tx >= texWidth || y + ty >= texHeight) continue;
+            brushPixel = (int)(stickerWidth * y + x) * 4;
 
-            pixel = (texWidth * (y + ty) + x + tx) * 4;
-
-            if (!useLockArea || (useLockArea && lockMaskPixels[pixel] == 1))
+            // Only draw if the brush pixel alpha is over 0
+            if (stickerBytes[brushPixel + 3] > 0) // Check for non-transparent pixel
             {
-                // Calculate the corresponding pattern pixel
-                int patternX = (x + tx) % patternWidth;
-                int patternY = (y + ty) % patternHeight;
-                int patternPixel = (patternWidth * patternY + patternX) * 4;
-
-                // Use the pattern color
-            pixels[pixel] = (byte)Mathf.Lerp(pixels[pixel], paintColor.r, paintColor.a / 255f * 0.1f);
-            pixels[pixel + 1] = (byte)Mathf.Lerp(pixels[pixel + 1], paintColor.g, paintColor.a / 255f * 0.1f);
-            pixels[pixel + 2] = (byte)Mathf.Lerp(pixels[pixel + 2], paintColor.b, paintColor.a / 255f * 0.1f);
-            pixels[pixel + 3] = (byte)Mathf.Lerp(pixels[pixel + 3], paintColor.a, paintColor.a / 255f * 0.1f);
-
+                pixels[pixel] = stickerBytes[brushPixel];
+                pixels[pixel + 1] = stickerBytes[brushPixel + 1];
+                pixels[pixel + 2] = stickerBytes[brushPixel + 2];
+                pixels[pixel + 3] = stickerBytes[brushPixel + 3];
             }
-        }
-    }
+
+            pixel += 4;
+        } // for x
+
+        pixel = (texWidth * (startY == 0 ? 1 : startY + y) + startX + 1) * 4;
+    } // for y
+
+    // Debugging step to make sure pixels are updated
+    Debug.Log("Drawing sticker at: (" + startX + "," + startY + ") with width: " + stickerWidth + " and height: " + stickerHeight);
 }
-
-    private void DrawSticker(int px, int py)
-    {
-        // get position where we paint
-        int startX = (int)(px - stickerWidthHalf);
-        int startY = (int)(py - stickerWidthHalf);
-
-        if (startX < 0)
-        {
-            startX = 0;
-        }
-        else {
-            if (startX + stickerWidth >= texWidth) startX = texWidthMinusStickerWidth;
-        }
-
-        if (startY < 1)
-        {
-            startY = 1;
-        }
-        else {
-            if (startY + stickerHeight >= texHeight) startY = texHeightMinusStickerHeight;
-        }
-
-
-        int pixel = (texWidth * startY + startX) * 4;
-        int brushPixel = 0;
-
-        for (int y = 0; y < stickerHeight; y++)
-        {
-            for (int x = 0; x < stickerWidth; x++)
-            {
-                brushPixel = (stickerWidth * (y) + x) * 4;
-
-                // brush alpha is over 0 in this pixel
-                if (stickerBytes[brushPixel + 3] > 0)
-                {
-                    pixels[pixel] = stickerBytes[brushPixel];
-                    pixels[pixel + 1] = stickerBytes[brushPixel + 1];
-                    pixels[pixel + 2] = stickerBytes[brushPixel + 2];
-                    pixels[pixel + 3] = stickerBytes[brushPixel + 3];
-                }
-
-                pixel += 4;
-
-            } // for x
-
-            pixel = (texWidth * (startY == 0 ? 1 : startY + y) + startX + 1) * 4;
-        } // for y
-    }
-
     private void FloodFillMaskOnlyWithThreshold(int x, int y)
     {
         // get canvas hit color
@@ -1477,45 +1461,126 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         }
     }
 
-    private void DrawLineWithSticker(Vector2 start, Vector2 end)
+     private void DrawSticker(int px, int py)
+{
+    // Get position where we paint
+    int startX = (int)(px - stickerWidth * 0.5f); // Adjust based on sticker width
+    int startY = (int)(py - stickerHeight * 0.5f); // Adjust based on sticker height
+
+    // Ensure the sticker doesn't go outside texture boundaries
+    if (startX < 0)
     {
-        int x0 = (int)start.x;
-        int y0 = (int)start.y;
-        int x1 = (int)end.x;
-        int y1 = (int)end.y;
-        int dx = Mathf.Abs(x1 - x0);
-        int dy = Mathf.Abs(y1 - y0);
-        int sx, sy;
-        if (x0 < x1) { sx = 1; } else { sx = -1; }
-        if (y0 < y1) { sy = 1; } else { sy = -1; }
-        int err = dx - dy;
-        bool loop = true;
-        //			int minDistance=brushSize-1;
-        int minDistance = (int)(brushSize >> 1); // divide by 2, you might want to set mindistance to smaller value, to avoid gaps between brushes when moving fast
-        int pixelCount = 0;
-        int e2;
-        while (loop)
+        startX = 0;
+    }
+    else
+    {
+        if (startX + stickerWidth >= texWidth) startX = texWidth - (int)stickerWidth;
+    }
+
+    if (startY < 1)
+    {
+        startY = 1;
+    }
+    else
+    {
+        if (startY + stickerHeight >= texHeight) startY = texHeight - (int)stickerHeight;
+    }
+
+    int pixel = (texWidth * startY + startX) * 4;
+    int brushPixel = 0;
+
+    // Loop through each pixel in the sticker's width and height
+    for (int y = 0; y < stickerHeight; y++)
+    {
+        for (int x = 0; x < stickerWidth; x++)
         {
-            pixelCount++;
-            if (pixelCount > minDistance)
+            brushPixel = (int)(stickerWidth * y + x) * 4;
+
+            // Only draw if the brush pixel alpha is over 0
+            if (stickerBytes[brushPixel + 3] > 0) // Check for non-transparent pixel
             {
-                pixelCount = 0;
-                DrawSticker(x0, y0);
+                pixels[pixel] = stickerBytes[brushPixel];
+                pixels[pixel + 1] = stickerBytes[brushPixel + 1];
+                pixels[pixel + 2] = stickerBytes[brushPixel + 2];
+                pixels[pixel + 3] = stickerBytes[brushPixel + 3];
             }
-            if ((x0 == x1) && (y0 == y1)) loop = false;
-            e2 = 2 * err;
-            if (e2 > -dy)
-            {
-                err = err - dy;
-                x0 = x0 + sx;
-            }
-            if (e2 < dx)
-            {
-                err = err + dx;
-                y0 = y0 + sy;
-            }
+
+            pixel += 4;
+        } // for x
+
+        pixel = (texWidth * (startY == 0 ? 1 : startY + y) + startX + 1) * 4;
+    } // for y
+
+    // Debugging step to make sure pixels are updated
+    Debug.Log("Drawing sticker at: (" + startX + "," + startY + ") with width: " + stickerWidth + " and height: " + stickerHeight);
+}
+
+    private void DrawLineWithSticker(Vector2 start, Vector2 end)
+{
+    int x0 = (int)start.x;
+    int y0 = (int)start.y;
+    int x1 = (int)end.x;
+    int y1 = (int)end.y;
+    int dx = Mathf.Abs(x1 - x0);
+    int dy = Mathf.Abs(y1 - y0);
+    int sx, sy;
+    if (x0 < x1) { sx = 1; } else { sx = -1; }
+    if (y0 < y1) { sy = 1; } else { sy = -1; }
+    int err = dx - dy;
+    bool loop = true;
+    int minDistance = (int)(brushSize >> 1); // brush size divided by 2
+    int pixelCount = 0;
+    int e2;
+
+    // Define the scaled sticker width and height
+    float stickerWidth = brushSize * 0.5f;  // Scale down the width (adjust as needed)
+    float stickerHeight = brushSize * 0.5f; // Scale down the height (adjust as needed)
+
+    while (loop)
+    {
+        pixelCount++;
+        if (pixelCount > minDistance)
+        {
+            pixelCount = 0;
+            // Draw the sticker with custom scaled size
+            DrawSticker(x0, y0, stickerWidth, stickerHeight);
+        }
+        if ((x0 == x1) && (y0 == y1)) loop = false;
+        e2 = 2 * err;
+        if (e2 > -dy)
+        {
+            err = err - dy;
+            x0 = x0 + sx;
+        }
+        if (e2 < dx)
+        {
+            err = err + dx;
+            y0 = y0 + sy;
         }
     }
+
+    // Convert the byte array to a Color array
+    Color[] colorPixels = new Color[texWidth * texHeight];
+
+    for (int i = 0; i < texWidth * texHeight; i++)
+    {
+        int pixelIndex = i * 4;
+        byte r = pixels[pixelIndex];
+        byte g = pixels[pixelIndex + 1];
+        byte b = pixels[pixelIndex + 2];
+        byte a = pixels[pixelIndex + 3];
+
+        // Convert byte (0-255) to float (0f to 1f)
+        colorPixels[i] = new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
+
+    // Apply the Color array to the texture
+    if (tex != null)
+    {
+        tex.SetPixels(colorPixels);  // Apply modified color data
+        tex.Apply();  // Make the changes visible
+    }
+}
 
     #endregion
 
