@@ -174,7 +174,7 @@ public class ColoringBookManager : MonoBehaviour
 
     #region Init And Control Functions
 
-    private void Awake()
+   private void Awake()
     {
         Camera.main.aspect = 9 / 16f;
 
@@ -212,7 +212,6 @@ public class ColoringBookManager : MonoBehaviour
         OnStickerButtonClicked(PanelColors[(int)DrawMode.Sticker].GetChild(0).GetComponent<ButtonScript>());
 
         LoadSetting();
-        
     }
     
     
@@ -237,110 +236,77 @@ public class ColoringBookManager : MonoBehaviour
     }
 
     private void InitializeEverything()
-{
-    // Create full-screen quad (assuming this method exists)
-    CreateFullScreenQuad();
-
-    // Initialize texture size based on maskTex or default
-    if (maskTex != null)
     {
-        if (maskTexMaterial != null)
+        CreateFullScreenQuad();
+
+        // create texture
+        if (maskTex)
         {
-            Renderer renderer = GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                renderer.material = maskTexMaterial;
-                texWidth = maskTex.width;
-                texHeight = maskTex.height;
-                renderer.material.SetTexture("_MaskTex", maskTex);
-                useLockArea = true;
-            }
-            else
-            {
-                Debug.LogError("Renderer component is missing.");
-            }
+            GetComponent<Renderer>().material = maskTexMaterial;
+
+            texWidth = maskTex.width;
+            texHeight = maskTex.height;
+            GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTex);
+
+            useLockArea = true;
         }
         else
         {
-            Debug.LogError("maskTexMaterial is not assigned.");
+            texWidth = 576;
+            texHeight = 1024;
+
+            useLockArea = false;
+        }
+
+        if (!GetComponent<Renderer>().material.HasProperty("_MainTex")) Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex'");
+
+
+        // create new texture
+        tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
+        GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+
+        // init pixels array
+        pixels = new byte[texWidth * texHeight * 4];
+
+        OnClearButtonClicked();
+
+        // set texture modes
+        tex.filterMode = FilterMode.Point;
+        tex.wrapMode = TextureWrapMode.Clamp;
+        //tex.wrapMode = TextureWrapMode.Repeat;
+
+        if (maskTex)
+        {
+            ReadMaskImage();
+        }
+
+        // undo system
+        undoPixels = new List<byte[]>();
+        undoPixels.Add(new byte[texWidth * texHeight * 4]);
+        RedoIndex = 0;
+
+        byte[] loadPixels = new byte[texWidth * texHeight * 4];
+        loadPixels = LoadImage(ID);
+
+        if (loadPixels != null)
+        {
+            pixels = loadPixels;
+            System.Array.Copy(pixels, undoPixels[0], pixels.Length);
+
+            tex.LoadRawTextureData(pixels);
+            tex.Apply(false);
+        }
+        else
+        {
+            System.Array.Copy(pixels, undoPixels[0], pixels.Length);
+        }
+
+        // locking mask enabled
+        if (useLockArea)
+        {
+            lockMaskPixels = new byte[texWidth * texHeight * 4];
         }
     }
-    else
-    {
-        texWidth = 576;
-        texHeight = 1024;
-        useLockArea = false;
-    }
-
-    // Ensure the shader has the required property for _MainTex
-    Renderer materialRenderer = GetComponent<Renderer>();
-    if (materialRenderer != null && materialRenderer.material.HasProperty("_MainTex"))
-    {
-        tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
-        materialRenderer.material.SetTexture("_MainTex", tex);
-    }
-    else
-    {
-        Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex' or Renderer component is missing.");
-        return; // Prevent further execution if critical errors occurred
-    }
-
-    // Initialize the pixels array
-    pixels = new byte[texWidth * texHeight * 4];
-
-    // Clear the texture initially
-    OnClearButtonClicked();
-
-    // Set texture filtering and wrapping modes
-    tex.filterMode = FilterMode.Point;
-    tex.wrapMode = TextureWrapMode.Clamp;
-
-    // Read the mask image if available
-    if (maskTex != null)
-    {
-        ReadMaskImage();
-    }
-
-    // Undo system setup
-    undoPixels = new List<byte[]>();
-    undoPixels.Add(new byte[texWidth * texHeight * 4]);
-    RedoIndex = 0;
-
-    byte[] loadPixels = LoadImage(ID);  // Load the image based on ID
-
-    // Debugging the size of the loaded pixels and pixels array
-    Debug.Log($"loadPixels length: {loadPixels?.Length}, pixels length: {pixels.Length}");
-
-    if (loadPixels != null && loadPixels.Length == pixels.Length)
-    {
-        // If the loadPixels array is not null and its length matches pixels, copy it over
-        pixels = loadPixels;
-        System.Array.Copy(pixels, undoPixels[0], pixels.Length);
-
-        tex.LoadRawTextureData(pixels);  // Apply the pixel data to the texture
-        tex.Apply(false);
-    }
-    else
-    {
-        // If loadPixels is null or the sizes don't match, ensure we copy empty pixels or the default
-        System.Array.Copy(pixels, undoPixels[0], pixels.Length);
-    }
-
-    // Locking mask enabled
-    if (useLockArea)
-    {
-        lockMaskPixels = new byte[texWidth * texHeight * 4];
-    }
-
-    // Handle RenderTexture.active warning
-    RenderTexture currentRT = RenderTexture.active;
-    if (currentRT != null)
-    {
-        // Release the current active render texture
-        RenderTexture.ReleaseTemporary(currentRT);
-        RenderTexture.active = null;
-    }
-}
     private void CreateFullScreenQuad()
     {
         Camera cam = Camera.main;
@@ -1045,8 +1011,10 @@ public class ColoringBookManager : MonoBehaviour
     // Load the scene and wait for it to finish loading
     SceneManager.LoadScene("MainScene");
 
+   //UIManager.Instance.ShowCanvas(CanvasType.SubMenuScreen);
+
     // Use the sceneLoaded event to wait for the scene to load completely
-    SceneManager.sceneLoaded += OnSceneLoaded;
+   SceneManager.sceneLoaded += OnSceneLoaded;
 }
 
 private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -1057,7 +1025,7 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         UIManager.Instance.ReturnToPreviousScreen();
 
         // Unsubscribe from the event after it's handled
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+      //  SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
     #endregion
