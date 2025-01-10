@@ -201,9 +201,9 @@ public class ColoringBookManager : MonoBehaviour
             buttonCamera.image.raycastTarget = false;
         }
 #endif
-        SetPanelsUIScale((int)DrawMode.Sticker);
+        SetPanelsUIScale((int)DrawMode.Pencil);
 
-        OnDrawModeButtonClicked((int)DrawMode.Sticker);
+        OnDrawModeButtonClicked((int)DrawMode.Pencil);
 
         OnBrushButtonClicked(PanelColors[(int)drawMode].GetChild(0).GetComponent<ButtonScript>());
 
