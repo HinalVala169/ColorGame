@@ -395,7 +395,9 @@ private void SaveImage(string key)
     PlayerPrefs.Save();
 #endif
 
-Debug.Log("----Checkkkkk---> " + ColoringBookManager.ID);
+//Debug.Log("----Checkkkkk---> " + ColoringBookManager.ID);
+
+ Debug.Log("-----> Save ID : " + key); 
 }
   
 
@@ -1015,19 +1017,25 @@ Debug.Log("----Checkkkkk---> " + ColoringBookManager.ID);
         ChangeThemeIndex++;
     }
 
-    public void OnHomeButtonClicked()
+  public void OnHomeButtonClicked()
 {
     SaveImage(ID);
-
-    // Load the scene and wait for it to finish loading
-    SceneManager.LoadScene("MainScene");
-
-   //UIManager.Instance.ShowCanvas(CanvasType.SubMenuScreen);
-
-    // Use the sceneLoaded event to wait for the scene to load completely
-   SceneManager.sceneLoaded += OnSceneLoaded;
+    
+    // Start the coroutine to delay scene loading by 1 minute
+    StartCoroutine(DelayLoadMainScene());
 }
 
+private IEnumerator DelayLoadMainScene()
+{
+    // Wait for 1 minute (60 seconds)
+    yield return new WaitForSeconds(0f);
+
+    // Now load the scene after the delay
+    SceneManager.LoadScene("MainScene");
+
+    // Use the sceneLoaded event to wait for the scene to load completely
+    SceneManager.sceneLoaded += OnSceneLoaded;
+}
 private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 {
     if (scene.name == "MainScene")
