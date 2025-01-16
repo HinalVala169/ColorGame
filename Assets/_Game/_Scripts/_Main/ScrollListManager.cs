@@ -41,6 +41,7 @@ public class ScrollListManager : MonoBehaviour
     private int texWidth = 640;
     private int texHeight = 814;
 
+    public List<Image> applyTexImg = new();
     private static Dictionary<string, Sprite> allTexturesDic;
 
     private void Awake()
@@ -82,7 +83,7 @@ public class ScrollListManager : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<Image>().sprite = LoadImage(saveIndexString + i.ToString(), saveIndexString + i.ToString() == ColoringBookManager.ID);
+           applyTexImg[i].sprite = LoadImage(saveIndexString + i.ToString(), saveIndexString + i.ToString() == ColoringBookManager.ID);
         }
     }
 
