@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
@@ -37,12 +38,12 @@ public class ScrollListManager : MonoBehaviour
     private int currentCharacter;
     private int firstPos = 0;
 
-    private int texWidth = 243;
-    private int texHeight = 343;
+    private int texWidth = 576;
+    private int texHeight = 1024;
 
     private static Dictionary<string, Sprite> allTexturesDic;
 
-    private void Awake()
+   private void Awake()
     {
         if (allTexturesDic == null)
         {
@@ -71,8 +72,8 @@ public class ScrollListManager : MonoBehaviour
 
         if (horizontalList)
         {
-            transform.parent.GetComponent<ScrollRect>().horizontal = true;
-            transform.parent.GetComponent<ScrollRect>().vertical = false;
+         //   transform.parent.GetComponent<ScrollRect>().horizontal = true;
+          //  transform.parent.GetComponent<ScrollRect>().vertical = false;
 
             // Check if layout spacing differes from zero vector
             if (GetComponent<GridLayoutGroup>().spacing == Vector2.zero)
@@ -93,8 +94,8 @@ public class ScrollListManager : MonoBehaviour
         }
         else
         {
-           // transform.parent.GetComponent<ScrollRect>().horizontal = false;
-          //cc  transform.parent.GetComponent<ScrollRect>().vertical = true;
+          //  transform.parent.GetComponent<ScrollRect>().horizontal = false;
+           // transform.parent.GetComponent<ScrollRect>().vertical = true;
 
             if (GetComponent<GridLayoutGroup>().spacing == Vector2.zero)
             {
@@ -194,63 +195,99 @@ LoadAllTexture();
     }
 
     private Sprite LoadImage(string key, bool update = false)
+{
+    if (allTexturesDic.ContainsKey(key) && !update)
     {
-        if (allTexturesDic.ContainsKey(key) && !update)
+        return allTexturesDic[key];
+    }
+    else
+    {
+        byte[] loadPixels = new byte[texWidth * texHeight * 4];
+
+        #if UNITY_WEBGL
+        string file = Application.persistentDataPath + "/Portrait" + key + ".sav";
+        Debug.Log("WebGL file path: " + file);  // Debugging the file path
+        if (File.Exists(file))
         {
-            return allTexturesDic[key];
+            string fileContents = File.ReadAllText(file);
+            Debug.Log("Loaded file contents length: " + fileContents.Length);  // Debug the loaded file size
+            loadPixels = System.Convert.FromBase64String(fileContents);
         }
         else
         {
-            byte[] loadPixels = new byte[texWidth * texHeight * 4];
+            Debug.LogWarning("File does not exist: " + file);  // File not found
+            return null;
+        }
+        #else
+        if (PlayerPrefs.HasKey(key))
+        {
+            string base64Data = PlayerPrefs.GetString(key);
+            Debug.Log("Loaded base64 data length: " + base64Data.Length);  // Debug the base64 string length
+            loadPixels = System.Convert.FromBase64String(base64Data);
+        }
+        else
+        {
+            Debug.LogWarning("No saved data found for key: " + key);  // No saved data
+            return null;
+        }
+        #endif
 
-#if UNITY_WEBGL
-            string file = Application.persistentDataPath + "/Portrait" + key + ".sav";
-            if (File.Exists(file))
+        // Validate if the data size is correct
+        int expectedDataSize = texWidth * texHeight * 4;
+        if (loadPixels.Length != expectedDataSize)
+        {
+            Debug.LogError("Data size mismatch! Expected: " + expectedDataSize + " but got: " + loadPixels.Length);
+
+            // Handle the mismatch:
+            // If the data is smaller, you can optionally pad it with zeros (or a specific value).
+            if (loadPixels.Length < expectedDataSize)
             {
-                loadPixels = System.Convert.FromBase64String(File.ReadAllText(file));
+                Debug.LogWarning("Padding texture data to match expected size...");
+                byte[] paddedData = new byte[expectedDataSize];
+                Array.Copy(loadPixels, paddedData, loadPixels.Length);  // Copy the existing data
+                Array.Clear(paddedData, loadPixels.Length, expectedDataSize - loadPixels.Length);  // Pad the rest with zeroes
+                loadPixels = paddedData;
             }
             else
             {
-                return null;
-            }
-#else
-            if (PlayerPrefs.HasKey(key))
-            {
-                loadPixels = System.Convert.FromBase64String(PlayerPrefs.GetString(key));
-            }
-            else
-            {
-                return null;
-            }
-#endif
-
-            if (loadPixels != null)
-            {
-                Texture2D tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
-                tex.filterMode = FilterMode.Point;
-                tex.wrapMode = TextureWrapMode.Clamp;
-                tex.LoadRawTextureData(loadPixels);
-                tex.Apply(false);
-
-                Sprite sp = Sprite.Create(tex, new Rect(0, 0, texWidth, texHeight), Vector2.zero, 100);
-
-                if (allTexturesDic.ContainsKey(key))
-                {
-                    allTexturesDic[key] = sp;
-                }
-                else
-                {
-                    allTexturesDic.Add(key, sp);
-                }
-
-                return sp;
-            }
-            else
-            {
-                return null;
+                // If the data is larger than expected, truncate it (not ideal, but it prevents crashes).
+                Debug.LogWarning("Truncating texture data to match expected size...");
+                Array.Resize(ref loadPixels, expectedDataSize);
             }
         }
+
+        // If the data is valid (or padded), create the texture
+        if (loadPixels.Length == expectedDataSize)
+        {
+            Texture2D tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Point;
+            tex.wrapMode = TextureWrapMode.Clamp;
+
+            tex.LoadRawTextureData(loadPixels);  // Load the texture data
+            tex.Apply(false);  // Apply the texture
+
+            Sprite sp = Sprite.Create(tex, new Rect(0, 0, texWidth, texHeight), Vector2.zero, 100);
+            Debug.Log("Sprite created successfully.");
+
+            // Store the sprite in the dictionary
+            if (allTexturesDic.ContainsKey(key))
+            {
+                allTexturesDic[key] = sp;
+            }
+            else
+            {
+                allTexturesDic.Add(key, sp);
+            }
+
+            return sp;
+        }
+        else
+        {
+            Debug.LogError("Failed to load texture: data size still invalid.");
+            return null;
+        }
     }
+}
 
     // Determining closesst snap point -349 is half distance - 1 and 350 is half distance
     private void SetLerpPositionToClosestSnapPoint()
