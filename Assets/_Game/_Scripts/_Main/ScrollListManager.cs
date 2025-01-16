@@ -16,8 +16,8 @@ public class ScrollListManager : MonoBehaviour
     public bool horizontalList;
 
     // List element size
-    public float cellSizeX = 291;
-    public float cellSizeY = 297;
+    public float cellSizeX = 243;
+    public float cellSizeY = 343;
     public float spacing = -50;
 
     [Space]
@@ -30,15 +30,15 @@ public class ScrollListManager : MonoBehaviour
     private Vector3 newLerpPosition;
     private bool lerping;
     private float lerpingSpeed = 0.1f;
-    private float focusedElementScale = 1f;
-    private float unfocusedElementsScale = 1f;
+    private float focusedElementScale = 0.5f;
+    private float unfocusedElementsScale = 0.5f;
     private List<GameObject> listOfCharacters;
     private bool buttonPressed;
     private int currentCharacter;
     private int firstPos = 0;
 
-    private int texWidth = 291;
-    private int texHeight = 297;
+    private int texWidth = 243;
+    private int texHeight = 343;
 
     private static Dictionary<string, Sprite> allTexturesDic;
 
@@ -67,12 +67,12 @@ public class ScrollListManager : MonoBehaviour
         }
 
         // Set size delta of parent scroll rect so elements wouldn't be jumpy
-       // transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(cellSizeX, cellSizeY);
+        transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(cellSizeX, cellSizeY);
 
         if (horizontalList)
         {
-         //   transform.parent.GetComponent<ScrollRect>().horizontal = true;
-         //   transform.parent.GetComponent<ScrollRect>().vertical = false;
+            transform.parent.GetComponent<ScrollRect>().horizontal = true;
+            transform.parent.GetComponent<ScrollRect>().vertical = false;
 
             // Check if layout spacing differes from zero vector
             if (GetComponent<GridLayoutGroup>().spacing == Vector2.zero)
@@ -88,13 +88,13 @@ public class ScrollListManager : MonoBehaviour
 
             GetComponent<GridLayoutGroup>().startAxis = GridLayoutGroup.Axis.Vertical;
             GetComponent<GridLayoutGroup>().constraint = GridLayoutGroup.Constraint.FixedRowCount;
-            GetComponent<GridLayoutGroup>().constraintCount = 2;
+            GetComponent<GridLayoutGroup>().constraintCount = 1;
             currentCharCheckTemp = (cellSizeX + spacing) / 2;
         }
         else
         {
-        //    transform.parent.GetComponent<ScrollRect>().horizontal = false;
-         //   transform.parent.GetComponent<ScrollRect>().vertical = true;
+           // transform.parent.GetComponent<ScrollRect>().horizontal = false;
+          //cc  transform.parent.GetComponent<ScrollRect>().vertical = true;
 
             if (GetComponent<GridLayoutGroup>().spacing == Vector2.zero)
             {
@@ -109,7 +109,7 @@ public class ScrollListManager : MonoBehaviour
 
             GetComponent<GridLayoutGroup>().startAxis = GridLayoutGroup.Axis.Horizontal;
             GetComponent<GridLayoutGroup>().constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            GetComponent<GridLayoutGroup>().constraintCount = 2;
+            GetComponent<GridLayoutGroup>().constraintCount = 1;
             currentCharCheckTemp = (cellSizeY + spacing) / 2;
         }
 
@@ -127,15 +127,15 @@ public class ScrollListManager : MonoBehaviour
             GetComponent<RectTransform>().anchoredPosition = new Vector2(GetComponent<RectTransform>().sizeDelta.x - 2 * spacing, GetComponent<RectTransform>().anchoredPosition.y);
 
             float startSnapPosition = GetComponent<RectTransform>().sizeDelta.x / 2 - cellSizeX / 2;
-          //  snapPositions.Add(startSnapPosition);
+            snapPositions.Add(startSnapPosition);
 
             // Set fist character to be of focused scale
             listOfCharacters[0].transform.localScale = new Vector3(focusedElementScale, focusedElementScale, 1);
 
             for (int i = 1; i < listOfCharacters.Count; i++)
             {
-                //startSnapPosition -= cellSizeX + spacing;
-              //  snapPositions.Add(startSnapPosition);
+                startSnapPosition -= cellSizeX + spacing;
+                snapPositions.Add(startSnapPosition);
 
                 // Set scale for not focused elements to be scale
                 listOfCharacters[i].transform.localScale = new Vector3(unfocusedElementsScale, unfocusedElementsScale, 1);
@@ -143,8 +143,8 @@ public class ScrollListManager : MonoBehaviour
         }
         else
         {
-           GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, listOfCharacters.Count * cellSizeY + (listOfCharacters.Count - 1) * spacing);
-           GetComponent<RectTransform>().anchoredPosition = new Vector2(GetComponent<RectTransform>().anchoredPosition.x, -(GetComponent<RectTransform>().sizeDelta.y - 2 * spacing));
+            GetComponent<RectTransform>().sizeDelta = new Vector2(cellSizeX, listOfCharacters.Count * cellSizeY + (listOfCharacters.Count - 1) * spacing);
+            GetComponent<RectTransform>().anchoredPosition = new Vector2(GetComponent<RectTransform>().anchoredPosition.x, -(GetComponent<RectTransform>().sizeDelta.y - 2 * spacing));
 
             float startSnapPosition = GetComponent<RectTransform>().sizeDelta.y / 2 - cellSizeY / 2;
             snapPositions.Add(startSnapPosition);
@@ -154,17 +154,17 @@ public class ScrollListManager : MonoBehaviour
 
             for (int i = 1; i < listOfCharacters.Count; i++)
             {
-               // startSnapPosition -= cellSizeY + spacing;
-               // snapPositions.Add(startSnapPosition);
+                startSnapPosition -= cellSizeY + spacing;
+                snapPositions.Add(startSnapPosition);
 
                 // Set scale for not focused elements to be scale
                 listOfCharacters[i].transform.localScale = new Vector3(unfocusedElementsScale, unfocusedElementsScale, 1);
             }
         }
 
-       // SetNewPos(firstPos);
+        //SetNewPos(firstPos);
 
-        LoadAllTexture();
+LoadAllTexture();
     }
 
     private void SetNewPos(int num)
@@ -184,11 +184,12 @@ public class ScrollListManager : MonoBehaviour
         lerping = true;
     }
 
-    private void LoadAllTexture()
+   private void LoadAllTexture()
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-         LoadImage(saveIndexString + i.ToString(), saveIndexString + i.ToString() == ColoringBookManager.ID);
+            transform.GetChild(i).GetComponent<Image>().sprite = LoadImage(saveIndexString + i.ToString(), saveIndexString + i.ToString() == ColoringBookManager.ID);
+            Debug.Log("--------> " + ColoringBookManager.ID);
         }
     }
 
@@ -407,28 +408,28 @@ public class ScrollListManager : MonoBehaviour
         }
 
         // If not lerping and velocityis small enough find closest snap point and lerp to it
-        if (horizontalList)
-        {
-//             if (!lerping && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.x) >= 0f && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.x) < 100f)
-//             {
-//                 SetLerpPositionToClosestSnapPoint();
-//             }
-//             else
-//             {
-//                 SetCurrentCharacter();
-//             }
-//         }
-//         else
-//         {
-//             if (!lerping && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.y) >= 0f && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.y) < 100f)
-//             {
-// // SetLerpPositionToClosestSnapPoint();
-//             }
-//             else
-//             {
-//                 SetCurrentCharacter();
-//             }
-        }
+        // if (horizontalList)
+        // {
+        //     if (!lerping && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.x) >= 0f && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.x) < 100f)
+        //     {
+        //         SetLerpPositionToClosestSnapPoint();
+        //     }
+        //     else
+        //     {
+        //         SetCurrentCharacter();
+        //     }
+        // }
+        // else
+        // {
+        //     if (!lerping && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.y) >= 0f && Mathf.Abs(transform.parent.GetComponent<ScrollRect>().velocity.y) < 100f)
+        //     {
+        //         SetLerpPositionToClosestSnapPoint();
+        //     }
+        //     else
+        //     {
+        //         SetCurrentCharacter();
+        //     }
+        // }
 
         // Set appropriate for elements in list according to distance from current snap point
         if (horizontalList)
@@ -621,9 +622,4 @@ public class ScrollListManager : MonoBehaviour
         //UIManager.Instance.ShowGamePlayScreen();
     }
 
-    private IEnumerator DelayBeforeSceneLoad(float delayTime)
-{
-    yield return new WaitForSeconds(delayTime);
-    SceneManager.LoadScene("PaintScene");
-}
 }
