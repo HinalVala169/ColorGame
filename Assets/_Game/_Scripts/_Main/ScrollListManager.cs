@@ -38,8 +38,8 @@ public class ScrollListManager : MonoBehaviour
     private int currentCharacter;
     private int firstPos = 0;
 
-    private int texWidth = 576;
-    private int texHeight = 1024;
+    private int texWidth = 640;
+    private int texHeight = 814;
 
     private static Dictionary<string, Sprite> allTexturesDic;
 
@@ -190,103 +190,78 @@ LoadAllTexture();
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).GetComponent<Image>().sprite = LoadImage(saveIndexString + i.ToString(), saveIndexString + i.ToString() == ColoringBookManager.ID);
-            Debug.Log("--------> " + ColoringBookManager.ID);
+           
         }
     }
 
-    private Sprite LoadImage(string key, bool update = false)
+  private Sprite LoadImage(string key, bool update = false)
 {
+    // Check if the texture is already in the dictionary and we don't want to update it
     if (allTexturesDic.ContainsKey(key) && !update)
     {
         return allTexturesDic[key];
     }
+     
+    byte[] loadPixels = new byte[texWidth * texHeight * 4];
+
+#if UNITY_WEBGL
+    string file = Application.persistentDataPath + "/Portrait" + key + ".sav";
+    
+    if (File.Exists(file))
+    {
+        string fileContents = File.ReadAllText(file);
+        loadPixels = System.Convert.FromBase64String(fileContents);
+    }
     else
     {
-        byte[] loadPixels = new byte[texWidth * texHeight * 4];
-
-        #if UNITY_WEBGL
-        string file = Application.persistentDataPath + "/Portrait" + key + ".sav";
-        Debug.Log("WebGL file path: " + file);  // Debugging the file path
-        if (File.Exists(file))
-        {
-            string fileContents = File.ReadAllText(file);
-            Debug.Log("Loaded file contents length: " + fileContents.Length);  // Debug the loaded file size
-            loadPixels = System.Convert.FromBase64String(fileContents);
-        }
-        else
-        {
-            Debug.LogWarning("File does not exist: " + file);  // File not found
-            return null;
-        }
-        #else
-        if (PlayerPrefs.HasKey(key))
-        {
-            string base64Data = PlayerPrefs.GetString(key);
-            Debug.Log("Loaded base64 data length: " + base64Data.Length);  // Debug the base64 string length
-            loadPixels = System.Convert.FromBase64String(base64Data);
-        }
-        else
-        {
-            Debug.LogWarning("No saved data found for key: " + key);  // No saved data
-            return null;
-        }
-        #endif
-
-        // Validate if the data size is correct
-        int expectedDataSize = texWidth * texHeight * 4;
-        if (loadPixels.Length != expectedDataSize)
-        {
-            Debug.LogError("Data size mismatch! Expected: " + expectedDataSize + " but got: " + loadPixels.Length);
-
-            // Handle the mismatch:
-            // If the data is smaller, you can optionally pad it with zeros (or a specific value).
-            if (loadPixels.Length < expectedDataSize)
-            {
-                Debug.LogWarning("Padding texture data to match expected size...");
-                byte[] paddedData = new byte[expectedDataSize];
-                Array.Copy(loadPixels, paddedData, loadPixels.Length);  // Copy the existing data
-                Array.Clear(paddedData, loadPixels.Length, expectedDataSize - loadPixels.Length);  // Pad the rest with zeroes
-                loadPixels = paddedData;
-            }
-            else
-            {
-                // If the data is larger than expected, truncate it (not ideal, but it prevents crashes).
-                Debug.LogWarning("Truncating texture data to match expected size...");
-                Array.Resize(ref loadPixels, expectedDataSize);
-            }
-        }
-
-        // If the data is valid (or padded), create the texture
-        if (loadPixels.Length == expectedDataSize)
-        {
-            Texture2D tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
-            tex.filterMode = FilterMode.Point;
-            tex.wrapMode = TextureWrapMode.Clamp;
-
-            tex.LoadRawTextureData(loadPixels);  // Load the texture data
-            tex.Apply(false);  // Apply the texture
-
-            Sprite sp = Sprite.Create(tex, new Rect(0, 0, texWidth, texHeight), Vector2.zero, 100);
-            Debug.Log("Sprite created successfully.");
-
-            // Store the sprite in the dictionary
-            if (allTexturesDic.ContainsKey(key))
-            {
-                allTexturesDic[key] = sp;
-            }
-            else
-            {
-                allTexturesDic.Add(key, sp);
-            }
-
-            return sp;
-        }
-        else
-        {
-            Debug.LogError("Failed to load texture: data size still invalid.");
-            return null;
-        }
+        return null;
     }
+#else
+    if (PlayerPrefs.HasKey(key))
+    {
+        string base64Data = PlayerPrefs.GetString(key);
+        loadPixels = System.Convert.FromBase64String(base64Data);
+    }
+    else
+    {
+        return null;
+    }
+#endif
+
+    // Validate data size
+    int expectedDataSize = texWidth * texHeight * 4;
+    if (loadPixels.Length != expectedDataSize)
+    {
+        return null;
+    }
+
+    // Create Texture2D from the byte array
+    Texture2D tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
+    tex.LoadRawTextureData(loadPixels);
+    tex.Apply(false);
+
+    // Create a Sprite from the Texture2D
+    Sprite sp = Sprite.Create(tex, new Rect(0, 0, texWidth, texHeight), Vector2.zero, 100);
+
+    // Check if the dictionary already contains the texture
+    if (allTexturesDic.ContainsKey(key))
+    {
+        // Update the texture if it's already in the dictionary
+        allTexturesDic[key] = sp;
+    }
+    else
+    {
+        // Add the texture to the dictionary
+        allTexturesDic.Add(key, sp);
+    }
+
+    return sp;
+}
+
+// This method can be used to clear the dictionary when needed, for example, during a scene change
+public static void ClearTextureCache()
+{
+    allTexturesDic.Clear();
 }
 
     // Determining closesst snap point -349 is half distance - 1 and 350 is half distance

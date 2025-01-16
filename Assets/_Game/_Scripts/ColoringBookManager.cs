@@ -374,18 +374,29 @@ public class ColoringBookManager : MonoBehaviour
 #endif
     }
 
-    private void SaveImage(string key)
+private void SaveImage(string key)
+{
+    // Ensure pixels is defined and contains valid data
+    if (pixels == null || pixels.Length != texWidth * texHeight * 4)
     {
-#if UNITY_WEBGL
-        string file = Application.persistentDataPath + "/Portrait" + key + ".sav";
-        string fileData = System.Convert.ToBase64String(pixels);
-        File.WriteAllText(file, fileData);
-#else
-        PlayerPrefs.SetString(key, System.Convert.ToBase64String(pixels));
-        PlayerPrefs.Save();
-#endif
+        Debug.LogError("Invalid pixel data.");
+        return;
     }
 
+#if UNITY_WEBGL
+    string file = Application.persistentDataPath + "/Portrait" + key + ".sav";
+    // Convert the pixel data to a base64 string
+    string fileData = System.Convert.ToBase64String(pixels);
+    // Save the data to a file
+    File.WriteAllText(file, fileData);
+#else
+    // Save the base64 string in PlayerPrefs
+    PlayerPrefs.SetString(key, System.Convert.ToBase64String(pixels));
+    PlayerPrefs.Save();
+#endif
+
+Debug.Log("----Checkkkkk---> " + ColoringBookManager.ID);
+}
   
 
     private void SetPanelsUIScale(int current)
