@@ -12,9 +12,12 @@ public class ColoringBookManager : MonoBehaviour
 {
     #region variables
 
+    public bool isColorByNumber = true;
+
     public Material maskTexMaterial;
     private Texture2D maskTex;
     public List<Sprite> maskTexList;
+    public List<Sprite> colTexList;
     public static int maskTexIndex = -1;
     public static string ID = "0";
 
@@ -186,7 +189,7 @@ public class ColoringBookManager : MonoBehaviour
         }
         else
         {
-            maskTex = DuplicateTexture(maskTexList[maskTexIndex].texture);
+            maskTex = DuplicateTexture(maskTexList[maskTexIndex].texture , isColorByNumber);
         }
 
         InitializeEverything();
@@ -216,24 +219,54 @@ public class ColoringBookManager : MonoBehaviour
     
     
 
-    private Texture2D DuplicateTexture(Texture2D source)
+    private Texture2D DuplicateTexture(Texture2D source, bool isColorByNumber)
+{
+    // Create a RenderTexture for the operation
+    RenderTexture renderTex = RenderTexture.GetTemporary(
+        source.width,
+        source.height,
+        0,
+        RenderTextureFormat.Default,
+        RenderTextureReadWrite.Linear);
+    
+    // If the condition is true, apply RegionFillShader
+    if (isColorByNumber)
     {
-        RenderTexture renderTex = RenderTexture.GetTemporary(
-                    source.width,
-                    source.height,
-                    0,
-                    RenderTextureFormat.Default,
-                    RenderTextureReadWrite.Linear);
-        Graphics.Blit(source, renderTex);
-        RenderTexture previous = RenderTexture.active;
-        RenderTexture.active = renderTex;
-        Texture2D readableText = new Texture2D(source.width, source.height);
-        readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
-        readableText.Apply();
-        RenderTexture.active = previous;
-        RenderTexture.ReleaseTemporary(renderTex);
-        return readableText;
+        // Create a material with RegionFillShader
+        Material regionFillMaterial = new Material(Shader.Find("Custom/RegionFillShader"));
+
+        // Optionally, set any parameters you want in the shader (like colors or textures)
+        // For example, setting the target color or tolerance
+        regionFillMaterial.SetColor("_TargetColor", Color.yellow); // Set to any color
+        regionFillMaterial.SetFloat("_Tolerance", 0.1f); // Set tolerance for the color fill
+        regionFillMaterial.SetTexture("_MainTex", source); // Set the base texture
+        regionFillMaterial.SetTexture("_ColorTex", colTexList[0].texture); // Ensure the color texture is applied
+
+        // Apply the shader to the RenderTexture
+        Graphics.Blit(source, renderTex, regionFillMaterial);
     }
+    else
+    {
+        // Just copy the texture without applying the shader
+        Graphics.Blit(source, renderTex);
+    }
+
+    // Create a Texture2D to store the result
+    RenderTexture previous = RenderTexture.active;
+    RenderTexture.active = renderTex;
+    Texture2D readableText = new Texture2D(source.width, source.height);
+    readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+    readableText.Apply();
+    
+    // Reset RenderTexture to previous active state
+    RenderTexture.active = previous;
+    
+    // Release the temporary RenderTexture
+    RenderTexture.ReleaseTemporary(renderTex);
+    
+    return readableText;
+}
+
 
     private void InitializeEverything()
     {

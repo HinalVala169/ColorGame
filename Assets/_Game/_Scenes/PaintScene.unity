@@ -1176,9 +1176,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d0e3f5f67a4c488ec2e40d995e9ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isColorByNumber: 1
   maskTexMaterial: {fileID: 2100000, guid: 0b18c9f7f08448d2bc71c32bb346a29d, type: 2}
   maskTexList:
-  - {fileID: 21300000, guid: e8f20ea88d9f74890b02d2a4a39390bc, type: 3}
+  - {fileID: 21300000, guid: 59c76641f25e9444fa760178b053bc44, type: 3}
+  colTexList:
+  - {fileID: 21300000, guid: 1f783eeb7b5b54d6b926e88cf427b19d, type: 3}
   patternSprites:
   - {fileID: 21300000, guid: abee3f14ecd1e4799981e3b42451973c, type: 3}
   - {fileID: 21300000, guid: 02604fbc430cf4f158202e5f757fe0ad, type: 3}
@@ -43095,6 +43098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d0e3f5f67a4c488ec2e40d995e9ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isColorByNumber: 1
   maskTexMaterial: {fileID: 2100000, guid: 0b18c9f7f08448d2bc71c32bb346a29d, type: 2}
   maskTexList:
   - {fileID: 21300000, guid: de8988b0b1e548be95fc8d18c66fe53c, type: 3}
@@ -43115,6 +43119,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: dbfebdf6b88247bf9832f56de8dfc7e8, type: 3}
   - {fileID: 21300000, guid: c0b3924337e564cde953e66392237a6f, type: 3}
   - {fileID: 21300000, guid: e8f20ea88d9f74890b02d2a4a39390bc, type: 3}
+  colTexList: []
   patternSprites: []
   brushSize: 8
   stickers:

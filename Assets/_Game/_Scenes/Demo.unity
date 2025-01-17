@@ -471,11 +471,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8188dcd7968354d6c8c878492fc17a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coloringTexture: {fileID: 0}
-  lineArtImage: {fileID: 255752402}
-  colorToApply: {r: 1, g: 0, b: 0, a: 1}
-  imageRect: {fileID: 255752399}
-  regionFillMaterial: {fileID: 0}
+  maskTex: {fileID: 0}
+  targetColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  colorTolerance: 0.1
+  fillMaterial: {fileID: 0}
+  imageComponent: {fileID: 0}
 --- !u!61 &255752405
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1434,11 +1434,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8188dcd7968354d6c8c878492fc17a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coloringTexture: {fileID: 2800000, guid: 1f783eeb7b5b54d6b926e88cf427b19d, type: 3}
-  lineArtImage: {fileID: 890009681}
-  colorToApply: {r: 1, g: 0, b: 0, a: 1}
-  imageRect: {fileID: 890009679}
-  regionFillMaterial: {fileID: 2100000, guid: 50fc800249c4e46189deb7910dd5ea8b, type: 2}
+  maskTex: {fileID: 2800000, guid: 1f783eeb7b5b54d6b926e88cf427b19d, type: 3}
+  targetColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  colorTolerance: 0.1
+  fillMaterial: {fileID: 2100000, guid: 50fc800249c4e46189deb7910dd5ea8b, type: 2}
+  imageComponent: {fileID: 890009681}
 --- !u!114 &890009681
 MonoBehaviour:
   m_ObjectHideFlags: 0
