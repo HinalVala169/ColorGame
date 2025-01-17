@@ -19,13 +19,15 @@ public class ColorFill : MonoBehaviour
         // Initialize the color layer texture with the same size as the coloring texture
         colorLayerTexture = new Texture2D(coloringTexture.width, coloringTexture.height, TextureFormat.RGBA32, false);
         
-        // Copy the initial coloring texture to the color layer texture
-        colorLayerTexture.SetPixels(coloringTexture.GetPixels());
+        // Set the initial color layer texture without modifying it
         colorLayerTexture.Apply();
 
         // Set the textures to the material
         regionFillMaterial.SetTexture("_MainTex", lineArtImage.sprite.texture);
-        regionFillMaterial.SetTexture("_ColorTex", colorLayerTexture);
+        regionFillMaterial.SetTexture("_ColorTex", coloringTexture);
+
+        // Debugging: Check the initial textures
+        Debug.Log("MainTex and ColorTex applied to material.");
     }
 
     private void Update()
@@ -34,7 +36,10 @@ public class ColorFill : MonoBehaviour
         {
             Vector2 mousePos = Input.mousePosition;
             Vector2 localPoint;
+
+            // Check if the click is inside the image bounds
             bool isInside = RectTransformUtility.ScreenPointToLocalPointInRectangle(imageRect, mousePos, Camera.main, out localPoint);
+            Debug.Log($"Mouse Position: {mousePos}, Local Point: {localPoint}, Inside Rect: {isInside}");
 
             if (isInside && imageRect.rect.Contains(localPoint))
             {
@@ -44,6 +49,9 @@ public class ColorFill : MonoBehaviour
                 int x = Mathf.FloorToInt(xNormalized * colorLayerTexture.width);
                 int y = Mathf.FloorToInt(yNormalized * colorLayerTexture.height);
 
+                // Debugging: Log the calculated pixel coordinates
+                Debug.Log($"Click at normalized ({xNormalized}, {yNormalized}) -> Texture coords: ({x}, {y})");
+
                 ApplyColor(x, y);
             }
         }
@@ -51,13 +59,21 @@ public class ColorFill : MonoBehaviour
 
     private void ApplyColor(int x, int y)
     {
+        // Ensure the coordinates are within the bounds of the texture
         if (x < 0 || x >= colorLayerTexture.width || y < 0 || y >= colorLayerTexture.height)
+        {
+            Debug.LogWarning("Clicked outside texture bounds.");
             return;
+        }
 
+        // Set the color on the texture at the clicked location
         colorLayerTexture.SetPixel(x, y, colorToApply);
         colorLayerTexture.Apply();
 
         // Update the material's _ColorTex property to reflect the updated texture
         regionFillMaterial.SetTexture("_ColorTex", colorLayerTexture);
+
+        // Debugging: Check if the texture update is applied
+        Debug.Log("Color applied to texture at position: " + new Vector2(x, y));
     }
 }
