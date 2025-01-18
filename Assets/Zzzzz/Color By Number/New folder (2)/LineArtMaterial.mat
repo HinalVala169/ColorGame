@@ -90,6 +90,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Radius: 10
     - _Reveal: 0
     - _Shininess: 0.078125
     - _SmoothnessTextureChannel: 0
@@ -101,6 +102,7 @@ Material:
     m_Colors:
     - _BrushColor: {r: 1, g: 1, b: 1, a: 1}
     - _Center: {r: 0, g: 0, b: 0, a: 0}
+    - _ClickPosition: {r: 383, g: 723, b: 0, a: 0}
     - _ClickedArea: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

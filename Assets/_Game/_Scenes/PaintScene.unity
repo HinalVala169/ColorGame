@@ -1176,7 +1176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d0e3f5f67a4c488ec2e40d995e9ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isColorByNumber: 1
+  isColorByNumber: 0
   maskTexMaterial: {fileID: 2100000, guid: 0b18c9f7f08448d2bc71c32bb346a29d, type: 2}
   maskTexList:
   - {fileID: 21300000, guid: 59c76641f25e9444fa760178b053bc44, type: 3}
