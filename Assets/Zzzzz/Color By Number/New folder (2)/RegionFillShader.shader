@@ -4,7 +4,7 @@ Shader "Custom/RegionFillShader"
     {
         _MainTex ("Base Texture", 2D) = "white" {} // Line art texture
         _ColorTex ("Coloring Texture", 2D) = "white" {} // Coloring texture (from ColorFillScript)
-        _TargetColor ("Target Color", Color) = (1, 1, 0, 1) // The color to fill
+        _TargetColor ("Target Color", Color) = (1, 1,1, 1) // The color to fill (passed from script)
         _Tolerance ("Tolerance", Range(0, 1)) = 0.1 // Color matching tolerance
     }
     SubShader

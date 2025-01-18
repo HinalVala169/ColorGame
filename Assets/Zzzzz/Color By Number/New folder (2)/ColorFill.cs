@@ -1,28 +1,35 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic; // For Queue<T>
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class ColorFillScript : MonoBehaviour
 {
-    public Texture2D maskTex; // Texture used for locking the region
-    public Color targetColor = Color.yellow; // The color of the region to fill
-    public float colorTolerance = 0.1f; // Color matching tolerance
-    public Material fillMaterial; // Material with RegionFillShader already applied
-    public Image imageComponent; // Reference to the Image component displaying the texture
+    public Texture2D maskTex;
+    public float colorTolerance = 0.1f;
+    public Material fillMaterial;
+    public Image imageComponent;
 
     private Texture2D mainTexture;
     private Texture2D colorTexture;
 
+    private GraphicRaycaster raycaster;
+    private PointerEventData pointerEventData;
+    private EventSystem eventSystem;
+
     void Start()
     {
-        mainTexture = maskTex; // Set the base texture
+        mainTexture = maskTex;
         colorTexture = new Texture2D(mainTexture.width, mainTexture.height);
-        colorTexture.SetPixels(new Color[mainTexture.width * mainTexture.height]); // Initialize the color texture
+        colorTexture.SetPixels(new Color[mainTexture.width * mainTexture.height]);
         colorTexture.Apply();
-        
-        // Ensure the Image component initially displays the base texture
+
         imageComponent.material.mainTexture = mainTexture;
         Debug.Log("Start: Image material set to base texture.");
+
+        // Set up EventSystem and GraphicRaycaster
+        raycaster = GetComponentInParent<GraphicRaycaster>();
+        eventSystem = EventSystem.current;
     }
 
     void Update()
@@ -42,33 +49,53 @@ public class ColorFillScript : MonoBehaviour
         }
     }
 
-    // Get the mouse UV coordinates on the texture
     Vector2 GetMouseUV()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        pointerEventData = new PointerEventData(eventSystem)
         {
-            Vector2 uv = hit.textureCoord;
+            position = Input.mousePosition
+        };
+
+        // Use the Raycast to check for the Image component
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
+        if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
+        {
+            // Map mouse position to the texture's UV coordinates
+            RectTransform rectTransform = imageComponent.rectTransform;
+            Vector2 localPos = pointerEventData.position - (Vector2)rectTransform.position;
+            Vector2 uv = new Vector2(localPos.x / rectTransform.rect.width, localPos.y / rectTransform.rect.height);
+
+            // Map the UV coordinates to the texture coordinates
             uv.x *= mainTexture.width;
             uv.y *= mainTexture.height;
+
+            // Ensure UV coordinates are within bounds
+            uv.x = Mathf.Clamp(uv.x, 0, mainTexture.width - 1);
+            uv.y = Mathf.Clamp(uv.y, 0, mainTexture.height - 1);
+
             Debug.Log($"Mouse UV: {uv}");
             return uv;
         }
         return Vector2.zero; // Return invalid if no hit
     }
 
-    // Fill the region with the target color
     void FillRegionWithColor(int x, int y)
     {
         Debug.Log($"Started Fill at: {new Vector2(x, y)}");
+
+        // Ensure the coordinates are within bounds before accessing the texture
+        if (x < 0 || x >= mainTexture.width || y < 0 || y >= mainTexture.height)
+        {
+            Debug.LogError("Click position is outside the texture bounds.");
+            return;
+        }
 
         Color[] colors = mainTexture.GetPixels();
         Color startColor = colors[(y * mainTexture.width) + x];
 
         Queue<Vector2Int> pixelsToFill = new Queue<Vector2Int>();
         pixelsToFill.Enqueue(new Vector2Int(x, y));
-        bool[] filledPixels = new bool[mainTexture.width * mainTexture.height]; // To avoid processing the same pixel twice
+        bool[] filledPixels = new bool[mainTexture.width * mainTexture.height];
 
         int fillCount = 0;
         while (pixelsToFill.Count > 0)
@@ -76,16 +103,15 @@ public class ColorFillScript : MonoBehaviour
             Vector2Int pixel = pixelsToFill.Dequeue();
             int index = (pixel.y * mainTexture.width) + pixel.x;
 
-            if (filledPixels[index]) continue; // Skip already filled pixels
+            if (filledPixels[index]) continue;
 
             Color currentColor = colors[index];
             if (IsWithinTolerance(currentColor, startColor))
             {
-                colorTexture.SetPixel(pixel.x, pixel.y, targetColor); // Fill with color
+                colorTexture.SetPixel(pixel.x, pixel.y, Color.white); // Filling with white or another fixed color
                 filledPixels[index] = true;
                 fillCount++;
 
-                // Add adjacent pixels to the queue
                 EnqueueIfValid(pixel.x + 1, pixel.y, pixelsToFill); // Right
                 EnqueueIfValid(pixel.x - 1, pixel.y, pixelsToFill); // Left
                 EnqueueIfValid(pixel.x, pixel.y + 1, pixelsToFill); // Up
@@ -93,12 +119,11 @@ public class ColorFillScript : MonoBehaviour
             }
         }
 
-        colorTexture.Apply(); // Apply the color changes immediately
+        colorTexture.Apply();
         Debug.Log($"Filled {fillCount} pixels.");
-        UpdateMaterial(); // Update the material with the filled color texture
+        UpdateMaterial(); // Ensure material update after the fill
     }
 
-    // Check if the color is within the tolerance range
     bool IsWithinTolerance(Color color1, Color color2)
     {
         bool result = Mathf.Abs(color1.r - color2.r) < colorTolerance &&
@@ -111,7 +136,6 @@ public class ColorFillScript : MonoBehaviour
         return result;
     }
 
-    // Enqueue the valid pixel position if it's within bounds
     void EnqueueIfValid(int x, int y, Queue<Vector2Int> queue)
     {
         if (x >= 0 && x < mainTexture.width && y >= 0 && y < mainTexture.height)
@@ -120,16 +144,13 @@ public class ColorFillScript : MonoBehaviour
         }
     }
 
-    // Update the shader material with the filled color texture
     void UpdateMaterial()
     {
-        fillMaterial.SetTexture("_MainTex", mainTexture); // Set the base texture
-        fillMaterial.SetTexture("_ColorTex", colorTexture); // Set the filled color texture
-        fillMaterial.SetColor("_TargetColor", targetColor); // Set the target color
-        fillMaterial.SetFloat("_Tolerance", colorTolerance); // Set the tolerance for color matching
+        fillMaterial.SetTexture("_MainTex", mainTexture);
+        fillMaterial.SetTexture("_ColorTex", colorTexture);
+        fillMaterial.SetFloat("_Tolerance", colorTolerance);
 
-        // Apply the updated material to the Image component
-        imageComponent.material = fillMaterial;
+        imageComponent.material = fillMaterial; // Update the Image component's material
         Debug.Log("Material updated with filled color texture.");
     }
 }
