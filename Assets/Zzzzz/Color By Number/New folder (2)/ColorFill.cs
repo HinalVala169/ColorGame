@@ -6,7 +6,8 @@ using System.Collections.Generic;
 public class ColorFill : MonoBehaviour
 {
     public Texture2D maskTex; // Mask texture
-    public float colorTolerance = 0.1f;
+    public Color paintColor = Color.white; // The color to fill
+    public float colorTolerance = 0.1f; // Tolerance for color matching
     public Material fillMaterial;
     public Image imageComponent;
 
@@ -14,16 +15,46 @@ public class ColorFill : MonoBehaviour
     private PointerEventData pointerEventData;
     private EventSystem eventSystem;
 
-    void Start()
-    {
-        // Set up the mask texture and initial material
-        imageComponent.material.mainTexture = maskTex;
-        Debug.Log("Start: Image material set to mask texture.");
+    private byte[] maskPixels; // To store the pixel data of the mask texture
+    private byte[] lockMaskPixels; // Used for the flood-fill algorithm (prevents re-filling)
 
-        // Set up EventSystem and GraphicRaycaster
-        raycaster = GetComponentInParent<GraphicRaycaster>();
-        eventSystem = EventSystem.current;
+    private int texWidth;
+    private int texHeight;
+
+ void Start()
+{
+    // Set the base image material to the correct texture
+    imageComponent.material.mainTexture = maskTex;
+
+    // Initialize the mask texture to be transparent
+    Color[] transparentColors = new Color[maskTex.width * maskTex.height];
+    for (int i = 0; i < transparentColors.Length; i++)
+    {
+       // transparentColors[i] = new Color(0, 0, 0, 0); // Fully transparent (alpha = 0)
     }
+    //maskTex.SetPixels(transparentColors);
+    maskTex.Apply();
+
+    // Set up EventSystem and GraphicRaycaster
+    raycaster = GetComponentInParent<GraphicRaycaster>();
+    eventSystem = EventSystem.current;
+
+    // Initialize mask pixel data
+    texWidth = maskTex.width;
+    texHeight = maskTex.height;
+    maskPixels = new byte[texWidth * texHeight * 4]; // 4 channels (RGBA)
+    lockMaskPixels = new byte[texWidth * texHeight * 4]; // Lock pixels during the flood-fill
+
+    // Copy pixel data from the mask texture into maskPixels
+    Color[] colors = maskTex.GetPixels();
+    for (int i = 0; i < colors.Length; i++)
+    {
+        maskPixels[i * 4 + 0] = (byte)(colors[i].r * 255);
+        maskPixels[i * 4 + 1] = (byte)(colors[i].g * 255);
+        maskPixels[i * 4 + 2] = (byte)(colors[i].b * 255);
+        maskPixels[i * 4 + 3] = (byte)(colors[i].a * 255);
+    }
+}
 
     void Update()
     {
@@ -74,19 +105,139 @@ public class ColorFill : MonoBehaviour
 
     void RevealClickedRegion(Vector2 clickedUV)
 {
-    // Calculate texture coordinates from UV (same as before)
-    Vector2 uv = clickedUV;
+    // Get the pixel position from the UV coordinates
+    int x = Mathf.FloorToInt(clickedUV.x);
+    int y = Mathf.FloorToInt(clickedUV.y);
 
-    // Here, you can update the texture or apply the changes using a shader (no direct SetPixel)
-    // If using a fill material with a shader, you could pass the click position to the shader to handle the reveal effect.
+    // Flood-fill the region based on the mask texture color at the clicked position
+    FloodFillMaskOnlyWithThreshold(x, y);
 
-    // For example:
-    fillMaterial.SetVector("_ClickPosition", uv);
-    fillMaterial.SetFloat("_Radius", 10f); // Adjust the reveal radius
+    // Update the mask texture after filling
+    UpdateMaskTexture();
+    imageComponent.material.mainTexture = maskTex; // Refresh the texture on the material
 
-    // Apply the material to the image (triggering the shader logic)
-    imageComponent.material = fillMaterial;
-
-    Debug.Log("Triggering region reveal with shader.");
+    Debug.Log("Triggering region reveal with flood fill.");
 }
+
+void UpdateMaskTexture()
+{
+    Color[] updatedColors = new Color[maskTex.width * maskTex.height];
+    for (int i = 0; i < texWidth; i++)
+    {
+        for (int j = 0; j < texHeight; j++)
+        {
+            int pixelIndex = (j * texWidth + i) * 4;
+            updatedColors[j * texWidth + i] = new Color(
+                maskPixels[pixelIndex] / 255f,
+                maskPixels[pixelIndex + 1] / 255f,
+                maskPixels[pixelIndex + 2] / 255f,
+                maskPixels[pixelIndex + 3] / 255f
+            );
+        }
+    }
+
+    maskTex.SetPixels(updatedColors);
+    maskTex.Apply(); // Apply changes to the texture
 }
+
+    private void FloodFillMaskOnlyWithThreshold(int x, int y)
+    {
+        // Get the initial color at the clicked position
+        byte hitColorR = maskPixels[((texWidth * y) + x) * 4 + 0];
+        byte hitColorG = maskPixels[((texWidth * y) + x) * 4 + 1];
+        byte hitColorB = maskPixels[((texWidth * y) + x) * 4 + 2];
+        byte hitColorA = maskPixels[((texWidth * y) + x) * 4 + 3];
+
+        if (paintColor.r * 255 == hitColorR && paintColor.g * 255 == hitColorG && paintColor.b * 255 == hitColorB && paintColor.a * 255 == hitColorA)
+            return; // Skip if the color is already the same
+
+        Queue<int> fillPointX = new Queue<int>();
+        Queue<int> fillPointY = new Queue<int>();
+        fillPointX.Enqueue(x);
+        fillPointY.Enqueue(y);
+
+        int ptsx, ptsy;
+        int pixel = 0;
+
+        // Lock array to prevent re-filling
+        while (fillPointX.Count > 0)
+        {
+            ptsx = fillPointX.Dequeue();
+            ptsy = fillPointY.Dequeue();
+
+            if (ptsy - 1 >= 0) // down
+            {
+                pixel = (texWidth * (ptsy - 1) + ptsx) * 4;
+                if (lockMaskPixels[pixel] == 0 && CompareThreshold(maskPixels[pixel + 0], hitColorR)
+                    && CompareThreshold(maskPixels[pixel + 1], hitColorG)
+                    && CompareThreshold(maskPixels[pixel + 2], hitColorB)
+                    && CompareThreshold(maskPixels[pixel + 3], hitColorA))
+                {
+                    fillPointX.Enqueue(ptsx);
+                    fillPointY.Enqueue(ptsy - 1);
+                    DrawPoint(pixel);
+                    lockMaskPixels[pixel] = 1;
+                }
+            }
+
+            if (ptsx + 1 < texWidth) // right
+            {
+                pixel = (texWidth * ptsy + ptsx + 1) * 4;
+                if (lockMaskPixels[pixel] == 0 && CompareThreshold(maskPixels[pixel + 0], hitColorR)
+                    && CompareThreshold(maskPixels[pixel + 1], hitColorG)
+                    && CompareThreshold(maskPixels[pixel + 2], hitColorB)
+                    && CompareThreshold(maskPixels[pixel + 3], hitColorA))
+                {
+                    fillPointX.Enqueue(ptsx + 1);
+                    fillPointY.Enqueue(ptsy);
+                    DrawPoint(pixel);
+                    lockMaskPixels[pixel] = 1;
+                }
+            }
+
+            if (ptsx - 1 >= 0) // left
+            {
+                pixel = (texWidth * ptsy + ptsx - 1) * 4;
+                if (lockMaskPixels[pixel] == 0 && CompareThreshold(maskPixels[pixel + 0], hitColorR)
+                    && CompareThreshold(maskPixels[pixel + 1], hitColorG)
+                    && CompareThreshold(maskPixels[pixel + 2], hitColorB)
+                    && CompareThreshold(maskPixels[pixel + 3], hitColorA))
+                {
+                    fillPointX.Enqueue(ptsx - 1);
+                    fillPointY.Enqueue(ptsy);
+                    DrawPoint(pixel);
+                    lockMaskPixels[pixel] = 1;
+                }
+            }
+
+            if (ptsy + 1 < texHeight) // up
+            {
+                pixel = (texWidth * (ptsy + 1) + ptsx) * 4;
+                if (lockMaskPixels[pixel] == 0 && CompareThreshold(maskPixels[pixel + 0], hitColorR)
+                    && CompareThreshold(maskPixels[pixel + 1], hitColorG)
+                    && CompareThreshold(maskPixels[pixel + 2], hitColorB)
+                    && CompareThreshold(maskPixels[pixel + 3], hitColorA))
+                {
+                    fillPointX.Enqueue(ptsx);
+                    fillPointY.Enqueue(ptsy + 1);
+                    DrawPoint(pixel);
+                    lockMaskPixels[pixel] = 1;
+                }
+            }
+        }
+    }
+
+    private bool CompareThreshold(byte a, byte b)
+    {
+        return Mathf.Abs(a - b) <= colorTolerance * 255; // Compare with tolerance
+    }
+
+    private void DrawPoint(int pixel)
+    {
+        maskPixels[pixel + 0] = (byte)(paintColor.r * 255);
+        maskPixels[pixel + 1] = (byte)(paintColor.g * 255);
+        maskPixels[pixel + 2] = (byte)(paintColor.b * 255);
+        maskPixels[pixel + 3] = (byte)(paintColor.a * 255);
+    }
+}
+

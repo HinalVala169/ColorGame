@@ -22,6 +22,8 @@ Shader "Custom/RevealMaskTexture"
                 float2 uv : TEXCOORD0;
             };
 
+           
+
             struct v2f
             {
                 float2 uv : TEXCOORD0;
