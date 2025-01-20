@@ -22,40 +22,62 @@ public class ColorFill : MonoBehaviour
     private int texWidth;
     private int texHeight;
 
- void Start()
+   private Texture2D duplicatedBaseTex ; // Duplicated base texture
+    private Texture2D duplicatedMaskTex; 
+
+    void Start()
 {
-    Material instanceMaterial = new Material(fillMaterial) { name =  fillMaterial.name +  "InstanceMaterial_" };
-
-    // Assign the base texture to the instance material
-    instanceMaterial.mainTexture = baseTex;
-
-    // Set the mask texture for the material instance
-    instanceMaterial.SetTexture("_MaskTex", maskTex);
-
-    // Assign the instance material to the Image component
-    imageComponent.material = instanceMaterial;
-
-    // Initialize the mask texture to be transparent
-    Color[] transparentColors = new Color[maskTex.width * maskTex.height];
-    for (int i = 0; i < transparentColors.Length; i++)
+    // Check if the duplicated textures already exist
+   
+        // Duplicate the base texture to avoid modifying the original
+        duplicatedBaseTex = new Texture2D(baseTex.width, baseTex.height, baseTex.format, baseTex.mipmapCount > 1);
+        duplicatedBaseTex.SetPixels(baseTex.GetPixels());
+        duplicatedBaseTex.Apply();
+   
+    // Duplicate the mask texture to avoid modifying the original
+        duplicatedMaskTex = new Texture2D(maskTex.width, maskTex.height, maskTex.format, maskTex.mipmapCount > 1);
+        duplicatedMaskTex.SetPixels(maskTex.GetPixels());
+        duplicatedMaskTex.Apply();
+  
+    // Create a new instance of the material to avoid affecting the original material
+    if (imageComponent.material == null || imageComponent.material.mainTexture != duplicatedBaseTex)
     {
-       // transparentColors[i] = new Color(0, 0, 0, 0); // Fully transparent (alpha = 0)
+        Material instanceMaterial = new Material(fillMaterial) { name = fillMaterial.name + "InstanceMaterial_" };
+
+        // Assign the duplicated base texture to the instance material
+        instanceMaterial.mainTexture = duplicatedBaseTex;
+
+        // Set the duplicated mask texture for the material instance
+        instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex);
+
+        // Assign the instance material to the Image component
+        imageComponent.material = instanceMaterial;
     }
-    //maskTex.SetPixels(transparentColors);
-    maskTex.Apply();
+
+    // Initialize the mask texture to be transparent only once
+    if (duplicatedMaskTex.GetPixels()[0].a == 0)
+    {
+        Color[] transparentColors = new Color[duplicatedMaskTex.width * duplicatedMaskTex.height];
+        for (int i = 0; i < transparentColors.Length; i++)
+        {
+            transparentColors[i] = new Color(0, 0, 0, 0); // Fully transparent (alpha = 0)
+        }
+       // duplicatedMaskTex.SetPixels(transparentColors);
+        duplicatedMaskTex.Apply();
+    }
 
     // Set up EventSystem and GraphicRaycaster
     raycaster = GetComponentInParent<GraphicRaycaster>();
     eventSystem = EventSystem.current;
 
     // Initialize mask pixel data
-    texWidth = maskTex.width;
-    texHeight = maskTex.height;
+    texWidth = duplicatedMaskTex.width;
+    texHeight = duplicatedMaskTex.height;
     maskPixels = new byte[texWidth * texHeight * 4]; // 4 channels (RGBA)
     lockMaskPixels = new byte[texWidth * texHeight * 4]; // Lock pixels during the flood-fill
 
-    // Copy pixel data from the mask texture into maskPixels
-    Color[] colors = maskTex.GetPixels();
+    // Copy pixel data from the duplicated mask texture into maskPixels
+    Color[] colors = duplicatedMaskTex.GetPixels();
     for (int i = 0; i < colors.Length; i++)
     {
         maskPixels[i * 4 + 0] = (byte)(colors[i].r * 255);
@@ -99,12 +121,12 @@ public class ColorFill : MonoBehaviour
             Vector2 uv = new Vector2(localPos.x / rectTransform.rect.width, localPos.y / rectTransform.rect.height);
 
             // Map the UV coordinates to the texture coordinates
-            uv.x *= maskTex.width;
-            uv.y *= maskTex.height;
+            uv.x *= duplicatedMaskTex.width;
+            uv.y *= duplicatedMaskTex.height;
 
             // Ensure UV coordinates are within bounds
-            uv.x = Mathf.Clamp(uv.x, 0, maskTex.width - 1);
-            uv.y = Mathf.Clamp(uv.y, 0, maskTex.height - 1);
+            uv.x = Mathf.Clamp(uv.x, 0, duplicatedMaskTex.width - 1);
+            uv.y = Mathf.Clamp(uv.y, 0, duplicatedMaskTex.height - 1);
 
             Debug.Log($"Mouse UV: {uv}");
             return uv;
@@ -113,41 +135,41 @@ public class ColorFill : MonoBehaviour
     }
 
     void RevealClickedRegion(Vector2 clickedUV)
-{
-    // Get the pixel position from the UV coordinates
-    int x = Mathf.FloorToInt(clickedUV.x);
-    int y = Mathf.FloorToInt(clickedUV.y);
-
-    // Flood-fill the region based on the mask texture color at the clicked position
-    FloodFillMaskOnlyWithThreshold(x, y);
-
-    // Update the mask texture after filling
-    UpdateMaskTexture();
-    imageComponent.material.mainTexture = maskTex; // Refresh the texture on the material
-
-    Debug.Log("Triggering region reveal with flood fill.");
-}
-
-void UpdateMaskTexture()
-{
-    Color[] updatedColors = new Color[maskTex.width * maskTex.height];
-    for (int i = 0; i < texWidth; i++)
     {
-        for (int j = 0; j < texHeight; j++)
-        {
-            int pixelIndex = (j * texWidth + i) * 4;
-            updatedColors[j * texWidth + i] = new Color(
-                maskPixels[pixelIndex] / 255f,
-                maskPixels[pixelIndex + 1] / 255f,
-                maskPixels[pixelIndex + 2] / 255f,
-                maskPixels[pixelIndex + 3] / 255f
-            );
-        }
+        // Get the pixel position from the UV coordinates
+        int x = Mathf.FloorToInt(clickedUV.x);
+        int y = Mathf.FloorToInt(clickedUV.y);
+
+        // Flood-fill the region based on the mask texture color at the clicked position
+        FloodFillMaskOnlyWithThreshold(x, y);
+
+        // Update the mask texture after filling
+        UpdateMaskTexture();
+        imageComponent.material.mainTexture = duplicatedMaskTex; // Refresh the texture on the material
+
+        Debug.Log("Triggering region reveal with flood fill.");
     }
 
-    maskTex.SetPixels(updatedColors);
-    maskTex.Apply(); // Apply changes to the texture
-}
+    void UpdateMaskTexture()
+    {
+        Color[] updatedColors = new Color[duplicatedMaskTex.width * duplicatedMaskTex.height];
+        for (int i = 0; i < texWidth; i++)
+        {
+            for (int j = 0; j < texHeight; j++)
+            {
+                int pixelIndex = (j * texWidth + i) * 4;
+                updatedColors[j * texWidth + i] = new Color(
+                    maskPixels[pixelIndex] / 255f,
+                    maskPixels[pixelIndex + 1] / 255f,
+                    maskPixels[pixelIndex + 2] / 255f,
+                    maskPixels[pixelIndex + 3] / 255f
+                );
+            }
+        }
+
+        duplicatedMaskTex.SetPixels(updatedColors);
+        duplicatedMaskTex.Apply(); // Apply changes to the texture
+    }
 
     private void FloodFillMaskOnlyWithThreshold(int x, int y)
     {
@@ -249,4 +271,3 @@ void UpdateMaskTexture()
         maskPixels[pixel + 3] = (byte)(paintColor.a * 255);
     }
 }
-
