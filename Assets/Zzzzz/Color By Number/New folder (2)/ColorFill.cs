@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class ColorFill : MonoBehaviour
 {
+    public Texture2D baseTex; 
     public Texture2D maskTex; // Mask texture
     public Color paintColor = Color.white; // The color to fill
     public float colorTolerance = 0.1f; // Tolerance for color matching
@@ -23,8 +24,16 @@ public class ColorFill : MonoBehaviour
 
  void Start()
 {
-    // Set the base image material to the correct texture
-    imageComponent.material.mainTexture = maskTex;
+    Material instanceMaterial = new Material(fillMaterial) { name =  fillMaterial.name +  "InstanceMaterial_" };
+
+    // Assign the base texture to the instance material
+    instanceMaterial.mainTexture = baseTex;
+
+    // Set the mask texture for the material instance
+    instanceMaterial.SetTexture("_MaskTex", maskTex);
+
+    // Assign the instance material to the Image component
+    imageComponent.material = instanceMaterial;
 
     // Initialize the mask texture to be transparent
     Color[] transparentColors = new Color[maskTex.width * maskTex.height];
