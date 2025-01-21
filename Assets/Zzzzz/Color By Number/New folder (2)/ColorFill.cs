@@ -8,6 +8,8 @@ public class ColorFill : MonoBehaviour
     public Texture2D baseTex; 
     public Texture2D maskTex; // Mask texture
     public Color paintColor = Color.white; // The color to fill
+
+    public List<Color> availableColors; 
     public float colorTolerance = 0.1f; // Tolerance for color matching
     public Material fillMaterial;
     public Image imageComponent;
@@ -303,5 +305,12 @@ public class ColorFill : MonoBehaviour
         maskPixels[pixel + 1] = (byte)(paintColor.g * 255);
         maskPixels[pixel + 2] = (byte)(paintColor.b * 255);
         maskPixels[pixel + 3] = (byte)(paintColor.a * 255);
+    }
+      public void SetPaintColor(int index)
+    {
+        if (index >= 0 && index < availableColors.Count)
+        {
+            paintColor = availableColors[index];
+        }
     }
 }
