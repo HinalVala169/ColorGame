@@ -8,7 +8,8 @@ Shader "Custom/RevealMaskTexture"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Transparent" }
+        Blend SrcAlpha OneMinusSrcAlpha
         Pass
         {
             CGPROGRAM
@@ -43,20 +44,35 @@ Shader "Custom/RevealMaskTexture"
                 return o;
             }
 
+            // half4 frag(v2f i) : SV_Target
+            // {
+            //     half4 baseColor = tex2D(_MainTex, i.uv);
+            //     half mask = tex2D(_MaskTex, i.uv).r;
+
+            //     // Reveal the mask texture based on _Reveal
+            //     if (mask > _Reveal)
+            //     {
+            //         return tex2D(_MaskTex, i.uv); // Show the masked region
+            //     }
+            //     else
+            //     {
+            //         return baseColor; // Show base texture otherwise
+            //     }
+            // }
             half4 frag(v2f i) : SV_Target
             {
                 half4 baseColor = tex2D(_MainTex, i.uv);
-                half mask = tex2D(_MaskTex, i.uv).r;
+                half4 maskColor = tex2D(_MaskTex, i.uv);
+                half mask = maskColor.a; // Assuming the mask intensity is in the alpha channel
 
-                // Reveal the mask texture based on _Reveal
-                if (mask > _Reveal)
-                {
-                    return tex2D(_MaskTex, i.uv); // Show the masked region
-                }
-                else
-                {
-                    return baseColor; // Show base texture otherwise
-                }
+                // Blend between base texture and mask texture using reveal factor
+                half revealFactor = saturate((mask - _Reveal) / (1.0 - _Reveal));
+                
+                // Instead of replacing the base, mix base and mask based on reveal factor
+                half4 resultColor = lerp(baseColor, maskColor, revealFactor);
+
+                // Return the final color as a mix of both textures
+                return resultColor;
             }
             ENDCG
         }
