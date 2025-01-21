@@ -104,35 +104,69 @@ public class ColorFill : MonoBehaviour
         }
     }
 
+    // Vector2 GetMouseUV()
+    // {
+    //     pointerEventData = new PointerEventData(eventSystem)
+    //     {
+    //         position = Input.mousePosition
+    //     };
+
+    //     // Use Raycast to check for the Image component
+    //     RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
+    //     if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
+    //     {
+    //         // Map mouse position to the texture's UV coordinates
+    //         RectTransform rectTransform = imageComponent.rectTransform;
+    //         Vector2 localPos = pointerEventData.position - (Vector2)rectTransform.position;
+    //         Vector2 uv = new Vector2(localPos.x / rectTransform.rect.width, localPos.y / rectTransform.rect.height);
+
+    //         // Map the UV coordinates to the texture coordinates
+    //         uv.x *= duplicatedMaskTex.width;
+    //         uv.y *= duplicatedMaskTex.height;
+
+    //         // Ensure UV coordinates are within bounds
+    //         uv.x = Mathf.Clamp(uv.x, 0, duplicatedMaskTex.width - 1);
+    //         uv.y = Mathf.Clamp(uv.y, 0, duplicatedMaskTex.height - 1);
+
+    //         Debug.Log($"Mouse UV: {uv}");
+    //         return uv;
+    //     }
+    //     return Vector2.zero; // Return invalid if no hit
+    // }
+
     Vector2 GetMouseUV()
+{
+    pointerEventData = new PointerEventData(eventSystem)
     {
-        pointerEventData = new PointerEventData(eventSystem)
-        {
-            position = Input.mousePosition
-        };
+        position = Input.mousePosition
+    };
 
-        // Use Raycast to check for the Image component
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
-        if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
-        {
-            // Map mouse position to the texture's UV coordinates
-            RectTransform rectTransform = imageComponent.rectTransform;
-            Vector2 localPos = pointerEventData.position - (Vector2)rectTransform.position;
-            Vector2 uv = new Vector2(localPos.x / rectTransform.rect.width, localPos.y / rectTransform.rect.height);
+    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
+    if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
+    {
+        RectTransform rectTransform = imageComponent.rectTransform;
 
-            // Map the UV coordinates to the texture coordinates
-            uv.x *= duplicatedMaskTex.width;
-            uv.y *= duplicatedMaskTex.height;
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, pointerEventData.position, Camera.main, out localPos);
 
-            // Ensure UV coordinates are within bounds
-            uv.x = Mathf.Clamp(uv.x, 0, duplicatedMaskTex.width - 1);
-            uv.y = Mathf.Clamp(uv.y, 0, duplicatedMaskTex.height - 1);
+        Vector2 pivotAdjustedPos = localPos + (rectTransform.rect.size * rectTransform.pivot);
 
-            Debug.Log($"Mouse UV: {uv}");
-            return uv;
-        }
-        return Vector2.zero; // Return invalid if no hit
+        Vector2 uv = new Vector2(
+            pivotAdjustedPos.x / rectTransform.rect.width,
+            pivotAdjustedPos.y / rectTransform.rect.height
+        );
+
+        uv.x *= maskTex.width;
+        uv.y *= maskTex.height;
+
+        uv.x = Mathf.Clamp(uv.x, 0, maskTex.width - 1);
+        uv.y = Mathf.Clamp(uv.y, 0, maskTex.height - 1);
+
+        return uv;
     }
+    return Vector2.zero;
+}
+
 
     void RevealClickedRegion(Vector2 clickedUV)
     {
