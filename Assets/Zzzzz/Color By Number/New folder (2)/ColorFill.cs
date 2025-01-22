@@ -144,22 +144,25 @@ public class ColorFill : MonoBehaviour
 
 
     void RevealClickedRegion(Vector2 clickedUV)
-    {
-        // Get the pixel position from the UV coordinates
-        int x = Mathf.FloorToInt(clickedUV.x);
-        int y = Mathf.FloorToInt(clickedUV.y);
+{
+    // Get the pixel position from the UV coordinates
+    int x = Mathf.FloorToInt(clickedUV.x);
+    int y = Mathf.FloorToInt(clickedUV.y);
 
-        // Flood-fill the region based on the mask texture color at the clicked position
-        FloodFillMaskOnlyWithThreshold(x, y);
+    // Flood-fill the region based on the mask texture color at the clicked position
+    FloodFillMaskOnlyWithThreshold(x, y);
 
-        // Update the mask texture after filling
-        UpdateMaskTexture();
-       // imageComponent.material.mainTexture = duplicatedMaskTex; // Refresh the texture on the material
+    // Update the mask texture after filling
+    UpdateMaskTexture();
+    // Optional: Refresh the texture on the material if needed
+    // imageComponent.material.mainTexture = duplicatedMaskTex;
 
-        Debug.Log("Triggering region reveal with flood fill.");
+    Debug.Log("Triggering region reveal with flood fill.");
 
-        instanceMaterial.SetFloat("_Reveal", 0f);  
-    }
+    // Set the "_RevealAndMask" value to control the effect
+    // If you want the reveal to happen immediately when clicked, you might set this to a low value like 1
+    instanceMaterial.SetFloat("_RevealAndMask", 1f);  // Adjust this based on your desired effect
+}
 
 
     void UpdateMaskTexture()
