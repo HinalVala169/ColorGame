@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class ColorFill : MonoBehaviour
 {
     public Texture2D baseTex; // Single texture for both base and mask
+    public Texture2D maskNumberTex;
     public Color paintColor = Color.white; // The color to fill
 
     public List<Color> availableColors;
@@ -54,6 +55,7 @@ public class ColorFill : MonoBehaviour
         imageComponent.material = instanceMaterial;
 
         instanceMaterial.SetFloat("_Reveal", 1f);
+        instanceMaterial.SetFloat("_RegionNumber", 0f); // Default region number (No region selected)
     }
 
     void Update()
@@ -113,7 +115,10 @@ public class ColorFill : MonoBehaviour
         int y = Mathf.FloorToInt(clickedUV.y);
 
         // Flood-fill the region based on the color at the clicked position
-        FloodFill(x, y);
+        int regionNumber = FloodFill(x, y);
+
+        // Set the region number in the material
+        instanceMaterial.SetFloat("_RegionNumber", regionNumber);
 
         // Update the duplicate texture after filling
         UpdateTexture();
@@ -140,7 +145,7 @@ public class ColorFill : MonoBehaviour
         duplicateTex.Apply(); // Apply the changes to the duplicate texture
     }
 
-    private void FloodFill(int x, int y)
+    private int FloodFill(int x, int y)
     {
         // Get the initial color at the clicked position
         byte hitColorR = texPixels[((texWidth * y) + x) * 4 + 0];
@@ -149,7 +154,7 @@ public class ColorFill : MonoBehaviour
         byte hitColorA = texPixels[((texWidth * y) + x) * 4 + 3];
 
         if (paintColor.r * 255 == hitColorR && paintColor.g * 255 == hitColorG && paintColor.b * 255 == hitColorB && paintColor.a * 255 == hitColorA)
-            return; // Skip if the color is already the same
+            return 0; // Skip if the color is already the same
 
         Queue<int> fillPointX = new Queue<int>();
         Queue<int> fillPointY = new Queue<int>();
@@ -158,6 +163,8 @@ public class ColorFill : MonoBehaviour
 
         int ptsx, ptsy;
         int pixel = 0;
+
+        int regionNumber = 0;
 
         while (fillPointX.Count > 0)
         {
@@ -220,6 +227,9 @@ public class ColorFill : MonoBehaviour
                 }
             }
         }
+
+        // Return the region number based on the clicked location
+        return regionNumber; // You can set regionNumber based on where the click occurs, e.g., region 1, 2, 3, etc.
     }
 
     private bool CompareThreshold(byte a, byte b)

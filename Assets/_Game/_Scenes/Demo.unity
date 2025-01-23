@@ -472,6 +472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseTex: {fileID: 0}
+  maskNumberTex: {fileID: 0}
   paintColor: {r: 1, g: 1, b: 1, a: 1}
   availableColors: []
   colorTolerance: 0.1
@@ -1436,7 +1437,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8188dcd7968354d6c8c878492fc17a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseTex: {fileID: 2800000, guid: 59c76641f25e9444fa760178b053bc44, type: 3}
+  baseTex: {fileID: 2800000, guid: e1ea25e22d26d431b992ca42c54b1b12, type: 3}
+  maskNumberTex: {fileID: 2800000, guid: fafc816ca12ac4a0caad1194a44d4536, type: 3}
   paintColor: {r: 0.9607843, g: 0, b: 1, a: 1}
   availableColors:
   - {r: 0.95939255, g: 0, b: 1, a: 1}

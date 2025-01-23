@@ -3,6 +3,7 @@ Shader "Custom/RevealMaskTexture"
     Properties
     {
         _MainTex ("Base Texture", 2D) = "white" {}
+        _MainTex ("MaskNumber Texture", 2D) = "white" {}
         _Region1Color ("Region 1 Color", Color) = (1, 0, 0, 1) // Red
         _Region2Color ("Region 2 Color", Color) = (0, 1, 0, 1) // Green
         _Region3Color ("Region 3 Color", Color) = (0, 0, 1, 1) // Blue
@@ -26,6 +27,7 @@ Shader "Custom/RevealMaskTexture"
 
             // Define properties
             sampler2D _MainTex;
+            sampler2D _MaskNumTex;
             float4 _Region1Color;
             float4 _Region2Color;
             float4 _Region3Color;
