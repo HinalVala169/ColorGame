@@ -3,7 +3,7 @@ Shader "Custom/RevealMaskTexture"
     Properties
     {
         _MainTex ("Base Texture", 2D) = "white" {}
-        _MainTex ("MaskNumber Texture", 2D) = "white" {}
+        _MaskNumTex ("MaskNumber Texture", 2D) = "white" {}
         _Region1Color ("Region 1 Color", Color) = (1, 0, 0, 1) // Red
         _Region2Color ("Region 2 Color", Color) = (0, 1, 0, 1) // Green
         _Region3Color ("Region 3 Color", Color) = (0, 0, 1, 1) // Blue
@@ -62,6 +62,7 @@ Shader "Custom/RevealMaskTexture"
             half4 frag(v2f i) : SV_Target
             {
                 half4 baseColor = tex2D(_MainTex, i.uv);
+                half4 maskColor = tex2D(_MaskNumTex, i.uv);
 
                 half4 regionColor = baseColor; // Default to base color
 
@@ -95,8 +96,16 @@ Shader "Custom/RevealMaskTexture"
                     regionColor = _Region7Color;
                 }
 
-                // Blend the region color based on the reveal slider
+                // Use the base texture to mask areas from the mask texture
+                // If the base texture is not filled (e.g., white or some specific color), maskNumTex will remain visible
+                if (baseColor.a < 0.5) // Base texture is "empty" (can adjust threshold)
+                {
+                    maskColor = half4(0, 0, 0, 0); // Hide mask if base texture is not filled
+                }
+
+                // Blend the mask with the region color based on the reveal slider
                 half4 finalColor = lerp(baseColor, regionColor, _RevealAndMask);
+                finalColor = lerp(finalColor, maskColor, 1.0 - _RevealAndMask); // Mask effect
 
                 return finalColor;
             }

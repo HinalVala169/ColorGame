@@ -25,7 +25,7 @@ public class ColorFill : MonoBehaviour
 
     private Material instanceMaterial;
 
-    private Texture2D duplicateTex; // Duplicate texture for painting
+    private Texture2D duplicateTex, duplicatedMaskTex; // Duplicate texture for painting
 
     void Start()
     {
@@ -40,6 +40,10 @@ public class ColorFill : MonoBehaviour
         duplicateTex.SetPixels(baseTex.GetPixels());
         duplicateTex.Apply();
 
+        duplicatedMaskTex = new Texture2D(maskNumberTex.width, maskNumberTex.height);
+        duplicatedMaskTex.SetPixels(maskNumberTex.GetPixels());
+        duplicatedMaskTex.Apply();
+
         Color[] baseTexColors = baseTex.GetPixels();
         for (int i = 0; i < baseTexColors.Length; i++)
         {
@@ -52,9 +56,10 @@ public class ColorFill : MonoBehaviour
         // Create a new instance of the material
         instanceMaterial = new Material(fillMaterial) { name = fillMaterial.name + "InstanceMaterial_" };
         instanceMaterial.mainTexture = duplicateTex; // Use the duplicate texture
+        instanceMaterial.SetTexture("_MaskNumTex", duplicatedMaskTex);
         imageComponent.material = instanceMaterial;
 
-        instanceMaterial.SetFloat("_Reveal", 1f);
+        instanceMaterial.SetFloat("_RevealAndMask", 1f);
         instanceMaterial.SetFloat("_RegionNumber", 0f); // Default region number (No region selected)
     }
 
