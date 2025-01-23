@@ -3,7 +3,6 @@ Shader "Custom/RevealMaskTexture"
     Properties
     {
         _MainTex ("Base Texture", 2D) = "white" {}
-        _MaskTex ("Mask Texture", 2D) = "white" {}
         _Region1Color ("Region 1 Color", Color) = (1, 0, 0, 1) // Red
         _Region2Color ("Region 2 Color", Color) = (0, 1, 0, 1) // Green
         _Region3Color ("Region 3 Color", Color) = (0, 0, 1, 1) // Blue
@@ -11,7 +10,7 @@ Shader "Custom/RevealMaskTexture"
         _Region5Color ("Region 5 Color", Color) = (1, 0, 1, 1) // Magenta
         _Region6Color ("Region 6 Color", Color) = (0, 1, 1, 1) // Cyan
         _Region7Color ("Region 7 Color", Color) = (0.5, 0.5, 0.5, 1) // Gray
-        _RevealAndMask ("Reveal Mask Texture", Range(0, 1)) = 0.0 // Single slider to control both reveal and mask visibility
+        _RevealAndMask ("Reveal and Mask", Range(0, 1)) = 0.0 // Single slider to control both reveal and mask visibility
         _RegionNumber ("Region Number", Float) = 0
     }
     SubShader
@@ -27,7 +26,6 @@ Shader "Custom/RevealMaskTexture"
 
             // Define properties
             sampler2D _MainTex;
-            sampler2D _MaskTex;
             float4 _Region1Color;
             float4 _Region2Color;
             float4 _Region3Color;
@@ -62,55 +60,42 @@ Shader "Custom/RevealMaskTexture"
             half4 frag(v2f i) : SV_Target
             {
                 half4 baseColor = tex2D(_MainTex, i.uv);
-                half4 maskColor = tex2D(_MaskTex, i.uv);
 
                 half4 regionColor = baseColor; // Default to base color
 
-                // Check the region number to apply specific colors
-                if (_RegionNumber == 1 && maskColor.r > 0.8 && maskColor.g < 0.2 && maskColor.b < 0.2)
+                // Check the region number to apply specific colors (based on UVs or defined areas in your texture)
+                if (_RegionNumber == 1 && i.uv.x > 0.0 && i.uv.x < 0.33 && i.uv.y > 0.0 && i.uv.y < 0.33)
                 {
                     regionColor = _Region1Color;
                 }
-                else if (_RegionNumber == 2 && maskColor.r < 0.2 && maskColor.g > 0.8 && maskColor.b < 0.2)
+                else if (_RegionNumber == 2 && i.uv.x > 0.33 && i.uv.x < 0.66 && i.uv.y > 0.0 && i.uv.y < 0.33)
                 {
                     regionColor = _Region2Color;
                 }
-                else if (_RegionNumber == 3 && maskColor.r < 0.2 && maskColor.g < 0.2 && maskColor.b > 0.8)
+                else if (_RegionNumber == 3 && i.uv.x > 0.66 && i.uv.x < 1.0 && i.uv.y > 0.0 && i.uv.y < 0.33)
                 {
                     regionColor = _Region3Color;
                 }
-                else if (_RegionNumber == 4 && maskColor.r > 0.8 && maskColor.g > 0.8 && maskColor.b < 0.2)
+                else if (_RegionNumber == 4 && i.uv.x > 0.0 && i.uv.x < 0.33 && i.uv.y > 0.33 && i.uv.y < 0.66)
                 {
                     regionColor = _Region4Color;
                 }
-                else if (_RegionNumber == 5 && maskColor.r > 0.8 && maskColor.g < 0.2 && maskColor.b > 0.8)
+                else if (_RegionNumber == 5 && i.uv.x > 0.33 && i.uv.x < 0.66 && i.uv.y > 0.33 && i.uv.y < 0.66)
                 {
                     regionColor = _Region5Color;
                 }
-                else if (_RegionNumber == 6 && maskColor.r < 0.2 && maskColor.g > 0.8 && maskColor.b > 0.8)
+                else if (_RegionNumber == 6 && i.uv.x > 0.66 && i.uv.x < 1.0 && i.uv.y > 0.33 && i.uv.y < 0.66)
                 {
                     regionColor = _Region6Color;
                 }
-                else if (_RegionNumber == 7 && maskColor.r > 0.4 && maskColor.g > 0.4 && maskColor.b > 0.4 && maskColor.r < 0.6)
+                else if (_RegionNumber == 7 && i.uv.x > 0.0 && i.uv.x < 1.0 && i.uv.y > 0.66 && i.uv.y < 1.0)
                 {
                     regionColor = _Region7Color;
                 }
 
-                // Apply the effect based on the Reveal and Mask slider
-                half4 finalColor;
+                // Blend the region color based on the reveal slider
+                half4 finalColor = lerp(baseColor, regionColor, _RevealAndMask);
 
-                // If _RevealAndMask is 1, show the mask texture and apply the reveal effect
-                if (_RevealAndMask > 0.5)
-                {
-                    finalColor = lerp(baseColor, maskColor, _RevealAndMask); // Blend the mask texture over the base
-                }
-                else
-                {
-                    // Else just apply the reveal based on _RevealAndMask
-                    finalColor = lerp(baseColor, regionColor, _RevealAndMask); // Blend the region color based on reveal
-                }
-
-                // Return the final color
                 return finalColor;
             }
             ENDCG
