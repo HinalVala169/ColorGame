@@ -56,7 +56,7 @@ public class ColorFill : MonoBehaviour
         // Create a new instance of the material
         instanceMaterial = new Material(fillMaterial) { name = fillMaterial.name + "InstanceMaterial_" };
         instanceMaterial.mainTexture = duplicateTex; // Use the duplicate texture
-        instanceMaterial.SetTexture("_MaskNumTex", duplicatedMaskTex);
+        instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex);
         imageComponent.material = instanceMaterial;
 
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
