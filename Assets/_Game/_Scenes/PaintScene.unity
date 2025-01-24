@@ -1179,7 +1179,57 @@ MonoBehaviour:
   isColorByNumber: 0
   maskTexMaterial: {fileID: 2100000, guid: 0b18c9f7f08448d2bc71c32bb346a29d, type: 2}
   maskTexList:
-  - {fileID: 21300000, guid: 59c76641f25e9444fa760178b053bc44, type: 3}
+  - {fileID: 21300000, guid: 28ec79c0ef5f74bc19e95bcead1765ee, type: 3}
+  - {fileID: 21300000, guid: 82ece3abdbc414ffba6be14e2b2f36d2, type: 3}
+  - {fileID: 21300000, guid: bf4a1ab0635be4d6094f65536056b639, type: 3}
+  - {fileID: 21300000, guid: a61e9b6a160bc424e81419da25292043, type: 3}
+  - {fileID: 21300000, guid: 3ccdfc5442ef54664b15202c9645468a, type: 3}
+  - {fileID: 21300000, guid: a51afd0f562b3454f924655d2e34852b, type: 3}
+  - {fileID: 21300000, guid: 189ff91590e364b8cae1d9c5698e9838, type: 3}
+  - {fileID: 21300000, guid: 7be55701b61794e929a94b620e5107d1, type: 3}
+  - {fileID: 21300000, guid: f632091c9df93444a8076b799e8de338, type: 3}
+  - {fileID: 21300000, guid: 0a558b520f87245aabf129f513453e67, type: 3}
+  - {fileID: 21300000, guid: 671af0ac5d63842d48118896a966b892, type: 3}
+  - {fileID: 21300000, guid: 2c77a286d44f24a309dfa9e64a6ec0ac, type: 3}
+  - {fileID: 21300000, guid: e36c77b8a5ad84632ba29f2115a57aeb, type: 3}
+  - {fileID: 21300000, guid: 3703cb48e3ef44ceb9edecf31f87443c, type: 3}
+  - {fileID: 21300000, guid: 9b2c8bf8d96314e5391e78a4d127d3fe, type: 3}
+  - {fileID: 21300000, guid: 5744373095d104c9286e782d8920c32b, type: 3}
+  - {fileID: 21300000, guid: 323f7dd9f7be943ec9f9e68dbc447196, type: 3}
+  - {fileID: 21300000, guid: 3af33bcf0e60841fbb2bb1efb3f807ed, type: 3}
+  - {fileID: 21300000, guid: ca6d86763b1c144d596eff13fc23af2c, type: 3}
+  - {fileID: 21300000, guid: be2e0675bd3ae47f6ae444aec9af0715, type: 3}
+  - {fileID: 21300000, guid: 8f2fb1818244e4f14b2d02e3fffc7f2b, type: 3}
+  - {fileID: 21300000, guid: e30e50ee0bcdd41b7a1710a9be0aa5e3, type: 3}
+  - {fileID: 21300000, guid: f3747e34b36834d6a89a259fbd8ad44d, type: 3}
+  - {fileID: 21300000, guid: f3920ec3274274423b0d15d853e9d5b2, type: 3}
+  - {fileID: 21300000, guid: 8abdb9a5016d9448b8aaf18c5431e01c, type: 3}
+  - {fileID: 21300000, guid: e2e21b6b5fd984af1899e589cc162a25, type: 3}
+  - {fileID: 21300000, guid: 8eaf04be488c442dc87b0c2426429f46, type: 3}
+  - {fileID: 21300000, guid: ea920424906a54b9095d505c150d2c07, type: 3}
+  - {fileID: 21300000, guid: 5bfade7758f0f443a8cb3c81bdf65702, type: 3}
+  - {fileID: 21300000, guid: 1985233337f914564a4c179c77e5c607, type: 3}
+  - {fileID: 21300000, guid: ecf2f469963bf4ce0b6cce48bbea4d16, type: 3}
+  - {fileID: 21300000, guid: e2081d197ae0e4d49a061210b6f07ca7, type: 3}
+  - {fileID: 21300000, guid: c6e72bb5e9a5a4b2a913b7fa209c369a, type: 3}
+  - {fileID: 21300000, guid: 588f2c2a3966f42e39a93e61dc3ea49e, type: 3}
+  - {fileID: 21300000, guid: b4c9a17b266d14852b7d8511e5308011, type: 3}
+  - {fileID: 21300000, guid: 892fd23ca935541c194332823a10cf05, type: 3}
+  - {fileID: 21300000, guid: 6406bcfa86fe0493089b718c07df74b7, type: 3}
+  - {fileID: 21300000, guid: b88dde37b8b3f48bca2dc13fb6acde26, type: 3}
+  - {fileID: 21300000, guid: 19a618a385cc84e56bbbf650c542c079, type: 3}
+  - {fileID: 21300000, guid: fec97b15b10094285925fe650d214e45, type: 3}
+  - {fileID: 21300000, guid: 4fd7beae719a04e77a63969301789ceb, type: 3}
+  - {fileID: 21300000, guid: 8a0fe130a05744f2096a29ebe64fd0b6, type: 3}
+  - {fileID: 21300000, guid: 910158ecc04b24e5185f98d297ba2e75, type: 3}
+  - {fileID: 21300000, guid: 21113628edf0c43a99b434975831f825, type: 3}
+  - {fileID: 21300000, guid: c69d27e649720427b9e7591f80bc4a71, type: 3}
+  - {fileID: 21300000, guid: d03ee91682924418a9d458dea305168c, type: 3}
+  - {fileID: 21300000, guid: cff261d1fc045405da7239c923880d02, type: 3}
+  - {fileID: 21300000, guid: 217c2b218eef14e86996611ec4da2b45, type: 3}
+  - {fileID: 21300000, guid: 2f7c3e48b98654e66882d22e3d599af6, type: 3}
+  - {fileID: 21300000, guid: dbf2be569ee244e6183874e6a1158b28, type: 3}
+  - {fileID: 21300000, guid: 2d44f2400a7be4b208a14506801caa7c, type: 3}
   colTexList:
   - {fileID: 21300000, guid: 1f783eeb7b5b54d6b926e88cf427b19d, type: 3}
   patternSprites:
