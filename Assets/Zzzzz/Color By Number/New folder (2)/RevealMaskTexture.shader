@@ -11,7 +11,7 @@ Shader "Custom/RevealMaskTexture"
         _Region5Color ("Region 5 Color", Color) = (1, 0, 1, 1) // Magenta
         _Region6Color ("Region 6 Color", Color) = (0, 1, 1, 1) // Cyan
         _Region7Color ("Region 7 Color", Color) = (0.5, 0.5, 0.5, 1) // Gray
-        _RevealAndMask ("Reveal and Mask", Range(0, 1)) = 0.0 // Single slider to control both reveal and mask visibility
+        _RevealAndMask ("Reveal and Mask", Range(0, 1)) = 0.0 // Control both visibility and mask reveal
         _RegionNumber ("Region Number", Float) = 0
     }
     SubShader
@@ -25,7 +25,6 @@ Shader "Custom/RevealMaskTexture"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            // Define properties
             sampler2D _MainTex;
             sampler2D _MaskNumTex;
             float4 _Region1Color;
@@ -64,9 +63,9 @@ Shader "Custom/RevealMaskTexture"
                 half4 baseColor = tex2D(_MainTex, i.uv);
                 half4 maskColor = tex2D(_MaskNumTex, i.uv);
 
-                half4 regionColor = baseColor; // Default to base color
+                half4 regionColor = baseColor;
 
-                // Check the region number to apply specific colors (based on UVs or defined areas in your texture)
+                // Select color for specific region
                 if (_RegionNumber == 1 && i.uv.x > 0.0 && i.uv.x < 0.33 && i.uv.y > 0.0 && i.uv.y < 0.33)
                 {
                     regionColor = _Region1Color;
@@ -96,18 +95,15 @@ Shader "Custom/RevealMaskTexture"
                     regionColor = _Region7Color;
                 }
 
-                // Use the base texture to mask areas from the mask texture
-                // If the base texture is not filled (e.g., white or some specific color), maskNumTex will remain visible
-                if (baseColor.a < 0.5) // Base texture is "empty" (can adjust threshold)
+                // Logic to blend textures: reveal the mask only in "filled" regions
+                if (baseColor.a < 0.5) // Base texture area not filled
                 {
-                    maskColor = half4(0, 0, 0, 0); // Hide mask if base texture is not filled
+                    return baseColor; // Display base texture
                 }
-
-                // Blend the mask with the region color based on the reveal slider
-                half4 finalColor = lerp(baseColor, regionColor, _RevealAndMask);
-                finalColor = lerp(finalColor, maskColor, 1.0 - _RevealAndMask); // Mask effect
-
-                return finalColor;
+                else
+                {
+                    return maskColor; // Reveal mask in the filled area
+                }
             }
             ENDCG
         }
