@@ -27,6 +27,8 @@ public class ColorFill : MonoBehaviour
 
     private Texture2D duplicateTex, duplicatedMaskTex; // Duplicate texture for painting
 
+
+
     void Start()
     {
         // Duplicate the base texture to work with
@@ -64,18 +66,36 @@ public class ColorFill : MonoBehaviour
     }
 
     void OnMouseDown()
+{
+    Vector2 pixelUV = GetMouseUV();
+
+    // Only trigger if valid (pixelUV != Vector2.zero) and the pixel is not already filled with the selected paint color
+    if (pixelUV != Vector2.zero)
     {
-        Vector2 pixelUV = GetMouseUV();
-        if (pixelUV != Vector2.zero) // Only trigger if valid
+        // Get the pixel position from the UV coordinates
+        int x = Mathf.FloorToInt(pixelUV.x);
+        int y = Mathf.FloorToInt(pixelUV.y);
+
+        // Get the color from the base texture at the clicked position
+        Color currentColor = duplicateTex.GetPixel(x, y);
+
+        // Check if the pixel is already filled with the selected paint color
+        if (IsColorMatch(currentColor, paintColor))
         {
-            Debug.Log($"Mouse Clicked at: {pixelUV}");
-            RevealClickedRegion(pixelUV); // Handle the clicked region
+            // If the pixel is already filled with the selected color, return without doing anything
+            Debug.Log("Pixel already filled with the selected paint color. No further action.");
+            return; // Skip if the pixel is already filled
         }
-        else
-        {
-            Debug.Log("Mouse click did not hit a valid texture.");
-        }
+
+        // If the pixel is valid and not filled, proceed with the region reveal
+        Debug.Log($"Mouse Clicked at: {pixelUV}");
+        RevealClickedRegion(pixelUV); // Handle the clicked region
     }
+    else
+    {
+        Debug.Log("Mouse click did not hit a valid texture.");
+    }
+}
 
     Vector2 GetMouseUV()
 {
