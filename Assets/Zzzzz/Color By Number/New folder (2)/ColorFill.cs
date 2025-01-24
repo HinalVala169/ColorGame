@@ -113,12 +113,18 @@ public class ColorFill : MonoBehaviour
         return Vector2.zero;
     }
 
-    void RevealClickedRegion(Vector2 clickedUV)
-    {
-        // Get the pixel position from the UV coordinates
-        int x = Mathf.FloorToInt(clickedUV.x);
-        int y = Mathf.FloorToInt(clickedUV.y);
+   void RevealClickedRegion(Vector2 clickedUV)
+{
+    // Get the pixel position from the UV coordinates
+    int x = Mathf.FloorToInt(clickedUV.x);
+    int y = Mathf.FloorToInt(clickedUV.y);
 
+    // Get the color from the mask texture at the clicked position
+    Color maskColor = duplicatedMaskTex.GetPixel(x, y);
+
+    // Check if the color in the mask matches the selected paint color
+    if (IsColorMatch(maskColor, paintColor))
+    {
         // Flood-fill the region based on the color at the clicked position
         int regionNumber = FloodFill(x, y);
 
@@ -128,6 +134,11 @@ public class ColorFill : MonoBehaviour
         // Update the duplicate texture after filling
         UpdateTexture();
     }
+    else
+    {
+        Debug.Log("Mask color does not match the selected paint color.");
+    }
+}
 
     void UpdateTexture()
     {
@@ -150,92 +161,107 @@ public class ColorFill : MonoBehaviour
         duplicateTex.Apply(); // Apply the changes to the duplicate texture
     }
 
-    private int FloodFill(int x, int y)
+   private int FloodFill(int x, int y)
+{
+    // Get the color from the mask texture at the clicked position
+    Color maskColor = duplicatedMaskTex.GetPixel(x, y);
+
+    // Compare the color from the mask texture with the selected paint color
+    if (!IsColorMatch(maskColor, paintColor))
+        return 0; // Skip if colors do not match
+
+    // Get the initial color at the clicked position on the base texture
+    byte hitColorR = texPixels[((texWidth * y) + x) * 4 + 0];
+    byte hitColorG = texPixels[((texWidth * y) + x) * 4 + 1];
+    byte hitColorB = texPixels[((texWidth * y) + x) * 4 + 2];
+    byte hitColorA = texPixels[((texWidth * y) + x) * 4 + 3];
+
+    if (paintColor.r * 255 == hitColorR && paintColor.g * 255 == hitColorG && paintColor.b * 255 == hitColorB && paintColor.a * 255 == hitColorA)
+        return 0; // Skip if the color is already the same
+
+    Queue<int> fillPointX = new Queue<int>();
+    Queue<int> fillPointY = new Queue<int>();
+    fillPointX.Enqueue(x);
+    fillPointY.Enqueue(y);
+
+    int ptsx, ptsy;
+    int pixel = 0;
+
+    int regionNumber = 0;
+
+    while (fillPointX.Count > 0)
     {
-        // Get the initial color at the clicked position
-        byte hitColorR = texPixels[((texWidth * y) + x) * 4 + 0];
-        byte hitColorG = texPixels[((texWidth * y) + x) * 4 + 1];
-        byte hitColorB = texPixels[((texWidth * y) + x) * 4 + 2];
-        byte hitColorA = texPixels[((texWidth * y) + x) * 4 + 3];
+        ptsx = fillPointX.Dequeue();
+        ptsy = fillPointY.Dequeue();
 
-        if (paintColor.r * 255 == hitColorR && paintColor.g * 255 == hitColorG && paintColor.b * 255 == hitColorB && paintColor.a * 255 == hitColorA)
-            return 0; // Skip if the color is already the same
-
-        Queue<int> fillPointX = new Queue<int>();
-        Queue<int> fillPointY = new Queue<int>();
-        fillPointX.Enqueue(x);
-        fillPointY.Enqueue(y);
-
-        int ptsx, ptsy;
-        int pixel = 0;
-
-        int regionNumber = 0;
-
-        while (fillPointX.Count > 0)
+        if (ptsy - 1 >= 0) // down
         {
-            ptsx = fillPointX.Dequeue();
-            ptsy = fillPointY.Dequeue();
-
-            if (ptsy - 1 >= 0) // down
+            pixel = (texWidth * (ptsy - 1) + ptsx) * 4;
+            if (CompareThreshold(texPixels[pixel + 0], hitColorR)
+                && CompareThreshold(texPixels[pixel + 1], hitColorG)
+                && CompareThreshold(texPixels[pixel + 2], hitColorB)
+                && CompareThreshold(texPixels[pixel + 3], hitColorA))
             {
-                pixel = (texWidth * (ptsy - 1) + ptsx) * 4;
-                if (CompareThreshold(texPixels[pixel + 0], hitColorR)
-                    && CompareThreshold(texPixels[pixel + 1], hitColorG)
-                    && CompareThreshold(texPixels[pixel + 2], hitColorB)
-                    && CompareThreshold(texPixels[pixel + 3], hitColorA))
-                {
-                    fillPointX.Enqueue(ptsx);
-                    fillPointY.Enqueue(ptsy - 1);
-                    DrawPoint(pixel);
-                }
-            }
-
-            if (ptsx + 1 < texWidth) // right
-            {
-                pixel = (texWidth * ptsy + ptsx + 1) * 4;
-                if (CompareThreshold(texPixels[pixel + 0], hitColorR)
-                    && CompareThreshold(texPixels[pixel + 1], hitColorG)
-                    && CompareThreshold(texPixels[pixel + 2], hitColorB)
-                    && CompareThreshold(texPixels[pixel + 3], hitColorA))
-                {
-                    fillPointX.Enqueue(ptsx + 1);
-                    fillPointY.Enqueue(ptsy);
-                    DrawPoint(pixel);
-                }
-            }
-
-            if (ptsx - 1 >= 0) // left
-            {
-                pixel = (texWidth * ptsy + ptsx - 1) * 4;
-                if (CompareThreshold(texPixels[pixel + 0], hitColorR)
-                    && CompareThreshold(texPixels[pixel + 1], hitColorG)
-                    && CompareThreshold(texPixels[pixel + 2], hitColorB)
-                    && CompareThreshold(texPixels[pixel + 3], hitColorA))
-                {
-                    fillPointX.Enqueue(ptsx - 1);
-                    fillPointY.Enqueue(ptsy);
-                    DrawPoint(pixel);
-                }
-            }
-
-            if (ptsy + 1 < texHeight) // up
-            {
-                pixel = (texWidth * (ptsy + 1) + ptsx) * 4;
-                if (CompareThreshold(texPixels[pixel + 0], hitColorR)
-                    && CompareThreshold(texPixels[pixel + 1], hitColorG)
-                    && CompareThreshold(texPixels[pixel + 2], hitColorB)
-                    && CompareThreshold(texPixels[pixel + 3], hitColorA))
-                {
-                    fillPointX.Enqueue(ptsx);
-                    fillPointY.Enqueue(ptsy + 1);
-                    DrawPoint(pixel);
-                }
+                fillPointX.Enqueue(ptsx);
+                fillPointY.Enqueue(ptsy - 1);
+                DrawPoint(pixel);
             }
         }
 
-        // Return the region number based on the clicked location
-        return regionNumber; // You can set regionNumber based on where the click occurs, e.g., region 1, 2, 3, etc.
+        if (ptsx + 1 < texWidth) // right
+        {
+            pixel = (texWidth * ptsy + ptsx + 1) * 4;
+            if (CompareThreshold(texPixels[pixel + 0], hitColorR)
+                && CompareThreshold(texPixels[pixel + 1], hitColorG)
+                && CompareThreshold(texPixels[pixel + 2], hitColorB)
+                && CompareThreshold(texPixels[pixel + 3], hitColorA))
+            {
+                fillPointX.Enqueue(ptsx + 1);
+                fillPointY.Enqueue(ptsy);
+                DrawPoint(pixel);
+            }
+        }
+
+        if (ptsx - 1 >= 0) // left
+        {
+            pixel = (texWidth * ptsy + ptsx - 1) * 4;
+            if (CompareThreshold(texPixels[pixel + 0], hitColorR)
+                && CompareThreshold(texPixels[pixel + 1], hitColorG)
+                && CompareThreshold(texPixels[pixel + 2], hitColorB)
+                && CompareThreshold(texPixels[pixel + 3], hitColorA))
+            {
+                fillPointX.Enqueue(ptsx - 1);
+                fillPointY.Enqueue(ptsy);
+                DrawPoint(pixel);
+            }
+        }
+
+        if (ptsy + 1 < texHeight) // up
+        {
+            pixel = (texWidth * (ptsy + 1) + ptsx) * 4;
+            if (CompareThreshold(texPixels[pixel + 0], hitColorR)
+                && CompareThreshold(texPixels[pixel + 1], hitColorG)
+                && CompareThreshold(texPixels[pixel + 2], hitColorB)
+                && CompareThreshold(texPixels[pixel + 3], hitColorA))
+            {
+                fillPointX.Enqueue(ptsx);
+                fillPointY.Enqueue(ptsy + 1);
+                DrawPoint(pixel);
+            }
+        }
     }
+
+    // Return the region number based on the clicked location
+    return regionNumber; // You can set regionNumber based on where the click occurs, e.g., region 1, 2, 3, etc.
+}
+
+private bool IsColorMatch(Color maskColor, Color paintColor)
+{
+    return Mathf.Abs(maskColor.r - paintColor.r) <= colorTolerance
+        && Mathf.Abs(maskColor.g - paintColor.g) <= colorTolerance
+        && Mathf.Abs(maskColor.b - paintColor.b) <= colorTolerance
+        && Mathf.Abs(maskColor.a - paintColor.a) <= colorTolerance;
+}
 
     private bool CompareThreshold(byte a, byte b)
     {
