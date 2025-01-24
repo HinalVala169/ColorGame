@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class ColorFill : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class ColorFill : MonoBehaviour
     public Color paintColor = Color.white; // The color to fill
 
     public List<Color> availableColors;
+    public List<Button> colorButtons;
     public float colorTolerance = 0.1f; // Tolerance for color matching
     public Material fillMaterial;
     public Image imageComponent;
@@ -138,31 +140,70 @@ public class ColorFill : MonoBehaviour
 }
 
     void RevealClickedRegion(Vector2 clickedUV)
+{
+    // Get the pixel position from the UV coordinates
+    int x = Mathf.FloorToInt(clickedUV.x);
+    int y = Mathf.FloorToInt(clickedUV.y);
+
+    // Get the color from the mask texture at the clicked position
+    Color maskColor = duplicatedMaskTex.GetPixel(x, y);
+
+    // Check if the color in the mask matches the selected paint color
+    if (IsColorMatch(maskColor, paintColor))
     {
-        // Get the pixel position from the UV coordinates
-        int x = Mathf.FloorToInt(clickedUV.x);
-        int y = Mathf.FloorToInt(clickedUV.y);
+        // Flood-fill the region based on the color at the clicked position
+        int regionNumber = FloodFill(x, y);
 
-        // Get the color from the mask texture at the clicked position
-        Color maskColor = duplicatedMaskTex.GetPixel(x, y);
+        // Set the region number in the material
+        instanceMaterial.SetFloat("_RegionNumber", regionNumber);
 
-        // Check if the color in the mask matches the selected paint color
-        if (IsColorMatch(maskColor, paintColor))
+        // Update the duplicate texture after filling
+        UpdateTexture();
+    }
+    else
+    {
+        Debug.Log("Mask color does not match the selected paint color.");
+
+        // Find the index of the mask color in the available color list
+        int colorIndex = FindColorIndex(maskColor);
+
+        // Highlight the corresponding color button if a matching color is found
+        if (colorIndex != -1)
         {
-            // Flood-fill the region based on the color at the clicked position
-            int regionNumber = FloodFill(x, y);
-
-            // Set the region number in the material
-            instanceMaterial.SetFloat("_RegionNumber", regionNumber);
-
-            // Update the duplicate texture after filling
-            UpdateTexture();
+            HighlightMatchingColorButton(colorIndex);
         }
         else
         {
-            Debug.Log("Mask color does not match the selected paint color.");
+            Debug.LogWarning("Mask color not found in the available color list.");
         }
     }
+}
+
+int FindColorIndex(Color color)
+{
+    // Loop through the list of available colors to find the matching index
+    for (int i = 0; i < availableColors.Count; i++)
+    {
+        if (IsColorMatch(color, availableColors[i]))
+        {
+            return i;
+        }
+    }
+
+    // Return -1 if no matching color is found
+    return -1;
+}
+
+    void HighlightMatchingColorButton(int buttonIndex)
+{
+    if (buttonIndex >= 0 && buttonIndex < colorButtons.Count)
+    {
+        // Apply scaling animation for bounce effect
+        var button = colorButtons[buttonIndex];
+        button.transform.DOScale(Vector3.one * 1.2f, 0.2f)  // Scale up to 1.2x
+            .OnComplete(() => button.transform.DOScale(Vector3.one, 0.2f)); // Scale back down to 1 (original scale)
+    }
+}
 
     void UpdateTexture()
     {
