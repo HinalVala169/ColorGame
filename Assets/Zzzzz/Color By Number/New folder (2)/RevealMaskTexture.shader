@@ -1,4 +1,4 @@
-Shader "Custom/RevealMaskWithNumbers"
+Shader "Custom/RevealMaskTexture"
 {
     Properties
     {
@@ -50,16 +50,22 @@ Shader "Custom/RevealMaskWithNumbers"
                 half4 maskColor = tex2D(_MaskNumTex, i.uv);  // Mask texture
                 half4 numberColor = tex2D(_NumberTex, i.uv); // Number texture
 
-                // Initialize final color as the base color
+                // Determine if the region is filled
+                bool isFilled = baseColor.a > 0.5; // Consider alpha > 0.5 as filled
+
+                // Initialize final color as the base texture
                 half4 finalColor = baseColor;
 
-                // Reveal mask texture based on filled region
-                if (baseColor.a > 0.5) // Assume regions filled have alpha > 0.5
+                if (isFilled)
                 {
-                    finalColor = maskColor; // Show mask in filled areas
+                    // If the region is filled, show the mask texture
+                    finalColor = maskColor;
+
+                    // Hide the corresponding area of the number texture
+                    numberColor.a = 0.0;
                 }
 
-                // Overlay number texture (always visible)
+                // Overlay number texture on top (respecting alpha)
                 finalColor = lerp(finalColor, numberColor, numberColor.a);
 
                 return finalColor;
