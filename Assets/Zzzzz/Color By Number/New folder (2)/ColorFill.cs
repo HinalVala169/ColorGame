@@ -315,4 +315,40 @@ int FindColorIndex(Color color)
             paintColor = availableColors[index];
         }
     }
+
+    public void ResetRegion()
+{
+    // Reset the duplicate texture to match the original base texture
+    duplicateTex.SetPixels(baseTex.GetPixels());  // Copy the original base texture pixels to the duplicate texture
+    duplicateTex.Apply();  // Apply the changes to the duplicate texture
+
+    // Reset texPixels to match the base texture
+    Color[] baseTexColors = baseTex.GetPixels();
+    for (int i = 0; i < baseTexColors.Length; i++)
+    {
+        texPixels[i * 4 + 0] = (byte)(baseTexColors[i].r * 255);
+        texPixels[i * 4 + 1] = (byte)(baseTexColors[i].g * 255);
+        texPixels[i * 4 + 2] = (byte)(baseTexColors[i].b * 255);
+        texPixels[i * 4 + 3] = (byte)(baseTexColors[i].a * 255);
+    }
+
+    // Reset the mask texture to its original state
+    duplicatedMaskTex.SetPixels(maskNumberTex.GetPixels());  // Reset the mask texture
+    duplicatedMaskTex.Apply();  // Apply the changes to the mask texture
+
+    // Update the material with the reset textures
+    instanceMaterial.SetTexture("_MainTex", duplicateTex);  // Set the base texture back to the material
+    instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex);  // Set the mask texture back to the material
+
+    // Reset the region number to its initial state (no region selected)
+    instanceMaterial.SetFloat("_RegionNumber", 0f);  // Reset the region number
+
+    // Optionally, reset other properties like the reveal state if necessary
+    instanceMaterial.SetFloat("_RevealAndMask", 1f);  // Set reveal state to default (1 means normal, unmasked)
+}
+
+     public void OnClearButtonClicked()
+    {
+            ResetRegion();
+    }
 }

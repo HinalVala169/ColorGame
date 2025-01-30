@@ -38,7 +38,7 @@ public class ButtonScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        MusicController.USE.PlaySound(MusicController.USE.clickSound);
+       // MusicController.USE.PlaySound(MusicController.USE.clickSound);
         onMyOwnEvent.Invoke();
     }
 
