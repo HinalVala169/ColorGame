@@ -2982,8 +2982,8 @@ GameObject:
   - component: {fileID: 890009679}
   - component: {fileID: 890009682}
   - component: {fileID: 890009681}
-  - component: {fileID: 890009680}
   - component: {fileID: 890009683}
+  - component: {fileID: 890009680}
   m_Layer: 5
   m_Name: Paint Area
   m_TagString: Untagged

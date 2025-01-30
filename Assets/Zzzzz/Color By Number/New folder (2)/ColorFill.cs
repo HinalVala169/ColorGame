@@ -28,11 +28,16 @@ public class ColorFill : MonoBehaviour
     private Material instanceMaterial;
 
     private Texture2D duplicateTex, duplicatedMaskTex; // Duplicate texture for painting
+   [SerializeField]
+    
+    
 
 
 
     void Start()
     {
+
+        
         // Duplicate the base texture to work with
         texWidth = baseTex.width;
         texHeight = baseTex.height;
@@ -65,6 +70,8 @@ public class ColorFill : MonoBehaviour
 
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
         instanceMaterial.SetFloat("_RegionNumber", 0f); // Default region number (No region selected)
+
+       
     }
 
     void OnMouseDown()
@@ -99,47 +106,47 @@ public class ColorFill : MonoBehaviour
     }
 }
 
-    Vector2 GetMouseUV()
-{
-    pointerEventData = new PointerEventData(eventSystem)
+   Vector2 GetMouseUV()
     {
-        position = Input.mousePosition
-    };
+        pointerEventData = new PointerEventData(eventSystem)
+        {
+            position = Input.mousePosition
+        };
 
-    // Raycast to detect if the click is on the duplicated base texture (imageComponent's material texture)
-    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
-    if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
-    {
-        // Ensure the click is only on the duplicated base texture
-        if (hit.collider.gameObject != imageComponent.gameObject)
-            return Vector2.zero;
+        // Raycast to detect if the click is on the duplicated base texture (imageComponent's material texture)
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
+        if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
+        {
+            // Ensure the click is only on the duplicated base texture
+            if (hit.collider.gameObject != imageComponent.gameObject)
+                return Vector2.zero;
 
-        // Now ensure that the click happens within the bounds of the duplicated base texture (not mask or number texture)
-        RectTransform rectTransform = imageComponent.rectTransform;
+            // Now ensure that the click happens within the bounds of the duplicated base texture (not mask or number texture)
+            RectTransform rectTransform = imageComponent.rectTransform;
 
-        Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, pointerEventData.position, Camera.main, out localPos);
+            Vector2 localPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, pointerEventData.position, Camera.main, out localPos);
 
-        Vector2 pivotAdjustedPos = localPos + (rectTransform.rect.size * rectTransform.pivot);
+            Vector2 pivotAdjustedPos = localPos + (rectTransform.rect.size * rectTransform.pivot);
 
-        Vector2 uv = new Vector2(
-            pivotAdjustedPos.x / rectTransform.rect.width,
-            pivotAdjustedPos.y / rectTransform.rect.height
-        );
+            Vector2 uv = new Vector2(
+                pivotAdjustedPos.x / rectTransform.rect.width,
+                pivotAdjustedPos.y / rectTransform.rect.height
+            );
 
-        uv.x *= duplicateTex.width;  // Use duplicateTex width instead of baseTex
-        uv.y *= duplicateTex.height; // Use duplicateTex height instead of baseTex
+            uv.x *= duplicateTex.width;  // Use duplicateTex width instead of baseTex
+            uv.y *= duplicateTex.height; // Use duplicateTex height instead of baseTex
 
-        uv.x = Mathf.Clamp(uv.x, 0, duplicateTex.width - 1);  // Clamp within duplicateTex
-        uv.y = Mathf.Clamp(uv.y, 0, duplicateTex.height - 1); // Clamp within duplicateTex
+            uv.x = Mathf.Clamp(uv.x, 0, duplicateTex.width - 1);  // Clamp within duplicateTex
+            uv.y = Mathf.Clamp(uv.y, 0, duplicateTex.height - 1); // Clamp within duplicateTex
 
-        return uv;
+            return uv;
+        }
+
+        return Vector2.zero; // Return zero if click is outside the duplicated base texture area
     }
 
-    return Vector2.zero; // Return zero if click is outside the duplicated base texture area
-}
-
-    void RevealClickedRegion(Vector2 clickedUV)
+        void RevealClickedRegion(Vector2 clickedUV)
 {
     // Get the pixel position from the UV coordinates
     int x = Mathf.FloorToInt(clickedUV.x);
@@ -159,6 +166,9 @@ public class ColorFill : MonoBehaviour
 
         // Update the duplicate texture after filling
         UpdateTexture();
+
+        // After filling, update the button's fill amount
+        UpdateColorButtonFillAmount(paintColor); // Update the corresponding button's fill amount
     }
     else
     {
@@ -179,20 +189,8 @@ public class ColorFill : MonoBehaviour
     }
 }
 
-int FindColorIndex(Color color)
-{
-    // Loop through the list of available colors to find the matching index
-    for (int i = 0; i < availableColors.Count; i++)
-    {
-        if (IsColorMatch(color, availableColors[i]))
-        {
-            return i;
-        }
-    }
 
-    // Return -1 if no matching color is found
-    return -1;
-}
+
 
     void HighlightMatchingColorButton(int buttonIndex)
 {
@@ -287,6 +285,117 @@ int FindColorIndex(Color color)
         }
     }
 
+    void UpdateColorButtonFillAmount(Color color)
+{
+    // Calculate the filled percentage for the color (this will give you a value between 0 and 1)
+    float fillAmount = CalculateFillAmountForColor(color);
+
+    if (fillAmount > 0.99f) 
+    {
+        fillAmount = 1f;
+    }
+
+    // Find the corresponding button for the paint color
+    int colorIndex = FindColorIndex(color);
+    if (colorIndex != -1)
+    {
+        // Get the button and its child image (assumed to be a "Fill Amount" indicator)
+        Button button = colorButtons[colorIndex];
+        Image childImage = button.transform.GetChild(2).GetComponent<Image>();
+
+        // Update the fill amount of the button's child image (progress bar)
+        childImage.fillAmount = fillAmount;
+
+       // Debug.Log($"Updated fill amount for color: {color} to {fillAmount * 100}%");
+    }
+}
+
+    float CalculateFillAmountForColor(Color color)
+{
+    int totalParts = 0;  // Total number of regions (parts) for the selected color
+    int filledParts = 0;  // Number of regions that have been filled in the duplicate mask
+
+    // Iterate through the mask texture to count the total regions for the specified color
+    for (int i = 0; i < texWidth; i++)
+    {
+        for (int j = 0; j < texHeight; j++)
+        {
+            // Get the color from the mask image
+            Color maskPixelColor = duplicatedMaskTex.GetPixel(i, j);
+            
+            // If the pixel color matches the selected paint color in the mask
+            if (IsColorMatch(maskPixelColor, color))
+            {
+                totalParts++;
+
+                // Check if this part has been filled in the duplicate texture
+                Color duplicateColor = duplicateTex.GetPixel(i, j);
+                if (IsColorMatch(duplicateColor, color))  // Already filled with the same color
+                {
+                    filledParts++;
+                }
+            }
+        }
+    }
+
+    // Calculate the fill amount as the ratio of filled parts to total parts
+    if (totalParts == 0)
+    {
+        return 0f;  // No regions of this color, return 0
+    }
+
+    // Normalize the fill amount to be between 0 and 1
+    float fillAmount = (float)filledParts / totalParts;
+    
+    // Ensure that fillAmount is always between 0 and 1
+    fillAmount = Mathf.Clamp01(fillAmount);
+
+    return fillAmount;
+}
+
+    // Method to calculate the filled area percentage for a color
+    float CalculateFillPercentage(Color color)
+    {
+        int filledPixels = 0;
+        int totalPixels = texWidth * texHeight;
+
+        // Iterate through the texture to count the filled pixels for the specified color
+        for (int i = 0; i < texWidth; i++)
+        {
+            for (int j = 0; j < texHeight; j++)
+            {
+                int pixelIndex = (j * texWidth + i) * 4;
+                Color pixelColor = new Color(
+                    texPixels[pixelIndex] / 255f,
+                    texPixels[pixelIndex + 1] / 255f,
+                    texPixels[pixelIndex + 2] / 255f,
+                    texPixels[pixelIndex + 3] / 255f
+                );
+
+                if (IsColorMatch(pixelColor, color))
+                {
+                    filledPixels++;
+                }
+            }
+        }
+
+        // Return the percentage of the texture that has been filled with the selected color
+        return (float)filledPixels / totalPixels;
+    }
+
+    // Helper method to find the index of a color in the available colors list
+    int FindColorIndex(Color color)
+    {
+        for (int i = 0; i < availableColors.Count; i++)
+        {
+            if (IsColorMatch(color, availableColors[i]))
+            {
+                return i;
+            }
+        }
+        return -1; // Return -1 if no matching color is found
+    }
+
     private bool IsColorMatch(Color maskColor, Color paintColor)
     {
         return Mathf.Abs(maskColor.r - paintColor.r) <= colorTolerance
@@ -316,6 +425,15 @@ int FindColorIndex(Color color)
         }
     }
 
+  
+    void ResetAllButtonFillAmounts()
+    {
+        foreach (Button button in colorButtons)
+        {
+            Image childImage = button.transform.GetChild(2).GetComponent<Image>();
+            childImage.fillAmount = 0f;
+        }
+    }
 
      public void OnClearButtonClicked()
     {
@@ -335,5 +453,6 @@ int FindColorIndex(Color color)
         instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex); 
         instanceMaterial.SetFloat("_RegionNumber", 0f);
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
+        ResetAllButtonFillAmounts();
     }
 }
