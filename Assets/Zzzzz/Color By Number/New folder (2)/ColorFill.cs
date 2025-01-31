@@ -22,7 +22,9 @@ public class ColorFill : MonoBehaviour
 
     private byte[] texPixels; // To store the pixel data of the base texture
 
+    [SerializeField]
     private int texWidth;
+    [SerializeField]
     private int texHeight;
 
     private Material instanceMaterial;
@@ -147,47 +149,47 @@ public class ColorFill : MonoBehaviour
     }
 
         void RevealClickedRegion(Vector2 clickedUV)
-{
-    // Get the pixel position from the UV coordinates
-    int x = Mathf.FloorToInt(clickedUV.x);
-    int y = Mathf.FloorToInt(clickedUV.y);
-
-    // Get the color from the mask texture at the clicked position
-    Color maskColor = duplicatedMaskTex.GetPixel(x, y);
-
-    // Check if the color in the mask matches the selected paint color
-    if (IsColorMatch(maskColor, paintColor))
-    {
-        // Flood-fill the region based on the color at the clicked position
-        int regionNumber = FloodFill(x, y);
-
-        // Set the region number in the material
-        instanceMaterial.SetFloat("_RegionNumber", regionNumber);
-
-        // Update the duplicate texture after filling
-        UpdateTexture();
-
-        // After filling, update the button's fill amount
-        UpdateColorButtonFillAmount(paintColor); // Update the corresponding button's fill amount
-    }
-    else
-    {
-        Debug.Log("Mask color does not match the selected paint color.");
-
-        // Find the index of the mask color in the available color list
-        int colorIndex = FindColorIndex(maskColor);
-
-        // Highlight the corresponding color button if a matching color is found
-        if (colorIndex != -1)
         {
-            HighlightMatchingColorButton(colorIndex);
+            // Get the pixel position from the UV coordinates
+            int x = Mathf.FloorToInt(clickedUV.x);
+            int y = Mathf.FloorToInt(clickedUV.y);
+
+            // Get the color from the mask texture at the clicked position
+            Color maskColor = duplicatedMaskTex.GetPixel(x, y);
+
+            // Check if the color in the mask matches the selected paint color
+            if (IsColorMatch(maskColor, paintColor))
+            {
+                // Flood-fill the region based on the color at the clicked position
+                int regionNumber = FloodFill(x, y);
+
+                // Set the region number in the material
+                instanceMaterial.SetFloat("_RegionNumber", regionNumber);
+
+                // Update the duplicate texture after filling
+                UpdateTexture();
+
+                // After filling, update the button's fill amount
+                UpdateColorButtonFillAmount(paintColor); // Update the corresponding button's fill amount
+            }
+            else
+            {
+                Debug.Log("Mask color does not match the selected paint color.");
+
+                // Find the index of the mask color in the available color list
+                int colorIndex = FindColorIndex(maskColor);
+
+                // Highlight the corresponding color button if a matching color is found
+                if (colorIndex != -1)
+                {
+                    HighlightMatchingColorButton(colorIndex);
+                }
+                else
+                {
+                    Debug.LogWarning("Mask color not found in the available color list.");
+                }
+            }
         }
-        else
-        {
-            Debug.LogWarning("Mask color not found in the available color list.");
-        }
-    }
-}
 
 
 
@@ -422,8 +424,37 @@ public class ColorFill : MonoBehaviour
         if (index >= 0 && index < availableColors.Count)
         {
             paintColor = availableColors[index];
+            UpdateHighlightTexture();
         }
     }
+
+    void UpdateHighlightTexture()
+{
+    Color[] maskPixels = duplicatedMaskTex.GetPixels();
+    Color[] highlightPixels = new Color[maskPixels.Length];
+
+    // for (int i = 0; i < maskPixels.Length; i++)
+    // {
+    //     // Check if the pixel in the mask matches the selected color
+    //     if (IsColorMatch(maskPixels[i], paintColor))
+    //     {
+    //         highlightPixels[i] = new Color(1, 1, 1, 1); // Fully visible white highlight
+    //     }
+    //     else
+    //     {
+    //         highlightPixels[i] = new Color(0, 0, 0, 0); // Fully transparent
+    //     }
+    // }
+
+    // Create a new texture with the highlighted area
+    Texture2D highlightTexture = new Texture2D(texWidth, texHeight);
+    highlightTexture.SetPixels(highlightPixels);
+    highlightTexture.Apply();
+
+    // Set the updated highlight texture in the material
+    instanceMaterial.SetTexture("_HighlightTex", highlightTexture);
+}
+
 
   
     void ResetAllButtonFillAmounts()

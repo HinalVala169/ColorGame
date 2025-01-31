@@ -3,9 +3,9 @@ Shader "Custom/RevealMaskTexture"
     Properties
     {
         _MainTex ("Base Texture", 2D) = "white" {}    
-        _NumberTex ("Number Texture", 2D) = "white" {}      
+        _NumberTex ("Number Texture", 2D) = "white" {}    
+        _Highlight ("Highlight Texture", 2D) = "white" {}       
         _MaskTex ("Mask Texture", 2D) = "white" {}      
-          // Number texture
         _RegionNumber ("Region Number", Float) = 0         
     }
     SubShader
@@ -21,8 +21,9 @@ Shader "Custom/RevealMaskTexture"
 
             sampler2D _MainTex;    
             sampler2D _NumberTex;   
+            sampler2D _Highlight;
             sampler2D _MaskTex;    
-            float _RegionNumber;     
+            float _RegionNumber;      // The region number to highlight
 
             struct appdata
             {
@@ -49,25 +50,29 @@ Shader "Custom/RevealMaskTexture"
                 // Sample textures
                 half4 baseColor = tex2D(_MainTex, i.uv);     // Base texture
                 half4 numberColor = tex2D(_NumberTex, i.uv); // Number texture
+                half4 highlightColor = tex2D(_Highlight, i.uv);  
                 half4 maskColor = tex2D(_MaskTex, i.uv);  // Mask texture
-                
 
-                // Determine if the region is filled
-                bool isFilled = baseColor.a > 0.5; // Consider alpha > 0.5 as filled
+                // Get the region number from the Number Texture
+                float regionValue = tex2D(_NumberTex, i.uv).r * 255;  // Get region ID from the grayscale value of NumberTex
 
                 // Initialize final color as the base texture
                 half4 finalColor = baseColor;
 
-                if (isFilled)
+                // Show highlight if the current region matches the selected region number and it's not filled
+                if (regionValue == _RegionNumber && baseColor.a < 0.5)
                 {
-                    // If the region is filled, show the mask texture
-                    finalColor = maskColor;
+                    finalColor = highlightColor;  // Show highlight texture
+                }
 
-                    // Hide the corresponding area of the number texture
+                // Show the mask color if the region is filled
+                if (baseColor.a > 0.5)
+                {
+                    finalColor = maskColor;
                     numberColor.a = 0.0;
                 }
 
-                // Overlay number texture on top (respecting alpha)
+                // Overlay number texture on top, respecting alpha
                 finalColor = lerp(finalColor, numberColor, numberColor.a);
 
                 return finalColor;
