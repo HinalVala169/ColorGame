@@ -7,6 +7,7 @@ Shader "Custom/RevealMaskTexture"
         _Highlight ("Highlight Texture", 2D) = "white" {}       
         _MaskTex ("Mask Texture", 2D) = "white" {}      
         _RegionNumber ("Region Number", Float) = 0         
+        _OutlineThreshold ("Outline Threshold", Range(0, 1)) = 0.2 // Controls detection of outline
     }
     SubShader
     {
@@ -23,7 +24,8 @@ Shader "Custom/RevealMaskTexture"
             sampler2D _NumberTex;   
             sampler2D _Highlight;
             sampler2D _MaskTex;    
-            float _RegionNumber;      // The region number to highlight
+            float _RegionNumber;
+            float _OutlineThreshold; // Used to detect dark outlines
 
             struct appdata
             {
@@ -54,22 +56,31 @@ Shader "Custom/RevealMaskTexture"
                 half4 maskColor = tex2D(_MaskTex, i.uv);  // Mask texture
 
                 // Get the region number from the Number Texture
-                float regionValue = tex2D(_NumberTex, i.uv).r * 255;  // Get region ID from the grayscale value of NumberTex
+                float regionValue = numberColor.r * 255;  // Get region ID from grayscale value
 
                 // Initialize final color as the base texture
                 half4 finalColor = baseColor;
 
-                // Show highlight if the current region matches the selected region number and it's not filled
-                if (regionValue == _RegionNumber && baseColor.a < 0.5)
-                {
-                    finalColor = highlightColor;  // Show highlight texture
-                }
+                // Compute grayscale brightness of the base color to detect outlines
+                float brightness = dot(baseColor.rgb, float3(0.299, 0.587, 0.114));
 
-                // Show the mask color if the region is filled
-                if (baseColor.a > 0.5)
+                // If the pixel is considered an outline (dark pixels), do not change it
+                bool isOutline = brightness < _OutlineThreshold;
+
+                if (!isOutline) // Only modify non-outline pixels
                 {
-                    finalColor = maskColor;
-                    numberColor.a = 0.0;
+                    // Show highlight if the current region matches the selected region number and it's not filled
+                    if (regionValue == _RegionNumber && baseColor.a < 0.5)
+                    {
+                        finalColor = highlightColor;  // Show highlight texture
+                    }
+
+                    // Show the mask color if the region is filled
+                    if (baseColor.a > 0.5)
+                    {
+                        finalColor = maskColor;
+                        numberColor.a = 0.0;
+                    }
                 }
 
                 // Overlay number texture on top, respecting alpha
