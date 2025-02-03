@@ -310,7 +310,7 @@ public class ColorFill : MonoBehaviour
     // Calculate the filled percentage for the color (this will give you a value between 0 and 1)
     float fillAmount = CalculateFillAmountForColor(color);
 
-    if (fillAmount > 0.99f) 
+    if (fillAmount > 0.95f) 
     {
         fillAmount = 1f;
     }

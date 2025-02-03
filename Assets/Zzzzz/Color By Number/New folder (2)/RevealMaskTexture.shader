@@ -66,14 +66,15 @@ Shader "Custom/RevealMaskTexture"
 
                 // If the pixel is considered an outline (dark pixels), do not change it
                 bool isOutline = brightness < _OutlineThreshold;
-
+                 
                 if (!isOutline) // Only modify non-outline pixels
                 {
+                    finalColor = highlightColor;
                     // Show highlight if the current region matches the selected region number and it's not filled
-                    if (regionValue == _RegionNumber && baseColor.a < 0.5)
-                    {
-                        finalColor = highlightColor;  // Show highlight texture where the region is selected and not filled
-                    }
+                    // if (regionValue == _RegionNumber )
+                    // {
+                    //     finalColor = highlightColor;  // Show highlight texture where the region is selected and not filled
+                    // }
 
                     // Show the mask color if the region is filled
                     if (baseColor.a > 0.5)
