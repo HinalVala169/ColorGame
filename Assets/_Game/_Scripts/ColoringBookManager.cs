@@ -847,7 +847,15 @@ private void SaveImage(string key)
 
     public void OnBrushButtonClicked(ButtonScript sender)
     {
+
+        if (PanelColors == null )
+{
+    Debug.LogError("PanelColors is not initialized or has no elements.");
+    return;
+}
         paintColor = sender.GetComponent<Image>().color;
+
+
        // brushSizeButton.image.color = paintColor; // set current color image
 
         switch (drawMode)
