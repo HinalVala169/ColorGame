@@ -60843,11 +60843,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
-        m_MethodName: OnClearButtonClicked
-        m_Mode: 1
+        m_MethodName: OnBrushButtonClicked
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 8179612616372456824}
+          m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
