@@ -12,7 +12,7 @@ public class ColoringBookManager : MonoBehaviour
 {
     #region variables
 
-    public bool isColorByNumber = true;
+    public bool isColorByNumber = false;
 
     public Material maskTexMaterial;
     private Texture2D maskTex;
