@@ -41,7 +41,7 @@ public class ColorFill : MonoBehaviour
     void Start()
     {
 
-        
+       
         // Duplicate the base texture to work with
         texWidth = baseTex.width;
         texHeight = baseTex.height;
@@ -82,7 +82,7 @@ public class ColorFill : MonoBehaviour
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
         instanceMaterial.SetFloat("_RegionNumber", 0f); // Default region number (No region selected)
 
-       
+        SetPaintColor(0);
     }
 
     void OnMouseDown()
@@ -442,6 +442,11 @@ public class ColorFill : MonoBehaviour
         if (index >= 0 && index < availableColors.Count)
         {
              paintColor = availableColors[index];
+             foreach(Button go in colorButtons)
+             {
+                go.transform.localScale = Vector3.one;
+             }
+             colorButtons[index].transform.localScale = new Vector3(1.2f,1.2f,1.2f);
              UpdateHighlightTexture(paintColor);
         }
     }
