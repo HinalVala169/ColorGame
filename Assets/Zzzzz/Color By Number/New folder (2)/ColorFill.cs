@@ -3,11 +3,13 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using DG.Tweening;
+using System.Security.Cryptography;
 
 public class ColorFill : MonoBehaviour
 {
     public Texture2D baseTex; // Single texture for both base and mask
     public Texture2D maskNumberTex;
+    public Texture2D hightLightTex;
     public Color paintColor = Color.white; // The color to fill
 
     public List<Color> availableColors;
@@ -29,7 +31,7 @@ public class ColorFill : MonoBehaviour
 
     private Material instanceMaterial;
 
-    private Texture2D duplicateTex, duplicatedMaskTex; // Duplicate texture for painting
+    private Texture2D duplicateTex, duplicatedMaskTex , duplicateHighlight; // Duplicate texture for painting
    [SerializeField]
     
     
@@ -51,6 +53,10 @@ public class ColorFill : MonoBehaviour
         duplicateTex.SetPixels(baseTex.GetPixels());
         duplicateTex.Apply();
 
+        duplicateHighlight = new Texture2D(hightLightTex.width, hightLightTex.height);
+        duplicateHighlight.SetPixels(hightLightTex.GetPixels());
+        duplicateHighlight.Apply();
+
         duplicatedMaskTex = new Texture2D(maskNumberTex.width, maskNumberTex.height);
         duplicatedMaskTex.SetPixels(maskNumberTex.GetPixels());
         duplicatedMaskTex.Apply();
@@ -67,7 +73,10 @@ public class ColorFill : MonoBehaviour
         // Create a new instance of the material
         instanceMaterial = new Material(fillMaterial) { name = fillMaterial.name + "InstanceMaterial_" };
         instanceMaterial.mainTexture = duplicateTex; // Use the duplicate texture
+        instanceMaterial.SetTexture("_Highlight", duplicateHighlight);
         instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex);
+
+
         imageComponent.material = instanceMaterial;
 
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
@@ -156,7 +165,7 @@ public class ColorFill : MonoBehaviour
 
             // Get the color from the mask texture at the clicked position
             Color maskColor = duplicatedMaskTex.GetPixel(x, y);
-
+            
             // Check if the color in the mask matches the selected paint color
             if (IsColorMatch(maskColor, paintColor))
             {
@@ -168,6 +177,7 @@ public class ColorFill : MonoBehaviour
 
                 // Update the duplicate texture after filling
                 UpdateTexture();
+                
 
                 // After filling, update the button's fill amount
                 UpdateColorButtonFillAmount(paintColor); // Update the corresponding button's fill amount
@@ -177,7 +187,9 @@ public class ColorFill : MonoBehaviour
                 Debug.Log("Mask color does not match the selected paint color.");
 
                 // Find the index of the mask color in the available color list
+                
                 int colorIndex = FindColorIndex(maskColor);
+              
 
                 // Highlight the corresponding color button if a matching color is found
                 if (colorIndex != -1)
@@ -188,7 +200,11 @@ public class ColorFill : MonoBehaviour
                 {
                     Debug.LogWarning("Mask color not found in the available color list.");
                 }
+
+
             }
+
+           
         }
 
 
@@ -207,6 +223,8 @@ public class ColorFill : MonoBehaviour
 
     void UpdateTexture()
     {
+
+        //Debug.LogWarning("called");
         Color[] updatedColors = new Color[texWidth * texHeight];
         for (int i = 0; i < texWidth; i++)
         {
@@ -423,38 +441,59 @@ public class ColorFill : MonoBehaviour
     {
         if (index >= 0 && index < availableColors.Count)
         {
-            paintColor = availableColors[index];
-            UpdateHighlightTexture();
+             paintColor = availableColors[index];
+             UpdateHighlightTexture(paintColor);
         }
     }
 
-    void UpdateHighlightTexture()
+void UpdateHighlightTexture(Color color)
 {
-    Color[] maskPixels = duplicatedMaskTex.GetPixels();
-    Color[] highlightPixels = new Color[maskPixels.Length];
+    Debug.LogWarning("called: " + color);
 
-    // for (int i = 0; i < maskPixels.Length; i++)
-    // {
-    //     // Check if the pixel in the mask matches the selected color
-    //     if (IsColorMatch(maskPixels[i], paintColor))
-    //     {
-    //         highlightPixels[i] = new Color(1, 1, 1, 1); // Fully visible white highlight
-    //     }
-    //     else
-    //     {
-    //         highlightPixels[i] = new Color(0, 0, 0, 0); // Fully transparent
-    //     }
-    // }
+     duplicateHighlight = new Texture2D(hightLightTex.width, hightLightTex.height);
+        duplicateHighlight.SetPixels(hightLightTex.GetPixels());
+        duplicateHighlight.Apply();
 
-    // Create a new texture with the highlighted area
-    Texture2D highlightTexture = new Texture2D(texWidth, texHeight);
-    highlightTexture.SetPixels(highlightPixels);
-    highlightTexture.Apply();
+    instanceMaterial.SetTexture("_Highlight", duplicateHighlight);
 
-    // Set the updated highlight texture in the material
-    instanceMaterial.SetTexture("_HighlightTex", highlightTexture);
+    // Reset the updatedColors array
+    Color[] updatedColors = new Color[texWidth * texHeight];
+    for (int k = 0; k < updatedColors.Length; k++)
+    {
+        updatedColors[k] = Color.clear; // Reset all pixels to transparent
+    }
+
+    for (int i = 0; i < texWidth; i++)
+    {
+        for (int j = 0; j < texHeight; j++)
+        {
+            int pixelIndex = (j * texWidth + i);
+
+            Color maskColor = duplicatedMaskTex.GetPixel(i, j); 
+
+            if (IsColorMatch(maskColor, color))
+            {
+                updatedColors[pixelIndex] = duplicateHighlight.GetPixel(i, j);  
+
+                 instanceMaterial.SetFloat("_OutlineThreshold", 0f);
+                // Debug.Log("called:-----------> " );
+            }
+        }
+    }
+
+    duplicateHighlight.SetPixels(updatedColors); 
+    duplicateHighlight.Apply(); 
+    instanceMaterial.SetTexture("_Highlight", duplicateHighlight);
 }
 
+// Helper method to compare colors with a tolerance
+bool IsColorMatch(Color color1, Color color2, float tolerance = 0.1f)
+{
+    return Mathf.Abs(color1.r - color2.r) <= tolerance &&
+           Mathf.Abs(color1.g - color2.g) <= tolerance &&
+           Mathf.Abs(color1.b - color2.b) <= tolerance &&
+           Mathf.Abs(color1.a - color2.a) <= tolerance;
+}
 
   
     void ResetAllButtonFillAmounts()

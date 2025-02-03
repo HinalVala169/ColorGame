@@ -2030,6 +2030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseTex: {fileID: 2800000, guid: 6f95bea4715e9467881926e968372f46, type: 3}
   maskNumberTex: {fileID: 2800000, guid: bc015e2869e574fc085fa9023fdc5d78, type: 3}
+  hightLightTex: {fileID: 2800000, guid: 352e2a1896558470993a6aab53f6ae97, type: 3}
   paintColor: {r: 1, g: 1, b: 1, a: 1}
   availableColors:
   - {r: 1, g: 0, b: 0.9411765, a: 1}
