@@ -13,6 +13,8 @@ public class ColorFill : MonoBehaviour
     public Color paintColor = Color.white; // The color to fill
 
     public List<Color> availableColors;
+    [SerializeField]
+    private Dictionary<Color, bool> colorFillStatus = new Dictionary<Color, bool>();
     public List<Button> colorButtons;
     public float colorTolerance = 0.1f; // Tolerance for color matching
     public Material fillMaterial;
@@ -30,6 +32,8 @@ public class ColorFill : MonoBehaviour
     private int texHeight;
 
     private Material instanceMaterial;
+
+    private int lastUserSelectedIndex = 0;
 
     private Texture2D duplicateTex, duplicatedMaskTex , duplicateHighlight; // Duplicate texture for painting
    [SerializeField]
@@ -81,7 +85,10 @@ public class ColorFill : MonoBehaviour
 
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
         instanceMaterial.SetFloat("_RegionNumber", 0f); // Default region number (No region selected)
-
+         foreach (Color color in availableColors)
+            {
+                colorFillStatus[color] = false;
+            }
         SetPaintColor(0);
     }
 
@@ -177,7 +184,12 @@ public class ColorFill : MonoBehaviour
 
                 // Update the duplicate texture after filling
                 UpdateTexture();
-                
+                Debug.Log("paintColor----" + paintColor);
+                // if(IsColorFullyFilled(paintColor))
+                // {
+                    
+                //     Debug.Log("SuggestNextPendingColor----");
+                // }
 
                 // After filling, update the button's fill amount
                 UpdateColorButtonFillAmount(paintColor); // Update the corresponding button's fill amount
@@ -208,7 +220,25 @@ public class ColorFill : MonoBehaviour
         }
 
 
+    void SuggestNextPendingColor()
+    {
+        if (lastUserSelectedIndex != -1) return; // User manually selected a color, so skip auto selection
 
+        int nextPendingIndex = availableColors.FindIndex(c => !colorFillStatus[c]);
+        if (nextPendingIndex != -1)
+        {
+          
+            SetPaintColor(nextPendingIndex);
+        }
+        else
+        {
+            // If no pending colors, scale all buttons to 1
+            foreach (Button colorButton in colorButtons)
+            {
+                colorButton.transform.localScale = Vector3.one;
+            }
+        }
+    }
 
     void HighlightMatchingColorButton(int buttonIndex)
 {
@@ -305,15 +335,10 @@ public class ColorFill : MonoBehaviour
         }
     }
 
-    void UpdateColorButtonFillAmount(Color color)
+  void UpdateColorButtonFillAmount(Color color)
 {
-    // Calculate the filled percentage for the color (this will give you a value between 0 and 1)
+    // Calculate the filled percentage for the color (this will give a value between 0 and 1)
     float fillAmount = CalculateFillAmountForColor(color);
-
-    if (fillAmount > 0.95f) 
-    {
-        fillAmount = 1f;
-    }
 
     // Find the corresponding button for the paint color
     int colorIndex = FindColorIndex(color);
@@ -323,11 +348,35 @@ public class ColorFill : MonoBehaviour
         Button button = colorButtons[colorIndex];
         Image childImage = button.transform.GetChild(2).GetComponent<Image>();
 
+        if(fillAmount > 0.95f)
+        {
+            fillAmount = 1f;
+        }
         // Update the fill amount of the button's child image (progress bar)
         childImage.fillAmount = fillAmount;
 
-       // Debug.Log($"Updated fill amount for color: {color} to {fillAmount * 100}%");
+        // Print the current color index
+        Debug.Log($"Current Color Index: {colorIndex}");
+
+        // If the color is completely filled, mark it and suggest the next pending color
+        if (fillAmount >= 1f) 
+        {
+            colorFillStatus[color] = true; // Mark the color as completely filled
+            Debug.Log($"Color {color} (Index {colorIndex}) is fully filled.");
+            SuggestNextPendingColor(); // Only suggest the next color when the current one is fully filled
+        }
+
+        Debug.Log($"Updated fill amount for color (Index {colorIndex}): {color} to {fillAmount * 100}%. Completed: {colorFillStatus[color]}");
     }
+    else
+    {
+        Debug.LogWarning("Color not found in availableColors list.");
+    }
+}
+
+public bool IsColorFullyFilled(Color color)
+{
+    return colorFillStatus.ContainsKey(color) && colorFillStatus[color];
 }
 
     float CalculateFillAmountForColor(Color color)
@@ -442,6 +491,7 @@ public class ColorFill : MonoBehaviour
         if (index >= 0 && index < availableColors.Count)
         {
              paintColor = availableColors[index];
+              lastUserSelectedIndex = -1; 
              foreach(Button go in colorButtons)
              {
                 go.transform.localScale = Vector3.one;
@@ -507,7 +557,13 @@ bool IsColorMatch(Color color1, Color color2, float tolerance = 0.1f)
         {
             Image childImage = button.transform.GetChild(2).GetComponent<Image>();
             childImage.fillAmount = 0f;
+            
         }
+        foreach (Color color in availableColors)
+        {
+            colorFillStatus[color] = false;
+        }
+        SetPaintColor(0);
     }
 
      public void OnClearButtonClicked()
