@@ -99,6 +99,11 @@ public class UIManager : MonoBehaviour
     {
         ShowCanvas(CanvasType.SubMenuScreen);
     }
+
+     public void ShowColorByNumSUBMenuSCR()
+    {
+        ShowCanvas(CanvasType.ColorByNumSUBMenuSCR);
+    }
     public void LoadScene(string sceneName)
     {
         previousCanvasType = CanvasType.SubMenuScreen;
@@ -123,5 +128,6 @@ public enum CanvasType
     None,
     MainSCR,
     LevelSCR,
-    SubMenuScreen
+    SubMenuScreen,
+    ColorByNumSUBMenuSCR
 }
