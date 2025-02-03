@@ -115,7 +115,7 @@ public class ColorFill : MonoBehaviour
         }
 
         // If the pixel is valid and not filled, proceed with the region reveal
-        Debug.Log($"Mouse Clicked at: {pixelUV}");
+       // Debug.Log($"Mouse Clicked at: {pixelUV}");
         RevealClickedRegion(pixelUV); // Handle the clicked region
     }
     else
@@ -254,7 +254,7 @@ public class ColorFill : MonoBehaviour
     void UpdateTexture()
     {
 
-        //Debug.LogWarning("called");
+       
         Color[] updatedColors = new Color[texWidth * texHeight];
         for (int i = 0; i < texWidth; i++)
         {
@@ -503,7 +503,6 @@ public bool IsColorFullyFilled(Color color)
 
 void UpdateHighlightTexture(Color color)
 {
-    Debug.LogWarning("called: " + color);
 
      duplicateHighlight = new Texture2D(hightLightTex.width, hightLightTex.height);
         duplicateHighlight.SetPixels(hightLightTex.GetPixels());
