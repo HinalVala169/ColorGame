@@ -26,6 +26,9 @@ public class ButtonScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         {
             transform.localScale = Vector3.one * (currentScale - (currentScale * 0.1f));
         }
+        
+         
+
     }
 
     public void OnPointerUp(PointerEventData pointerEventData)
@@ -36,12 +39,26 @@ public class ButtonScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         }
     }
 
-    public void OnPointerClick(PointerEventData pointerEventData)
-    {
-       // MusicController.USE.PlaySound(MusicController.USE.clickSound);
-        onMyOwnEvent.Invoke();
-    }
+   public void OnPointerClick(PointerEventData pointerEventData)
+{
+    // MusicController.USE.PlaySound(MusicController.USE.clickSound);
+    onMyOwnEvent.Invoke();
 
+    // Transform parent = transform.parent;
+    // if (parent != null)
+    // {
+    //     // Reset all sibling positions to (x, 0, z)
+    //     foreach (Transform sibling in parent)
+    //     {
+    //         sibling.localPosition = new Vector3(sibling.localPosition.x, -20f, sibling.localPosition.z);
+    //     }
+    // }
+
+    // Move the selected button up by 20
+   // transform.localPosition = new Vector3(transform.localPosition.x, 0f, transform.localPosition.z);
+}
+
+  
     private IEnumerator TranslateToEndPos()
     {
         yield return TranslationToEndPos(transform, transform.localPosition, endPosition, moveTime);

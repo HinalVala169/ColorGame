@@ -857,7 +857,7 @@ private void SaveImage(string key)
 
 
        // brushSizeButton.image.color = paintColor; // set current color image
-
+    
         switch (drawMode)
         {
             case DrawMode.Pencil:
@@ -865,22 +865,43 @@ private void SaveImage(string key)
             case DrawMode.PaintBucket:
 
                 int selectedNumber = sender.transform.GetSiblingIndex();
-
+                float yOffsetPixels = 20;
                 for (int i = 0; i < PanelColors[(int)DrawMode.Pencil].childCount; i++)
                 {
                     Vector2 min = PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMin;
                     Vector2 max = PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMax;
+                    RectTransform rt = PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>();
+                    Image img = PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<Image>();
+
+                    // if (i == selectedNumber)
+                    // {
+                    //     min.x = 0f;
+                    //     max.x = 0.66f;
 
                     if (i == selectedNumber)
                     {
-                        min.x = 0f;
-                        max.x = 0.66f;
+                        // Increase the y position by adding an offset.
+                        rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y + yOffsetPixels);
+                         if (img != null)
+                         img.raycastTarget = false;
                     }
                     else
                     {
-                        min.x = 0.22f;
-                        max.x = 0.88f;
+                       rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, -52.5f);
+                        if (img != null)
+                         img.raycastTarget = true;
                     }
+                    
+                    // }
+                    // else
+                    // {
+                    //     min.x = 0.22f;
+                    //     max.x = 0.88f;
+                    
+                    // }
+                    // 
+                    // rt.anchorMin = min;
+                    // rt.anchorMax = max;
 
                     // PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMin = min;
                     //[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMax = max;

@@ -157,10 +157,10 @@ RectTransform:
   - {fileID: 1224838692}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1572.14, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7823629
 MonoBehaviour:
@@ -174,16 +174,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 7823629}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -265,10 +265,10 @@ RectTransform:
   - {fileID: 1360538354}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1411.02, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &31690354
 MonoBehaviour:
@@ -282,16 +282,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 31690354}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -386,7 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -536,7 +536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -761,7 +761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -898,10 +898,10 @@ RectTransform:
   - {fileID: 1271518191}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1652.7, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &342401316
 MonoBehaviour:
@@ -915,16 +915,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 342401316}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -1019,7 +1019,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1156,10 +1156,10 @@ RectTransform:
   - {fileID: 113370574}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1008.22, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &505160560
 MonoBehaviour:
@@ -1173,16 +1173,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 505160560}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -1864,10 +1864,10 @@ RectTransform:
   - {fileID: 208612693}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1169.34, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &837131571
 MonoBehaviour:
@@ -1881,16 +1881,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 837131571}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -2223,10 +2223,10 @@ RectTransform:
   - {fileID: 293359260}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1491.58, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &935184999
 MonoBehaviour:
@@ -2240,16 +2240,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 935184999}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -4416,7 +4416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4491,7 +4491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4553,10 +4553,10 @@ RectTransform:
   - {fileID: 1528170384}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1330.46, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1285612406
 MonoBehaviour:
@@ -4570,16 +4570,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 1285612406}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -4661,10 +4661,10 @@ RectTransform:
   - {fileID: 346891127}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1088.78, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1312378019
 MonoBehaviour:
@@ -4678,16 +4678,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 1312378019}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -4782,7 +4782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4932,7 +4932,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5137,10 +5137,10 @@ RectTransform:
   - {fileID: 107530129}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1249.9, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2134542971
 MonoBehaviour:
@@ -5154,16 +5154,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 2134542971}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -5324,7 +5324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6046,7 +6046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6354,16 +6354,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 303235123336224466}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -6971,16 +6971,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 469872063818219843}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -9026,10 +9026,10 @@ RectTransform:
   - {fileID: 1142058974275926980}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 524.86, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &1021569954759148242
 RectTransform:
@@ -9504,10 +9504,10 @@ RectTransform:
   - {fileID: 979729391885697890}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 685.98, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1125207274162419689
 MonoBehaviour:
@@ -11886,16 +11886,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 1862065308085216820}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -12562,8 +12562,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -496.51147, y: 6.0713005}
-  m_SizeDelta: {x: 649.104, y: 91.961}
+  m_AnchoredPosition: {x: -496.51147, y: 5}
+  m_SizeDelta: {x: 649.104, y: 76.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2117274990232697681
 GameObject:
@@ -12673,7 +12673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -15801,10 +15801,10 @@ RectTransform:
   - {fileID: 2999684057436355404}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 363.74, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3149652731934261176
 MonoBehaviour:
@@ -18514,10 +18514,10 @@ RectTransform:
   - {fileID: 3959566148212218939}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 605.42, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3819559173317416093
 MonoBehaviour:
@@ -19094,10 +19094,10 @@ RectTransform:
   - {fileID: 3765898746630144938}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 927.66, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3917570870208713329
 GameObject:
@@ -19687,8 +19687,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 4.0909996}
-  m_SizeDelta: {x: 0, y: 6.748}
+  m_AnchoredPosition: {x: 0, y: 30.552}
+  m_SizeDelta: {x: 0, y: 30.552}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &4074361322919488412
 CanvasRenderer:
@@ -19925,7 +19925,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -20543,7 +20543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -21405,16 +21405,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 4462738446787632666}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -21838,16 +21838,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 4588902900538369724}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -22612,10 +22612,10 @@ RectTransform:
   - {fileID: 4654282586015533150}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 41.5, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4803177880166215709
 CanvasRenderer:
@@ -22642,7 +22642,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -128, y: -0.0000076293945}
+  m_AnchoredPosition: {x: -128.00005, y: 0}
   m_SizeDelta: {x: 1458.665, y: 28.387}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &4811403734484306801
@@ -22663,10 +22663,10 @@ RectTransform:
   - {fileID: 4668531530306495236}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 283.18, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4812445027709604196
 CanvasRenderer:
@@ -24142,7 +24142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -24917,7 +24917,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -25510,16 +25510,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 5537777257152673263}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -26297,16 +26297,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 5721859792641579265}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -26389,10 +26389,10 @@ RectTransform:
   - {fileID: 5593584296457034547}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 847.1, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5745626026433971560
 MonoBehaviour:
@@ -28767,7 +28767,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -29119,7 +29119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -29811,16 +29811,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 6722215856956733411}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -30488,16 +30488,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 6844647574099051229}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -33329,7 +33329,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7549236042329738275}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
@@ -33343,7 +33343,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 83, y: 105}
-  m_Spacing: {x: 0, y: 0}
+  m_Spacing: {x: -2.44, y: 0}
   m_Constraint: 2
   m_ConstraintCount: 1
 --- !u!1 &7553004158142008442
@@ -34691,10 +34691,10 @@ RectTransform:
   - {fileID: 7965588998862397349}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 122.06, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &7820457286484651509
 RectTransform:
@@ -35291,10 +35291,10 @@ RectTransform:
   - {fileID: 7871304775063399067}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 766.54, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8015855849245995754
 CanvasRenderer:
@@ -35754,16 +35754,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 8124373850738343548}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -35782,16 +35782,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 8133838562239190310}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -36914,7 +36914,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -36963,7 +36963,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -38414,7 +38414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9882353, g: 0.7137255, b: 0.39607844, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -39263,10 +39263,10 @@ RectTransform:
   - {fileID: 9159837184925615225}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 444.3, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &9023972096033778949
 GameObject:
@@ -39558,16 +39558,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284f4a50c3ec4f2780d6dd0f6eae6d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useAnimationClick: 0
+  useAnimationClick: 1
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1199865697}
         m_TargetAssemblyTypeName: ColoringBookManager, Assembly-CSharp
         m_MethodName: OnBrushButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 9067436007835321931}
           m_ObjectArgumentAssemblyTypeName: ButtonScript, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -39804,10 +39804,10 @@ RectTransform:
   - {fileID: 8983631613250791575}
   m_Father: {fileID: 2095941616229991127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 202.62, y: -52.5}
+  m_SizeDelta: {x: 83, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &9126784101010592167
 GameObject:
