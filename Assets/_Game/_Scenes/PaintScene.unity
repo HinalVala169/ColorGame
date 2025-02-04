@@ -7045,7 +7045,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1199865693
 Transform:
   m_ObjectHideFlags: 0
@@ -7228,7 +7228,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b49372cbde333472e803afe885e5eb48, type: 3}
   brushSize: 8
   stickers:
-  - {fileID: 2800000, guid: abee3f14ecd1e4799981e3b42451973c, type: 3}
+  - {fileID: 2800000, guid: 7bf9e46462bc84877ab394882a3470ee, type: 3}
   - {fileID: 2800000, guid: 3f25503baa06d4b8a824a29c1955a473, type: 3}
   - {fileID: 2800000, guid: d09fca53234124c23b73a94ce99252b7, type: 3}
   - {fileID: 2800000, guid: 2f817e8b561bd4b7ba2e33a2b6b45192, type: 3}
@@ -11166,7 +11166,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8297605112166611819}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -11176,7 +11176,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 427.6531, y: 152.046}
+  m_AnchoredPosition: {x: 427.6531, y: 152.04602}
   m_SizeDelta: {x: 439.397, y: 75.716}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &147571894601623372
@@ -14447,12 +14447,12 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1660857561606865866}
         m_TargetAssemblyTypeName: SwichMode, Assembly-CSharp
         m_MethodName: switchSelectedMode
         m_Mode: 3
@@ -18077,9 +18077,9 @@ MonoBehaviour:
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1660857561606865866}
-        m_TargetAssemblyTypeName: SwichMode, Assembly-CSharp
-        m_MethodName: switchSelectedMode
+      - m_Target: {fileID: 1199865697}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: OnDrawModeButtonClicked
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -18089,9 +18089,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: OnDrawModeButtonClicked
+      - m_Target: {fileID: 1660857561606865866}
+        m_TargetAssemblyTypeName: SwichMode, Assembly-CSharp
+        m_MethodName: switchSelectedMode
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -29767,7 +29767,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1660857561606865866}
         m_TargetAssemblyTypeName: SwichMode, Assembly-CSharp
         m_MethodName: switchSelectedMode
         m_Mode: 3
@@ -33002,9 +33002,9 @@ MonoBehaviour:
   myOwnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SwichMode, Assembly-CSharp
-        m_MethodName: switchSelectedMode
+      - m_Target: {fileID: 1199865697}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: OnDrawModeButtonClicked
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -33014,9 +33014,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1199865697}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: OnDrawModeButtonClicked
+      - m_Target: {fileID: 1660857561606865866}
+        m_TargetAssemblyTypeName: SwichMode, Assembly-CSharp
+        m_MethodName: switchSelectedMode
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -41462,8 +41462,8 @@ RectTransform:
   - {fileID: 7147392371689597963}
   - {fileID: 1145019445}
   - {fileID: 6694125523595189766}
-  - {fileID: 4049940130723525621}
   - {fileID: 145754117669005242}
+  - {fileID: 4049940130723525621}
   m_Father: {fileID: 597189531739795512}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}

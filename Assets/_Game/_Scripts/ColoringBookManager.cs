@@ -881,6 +881,9 @@ private void SaveImage(string key)
                     if (i == selectedNumber)
                     {
                         // Increase the y position by adding an offset.
+                        // min.x = 0f;
+                        // max.x = 0.66f;
+                        Debug.Log("selectedNumber  --- " + selectedNumber); 
                         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y + yOffsetPixels);
                          if (img != null)
                          img.raycastTarget = false;
