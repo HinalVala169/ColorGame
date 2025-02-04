@@ -892,34 +892,35 @@ private void SaveImage(string key)
                          img.raycastTarget = true;
                     }
                     
+               
+                    ////////////////////////////////////////
+                    rt = PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>();
+                    img = PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<Image>();
+                    min = PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMin;
+                    max = PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMax;
+
+                    // if (i == selectedNumber)
+                    // {
+                    //     min.x = 0f;
+                    //     max.x = 0.66f;
                     // }
                     // else
                     // {
                     //     min.x = 0.22f;
                     //     max.x = 0.88f;
-                    
                     // }
-                    // 
-                    // rt.anchorMin = min;
-                    // rt.anchorMax = max;
-
-                    // PanelColors[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMin = min;
-                    //[(int)DrawMode.Pencil].GetChild(i).GetComponent<RectTransform>().anchorMax = max;
-
-                    ////////////////////////////////////////
-
-                    min = PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMin;
-                    max = PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMax;
-
-                    if (i == selectedNumber)
+                     if (i == selectedNumber)
                     {
-                        min.x = 0f;
-                        max.x = 0.66f;
+                        // Increase the y position by adding an offset.
+                        rt.localScale = new Vector3(1.1f,1.1f,1.1f);
+                         if (img != null)
+                         img.raycastTarget = false;
                     }
                     else
                     {
-                        min.x = 0.22f;
-                        max.x = 0.88f;
+                        rt.localScale = new Vector3(0.8f,0.8f,0.8f);
+                        if (img != null)
+                         img.raycastTarget = true;
                     }
 
                     // PanelColors[(int)DrawMode.Marker].GetChild(i).GetComponent<RectTransform>().anchorMin = min;
