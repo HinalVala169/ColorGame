@@ -3,7 +3,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using DG.Tweening;
-using System.Security.Cryptography;
+using System.Collections;
+using UnityEngine.SceneManagement;
+
 
 public class ColorFill : MonoBehaviour
 {
@@ -46,13 +48,10 @@ public class ColorFill : MonoBehaviour
     {
 
        
-        // Duplicate the base texture to work with
-        texWidth = baseTex.width;
+     texWidth = baseTex.width;
         texHeight = baseTex.height;
-
         texPixels = new byte[texWidth * texHeight * 4];
 
-        // Clone the base texture into the duplicate texture
         duplicateTex = new Texture2D(baseTex.width, baseTex.height);
         duplicateTex.SetPixels(baseTex.GetPixels());
         duplicateTex.Apply();
@@ -74,21 +73,20 @@ public class ColorFill : MonoBehaviour
             texPixels[i * 4 + 3] = (byte)(baseTexColors[i].a * 255);
         }
 
-        // Create a new instance of the material
         instanceMaterial = new Material(fillMaterial) { name = fillMaterial.name + "InstanceMaterial_" };
-        instanceMaterial.mainTexture = duplicateTex; // Use the duplicate texture
+        instanceMaterial.mainTexture = duplicateTex;
         instanceMaterial.SetTexture("_Highlight", duplicateHighlight);
         instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex);
-
-
         imageComponent.material = instanceMaterial;
-
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
-        instanceMaterial.SetFloat("_RegionNumber", 0f); // Default region number (No region selected)
-         foreach (Color color in availableColors)
-            {
-                colorFillStatus[color] = false;
-            }
+        instanceMaterial.SetFloat("_RegionNumber", 0f);
+
+        foreach (Color color in availableColors)
+        {
+            colorFillStatus[color] = false;
+        }
+
+        SaveLoadManager.LoadProgress("ColorByNumberSave", texPixels, texWidth, texHeight, duplicateTex);
         SetPaintColor(0);
     }
 
@@ -584,5 +582,37 @@ bool IsColorMatch(Color color1, Color color2, float tolerance = 0.1f)
         instanceMaterial.SetFloat("_RegionNumber", 0f);
         instanceMaterial.SetFloat("_RevealAndMask", 1f);
         ResetAllButtonFillAmounts();
+    }
+
+      public void OnHomeButtonClicked()
+        {
+           // SaveImage(ID);
+            
+            // Start the coroutine to delay scene loading by 1 minute
+            StartCoroutine(DelayLoadMainScene());
+        }
+
+        private IEnumerator DelayLoadMainScene()
+        {
+            // Wait for 1 minute (60 seconds)
+            yield return new WaitForSeconds(0f);
+
+            // Now load the scene after the delay
+            SceneManager.LoadScene("MainScene");
+
+            // Use the sceneLoaded event to wait for the scene to load completely
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MainScene")
+        {
+            UIManager.Instance.ReturnToPreviousScreen();
+        }
+    }
+     void OnApplicationQuit()
+    {
+       // SaveLoadManager.SaveProgress("ColorByNumberSave", texPixels, texWidth, texHeight);
     }
 }

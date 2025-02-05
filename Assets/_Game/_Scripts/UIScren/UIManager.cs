@@ -71,20 +71,30 @@ public class UIManager : MonoBehaviour
        
     }
 
-    public void GoBackToPreviousCanvas()
+   public void GoBackToPreviousCanvas()
     {
-        if (currentCanvasIndex > 0)
+        // When going back from any submenu, go to the LevelSCR canvas
+        if (previousCanvasType == CanvasType.SubMenuScreen || 
+            previousCanvasType == CanvasType.ColorByNumSUBMenuSCR || 
+            previousCanvasType == CanvasType.ColorByGlitterSUBMenuSCR)
         {
-            currentCanvasIndex--; // Decrement the index to move back
-            ShowCanvas(canvases[currentCanvasIndex].CanvasType);
-            Debug.Log("Going back to canvas index: " + currentCanvasIndex);
+            ShowCanvas(CanvasType.LevelSCR);  // Always go to LevelSCR
         }
         else
         {
-            Debug.LogWarning("No previous canvas to go back to.");
+            if (currentCanvasIndex > 0)
+            {
+                currentCanvasIndex--; // Move back
+                ShowCanvas(canvases[currentCanvasIndex].CanvasType);
+                Debug.Log("Going back to canvas index: " + currentCanvasIndex);
+            }
+            else
+            {
+                Debug.LogWarning("No previous canvas to go back to.");
+            }
         }
     }
-
+    
     public void ShowMainMenu()
     {
         ShowCanvas(CanvasType.MainSCR);
@@ -103,6 +113,11 @@ public class UIManager : MonoBehaviour
      public void ShowColorByNumSUBMenuSCR()
     {
         ShowCanvas(CanvasType.ColorByNumSUBMenuSCR);
+    }
+
+     public void ShowColorByGliterSUBMenuSCR()
+    {
+        ShowCanvas(CanvasType.ColorByGlitterSUBMenuSCR);
     }
     public void LoadScene(string sceneName)
     {
@@ -129,5 +144,6 @@ public enum CanvasType
     MainSCR,
     LevelSCR,
     SubMenuScreen,
-    ColorByNumSUBMenuSCR
+    ColorByNumSUBMenuSCR,
+    ColorByGlitterSUBMenuSCR,
 }
