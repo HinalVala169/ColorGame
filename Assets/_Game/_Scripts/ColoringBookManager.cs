@@ -96,10 +96,10 @@ public class ColoringBookManager : MonoBehaviour
     private byte[] clearPixels; // byte array for clearing texture
 
     private Texture2D tex; // texture that we paint into (it gets updated from pixels[] array when painted)
-    [SerializeField]
-    private int texWidth = 576;
-    [SerializeField]
-    private int texHeight = 1024;
+    
+    public int texWidth = 576;
+    
+    public int texHeight = 1024;
     private RaycastHit hit;
     private bool wentOutside = false;
 
@@ -180,9 +180,9 @@ public class ColoringBookManager : MonoBehaviour
 
    private void Awake()
     {
-        Camera.main.aspect = 9 / 16f;
+      //  Camera.main.aspect = 9 / 16f;
 
-        GetComponent<Renderer>().sortingOrder = -99;
+      //  GetComponent<Renderer>().sortingOrder = -99;
 
         if (maskTexIndex < 0)
         {
