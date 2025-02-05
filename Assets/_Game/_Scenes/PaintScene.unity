@@ -7140,7 +7140,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 45.75556}
-  m_SizeDelta: {x: 640, y: 814}
+  m_SizeDelta: {x: 854, y: 1436}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!33 &1199865695
 MeshFilter:
@@ -7210,7 +7210,7 @@ MonoBehaviour:
   isColorByNumber: 0
   maskTexMaterial: {fileID: 2100000, guid: 0b18c9f7f08448d2bc71c32bb346a29d, type: 2}
   maskTexList:
-  - {fileID: 21300000, guid: 28ec79c0ef5f74bc19e95bcead1765ee, type: 3}
+  - {fileID: 21300000, guid: 6f95bea4715e9467881926e968372f46, type: 3}
   - {fileID: 21300000, guid: 82ece3abdbc414ffba6be14e2b2f36d2, type: 3}
   - {fileID: 21300000, guid: bf4a1ab0635be4d6094f65536056b639, type: 3}
   - {fileID: 21300000, guid: a61e9b6a160bc424e81419da25292043, type: 3}
@@ -7535,7 +7535,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 640, y: 814}
+  m_Size: {x: 854, y: 1436}
   m_EdgeRadius: 0
 --- !u!1 &1208710274
 GameObject:
@@ -12812,11 +12812,11 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1199865693}
   - {fileID: 1289083335345258643}
   - {fileID: 9104988355175749311}
   - {fileID: 7261983851209966995}
   - {fileID: 3857016244300349221}
-  - {fileID: 1199865693}
   - {fileID: 199963341}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
