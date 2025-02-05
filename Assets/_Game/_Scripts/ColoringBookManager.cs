@@ -276,11 +276,11 @@ public class ColoringBookManager : MonoBehaviour
         // create texture
         if (maskTex)
         {
-            GetComponent<Renderer>().material = maskTexMaterial;
+            GetComponent<Image>().material = maskTexMaterial;
 
             texWidth = maskTex.width;
             texHeight = maskTex.height;
-            GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTex);
+            GetComponent<Image>().material.SetTexture("_MaskTex", maskTex);
 
             useLockArea = true;
         }
@@ -292,12 +292,12 @@ public class ColoringBookManager : MonoBehaviour
             useLockArea = false;
         }
 
-        if (!GetComponent<Renderer>().material.HasProperty("_MainTex")) Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex'");
+        if (!GetComponent<Image>().material.HasProperty("_MainTex")) Debug.LogError("Fatal error: Current shader doesn't have a property: '_MainTex'");
 
 
         // create new texture
         tex = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
-        GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
+        GetComponent<Image>().material.SetTexture("_MainTex", tex);
 
         // init pixels array
         pixels = new byte[texWidth * texHeight * 4];
@@ -343,26 +343,36 @@ public class ColoringBookManager : MonoBehaviour
     }
     private void CreateFullScreenQuad()
     {
-        Camera cam = Camera.main;
-        // create mesh plane, fits in camera view (with screensize adjust taken into consideration)
-        Mesh go_Mesh = GetComponent<MeshFilter>().mesh;
-        go_Mesh.Clear();
-        go_Mesh.vertices = new[] {
-                cam.ScreenToWorldPoint(new Vector3(0, 0, cam.nearClipPlane + 0.1f)), // bottom left
-				cam.ScreenToWorldPoint(new Vector3(0, cam.pixelHeight, cam.nearClipPlane + 0.1f)), // top left
-				cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, cam.pixelHeight, cam.nearClipPlane + 0.1f)), // top right
-				cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, 0, cam.nearClipPlane + 0.1f)) // bottom right
-			};
-        go_Mesh.uv = new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0) };
-        go_Mesh.triangles = new[] { 0, 1, 2, 0, 2, 3 };
+        Image image = GetComponent<Image>();
+        if (image == null)
+        {
+            Debug.LogError("No Image component found! Please attach this script to a UI Image.");
+            return;
+        }
 
-        go_Mesh.RecalculateNormals();
+        RectTransform rectTransform = image.rectTransform;
+        
+        // // Make the image stretch to fill the entire screen
+        // rectTransform.anchorMin = Vector2.zero;  // Bottom-left corner
+        // rectTransform.anchorMax = Vector2.one;   // Top-right corner
+        // rectTransform.offsetMin = Vector2.zero;  // No offset
+        // rectTransform.offsetMax = Vector2.zero;  // No offset
 
-        go_Mesh.tangents = new[] { new Vector4(1.0f, 0.0f, 0.0f, -1.0f), new Vector4(1.0f, 0.0f, 0.0f, -1.0f), new Vector4(1.0f, 0.0f, 0.0f, -1.0f), new Vector4(1.0f, 0.0f, 0.0f, -1.0f) };
+        // Ensure the image preserves the texture aspect ratio
+        image.preserveAspect = true;
 
-        // add mesh collider
-        // gameObject.AddComponent<MeshCollider>();
-        gameObject.GetComponent<MeshCollider>().sharedMesh = go_Mesh;
+        // Check and log texture width and height
+        if (image.sprite != null && image.sprite.texture != null)
+        {
+            int textureWidth = image.sprite.texture.width;
+            int textureHeight = image.sprite.texture.height;
+            Debug.Log($"Texture Width: {textureWidth}, Texture Height: {textureHeight}");
+        }
+        else
+        {
+            Debug.LogWarning("No texture found on the Image component.");
+        }
+    
     }
 
     private void ReadMaskImage()
@@ -469,153 +479,168 @@ private void SaveImage(string key)
     }
 
     private void MousePaint()
+{
+    if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            if (hit.collider == null || !hit.collider.gameObject.name.Contains("PaintingBoard"))
             {
-                if (hit.collider == null || !hit.collider.gameObject.name.Contains("PaintingBoard"))
-                {
-                    return;
-                }
+                return;
+            }
+        }
+        else
+        {
+            RaycastHit2D hit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+            if (hit2D.collider == null || !hit2D.collider.gameObject.name.Contains("PaintingBoard"))
+            {
+                return;
+            }
+
+            // Convert world position to texture UV coordinates
+            pixelUVOld = pixelUV;
+            pixelUV = hit2D.point;
+            pixelUV.x = (pixelUV.x - hit2D.collider.bounds.min.x) / hit2D.collider.bounds.size.x * texWidth;
+            pixelUV.y = (pixelUV.y - hit2D.collider.bounds.min.y) / hit2D.collider.bounds.size.y * texHeight;
+
+            // 🔥 Strict Clamping Before Using pixelUV
+            pixelUV.x = Mathf.Clamp(pixelUV.x, 0, texWidth - 1);
+            pixelUV.y = Mathf.Clamp(pixelUV.y, 0, texHeight - 1);
+
+            Debug.Log($"[DEBUG] 2D Raycast Clamped UV: {pixelUV.x}, {pixelUV.y} | Texture Size: {texWidth}x{texHeight}");
+        }
+    }
+
+    if (Input.GetMouseButtonDown(0))
+    {
+        if (useLockArea)
+        {
+            if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1))
+            {
+                RaycastHit2D hit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+                if (hit2D.collider == null) return;
+
+                // Convert world position to texture UV coordinates
+                pixelUV.x = (hit2D.point.x - hit2D.collider.bounds.min.x) / hit2D.collider.bounds.size.x * texWidth;
+                pixelUV.y = (hit2D.point.y - hit2D.collider.bounds.min.y) / hit2D.collider.bounds.size.y * texHeight;
+
+                // 🔥 Strict Clamping Before Using pixelUV
+                pixelUV.x = Mathf.Clamp(pixelUV.x, 0, texWidth - 1);
+                pixelUV.y = Mathf.Clamp(pixelUV.y, 0, texHeight - 1);
+
+                CreateAreaLockMask((int)pixelUV.x, (int)pixelUV.y);
             }
             else
             {
-                RaycastHit2D hit2 = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
-                if (hit2.collider == null || !hit2.collider.gameObject.name.Contains("PaintingBoard"))
-                {
-                    return;
-                }
-            }
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (useLockArea)
-            {
-                if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1)) return;
                 CreateAreaLockMask((int)(hit.textureCoord.x * texWidth), (int)(hit.textureCoord.y * texHeight));
             }
+        }
 
-            if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1)) { wentOutside = true; return; }
+        if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1))
+        {
+            RaycastHit2D hit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit2D.collider == null) { wentOutside = true; return; }
 
-            pixelUVOld = pixelUV; // take previous value, so can compare them
+            pixelUVOld = pixelUV;
+            pixelUV = hit2D.point;
+            pixelUV.x = (pixelUV.x - hit2D.collider.bounds.min.x) / hit2D.collider.bounds.size.x * texWidth;
+            pixelUV.y = (pixelUV.y - hit2D.collider.bounds.min.y) / hit2D.collider.bounds.size.y * texHeight;
+        }
+        else
+        {
+            pixelUVOld = pixelUV;
             pixelUV = hit.textureCoord;
             pixelUV.x *= texWidth;
             pixelUV.y *= texHeight;
-
-            if (wentOutside) { pixelUVOld = pixelUV; wentOutside = false; }
-
-            // lets paint where we hit
-            switch (drawMode)
-            {
-                case DrawMode.Sticker: // Sticker
-                    DrawSticker((int)pixelUV.x, (int)pixelUV.y);
-                    break;
-
-                default: // unknown mode
-                    break;
-            }
-
-            textureNeedsUpdate = true;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        // 🔥 Strict Clamping Before Using pixelUV
+        pixelUV.x = Mathf.Clamp(pixelUV.x, 0, texWidth - 1);
+        pixelUV.y = Mathf.Clamp(pixelUV.y, 0, texHeight - 1);
+
+        if (wentOutside) { pixelUVOld = pixelUV; wentOutside = false; }
+
+        Debug.Log($"[DEBUG] Drawing Mode: {drawMode} at {pixelUV.x}, {pixelUV.y}");
+
+        switch (drawMode)
         {
-            if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1)) { wentOutside = true; return; }
-
-            // when starting, grab undo buffer first
-            if (RedoIndex > 0)
-            {
-                undoPixels.RemoveRange(undoPixels.Count - RedoIndex, RedoIndex);
-            }
-
-            undoPixels.Add(new byte[texWidth * texHeight * 4]);
-            System.Array.Copy(pixels, undoPixels[undoPixels.Count - 1], pixels.Length);
-
-            RedoIndex = 0;
+            case DrawMode.Sticker:
+                DrawSticker((int)pixelUV.x, (int)pixelUV.y);
+                break;
+            default:
+                break;
         }
 
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
-        {
-            // Only if we hit something, then we continue
-            if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1)) { wentOutside = true; return; }
-
-            pixelUVOld = pixelUV; // take previous value, so can compare them
-            pixelUV = hit.textureCoord;
-            pixelUV.x *= texWidth;
-            pixelUV.y *= texHeight;
-
-            if (wentOutside) { pixelUVOld = pixelUV; wentOutside = false; }
-
-            // lets paint where we hit
-            switch (drawMode)
-            {
-                case DrawMode.Pencil: // drawing
-                    DrawCircle((int)pixelUV.x, (int)pixelUV.y);
-                    break;
-
-                case DrawMode.Marker: // drawing
-                    DrawAdditiveCircle((int)pixelUV.x, (int)pixelUV.y);
-                    break;
-
-                case DrawMode.Sticker: // Sticker
-                   DrawSticker((int)pixelUV.x, (int)pixelUV.y);
-                   break;
-
-                case DrawMode.PaintBucket: // floodfill
-                    if (maskTex)
-                    {
-                        FloodFillMaskOnlyWithThreshold((int)pixelUV.x, (int)pixelUV.y);
-                    }
-                    else
-                    {
-                        FloodFillWithTreshold((int)pixelUV.x, (int)pixelUV.y);
-                    }
-                    break;
-
-                default: // unknown mode
-                    break;
-            }
-
-            textureNeedsUpdate = true;
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            // take this position as start position
-            if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1)) return;
-
-            pixelUVOld = pixelUV;
-        }
-
-        // check distance from previous drawing point and connect them with DrawLine
-        if (Vector2.Distance(pixelUV, pixelUVOld) > brushSize)
-        {
-            switch (drawMode)
-            {
-                case DrawMode.Pencil: // drawing
-                    DrawLine(pixelUVOld, pixelUV);
-                    break;
-
-                case DrawMode.Marker: // drawing
-                    DrawAdditiveLine(pixelUVOld, pixelUV);
-                    break;
-
-                case DrawMode.Sticker:
-                   DrawLineWithSticker(pixelUVOld, pixelUV);
-                   break;
-
-                default: // other modes
-                    break;
-            }
-            pixelUVOld = pixelUV;
-            textureNeedsUpdate = true;
-        }
+        textureNeedsUpdate = true;
     }
+
+    if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
+    {
+        Debug.Log($"[DEBUG] Mouse Painting at {pixelUV.x}, {pixelUV.y}");
+
+        if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1))
+        {
+            RaycastHit2D hit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit2D.collider == null) { wentOutside = true; return; }
+
+            pixelUVOld = pixelUV;
+            pixelUV = hit2D.point;
+            pixelUV.x = (pixelUV.x - hit2D.collider.bounds.min.x) / hit2D.collider.bounds.size.x * texWidth;
+            pixelUV.y = (pixelUV.y - hit2D.collider.bounds.min.y) / hit2D.collider.bounds.size.y * texHeight;
+        }
+        else
+        {
+            pixelUVOld = pixelUV;
+            pixelUV = hit.textureCoord;
+            pixelUV.x *= texWidth;
+            pixelUV.y *= texHeight;
+        }
+
+        // 🔥 Strict Clamping Before Using pixelUV
+        pixelUV.x = Mathf.Clamp(pixelUV.x, 0, texWidth - 1);
+        pixelUV.y = Mathf.Clamp(pixelUV.y, 0, texHeight - 1);
+
+        Debug.Log($"[DEBUG] Final Clamped UV: {pixelUV.x}, {pixelUV.y}");
+
+        if (wentOutside) { pixelUVOld = pixelUV; wentOutside = false; }
+
+        Debug.Log($"[DEBUG] Performing Draw Operation at {pixelUV.x}, {pixelUV.y}");
+
+        switch (drawMode)
+        {
+            case DrawMode.Pencil:
+                DrawCircle((int)pixelUV.x, (int)pixelUV.y);
+                break;
+            case DrawMode.Marker:
+                DrawAdditiveCircle((int)pixelUV.x, (int)pixelUV.y);
+                break;
+            case DrawMode.Sticker:
+                DrawSticker((int)pixelUV.x, (int)pixelUV.y);
+                break;
+            case DrawMode.PaintBucket:
+                if (maskTex)
+                {
+                    FloodFillMaskOnlyWithThreshold((int)pixelUV.x, (int)pixelUV.y);
+                }
+                else
+                {
+                    FloodFillWithTreshold((int)pixelUV.x, (int)pixelUV.y);
+                }
+                break;
+            default:
+                break;
+        }
+
+        textureNeedsUpdate = true;
+    }
+}
+
+
+
 
     private void CreateAreaLockMask(int x, int y)
     {
