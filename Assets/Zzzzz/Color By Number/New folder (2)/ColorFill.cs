@@ -12,6 +12,8 @@ public class ColorFill : MonoBehaviour
     public Texture2D baseTex; // Single texture for both base and mask
     public Texture2D maskNumberTex;
     public Texture2D hightLightTex;
+
+    public Collider2D boxCollider;
     public Color paintColor = Color.white; // The color to fill
 
     public List<Color> availableColors;
@@ -47,7 +49,12 @@ public class ColorFill : MonoBehaviour
     void Start()
     {
 
-       
+        boxCollider = GetComponent<BoxCollider2D>();
+
+        if (boxCollider == null)
+    {
+        boxCollider = gameObject.AddComponent<BoxCollider2D>();
+    }
      texWidth = baseTex.width;
         texHeight = baseTex.height;
         texPixels = new byte[texWidth * texHeight * 4];
@@ -88,7 +95,26 @@ public class ColorFill : MonoBehaviour
 
         SaveLoadManager.LoadProgress("ColorByNumberSave", texPixels, texWidth, texHeight, duplicateTex);
         SetPaintColor(0);
+
+        UpdateColliderSize();
     }
+
+   void UpdateColliderSize()
+{
+    if (imageComponent == null || duplicateTex == null || boxCollider == null)
+        return;
+
+    RectTransform rectTransform = imageComponent.rectTransform;
+    
+    // Ensure boxCollider is a BoxCollider2D
+    BoxCollider2D box = boxCollider as BoxCollider2D;
+    if (box != null)
+    {
+        // Set size using RectTransform's width and height (LOCAL UI SPACE)
+        box.size = rectTransform.rect.size;
+        Debug.Log("Collider Size Updated: " + box.size);
+    }
+}
 
     void OnMouseDown()
 {
@@ -122,46 +148,71 @@ public class ColorFill : MonoBehaviour
     }
 }
 
-   Vector2 GetMouseUV()
+            Vector2 GetMouseUV()
+{
+    // Ensure eventSystem and raycaster are properly initialized
+    if (eventSystem == null)
     {
-        pointerEventData = new PointerEventData(eventSystem)
-        {
-            position = Input.mousePosition
-        };
-
-        // Raycast to detect if the click is on the duplicated base texture (imageComponent's material texture)
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
-        if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
-        {
-            // Ensure the click is only on the duplicated base texture
-            if (hit.collider.gameObject != imageComponent.gameObject)
-                return Vector2.zero;
-
-            // Now ensure that the click happens within the bounds of the duplicated base texture (not mask or number texture)
-            RectTransform rectTransform = imageComponent.rectTransform;
-
-            Vector2 localPos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, pointerEventData.position, Camera.main, out localPos);
-
-            Vector2 pivotAdjustedPos = localPos + (rectTransform.rect.size * rectTransform.pivot);
-
-            Vector2 uv = new Vector2(
-                pivotAdjustedPos.x / rectTransform.rect.width,
-                pivotAdjustedPos.y / rectTransform.rect.height
-            );
-
-            uv.x *= duplicateTex.width;  // Use duplicateTex width instead of baseTex
-            uv.y *= duplicateTex.height; // Use duplicateTex height instead of baseTex
-
-            uv.x = Mathf.Clamp(uv.x, 0, duplicateTex.width - 1);  // Clamp within duplicateTex
-            uv.y = Mathf.Clamp(uv.y, 0, duplicateTex.height - 1); // Clamp within duplicateTex
-
-            return uv;
-        }
-
-        return Vector2.zero; // Return zero if click is outside the duplicated base texture area
+        eventSystem = FindObjectOfType<EventSystem>(); // Automatically get the EventSystem if not assigned
     }
 
+    if (raycaster == null)
+    {
+        raycaster = FindObjectOfType<GraphicRaycaster>(); // Automatically get the GraphicRaycaster if not assigned
+    }
+
+    if (imageComponent == null)
+    {
+        imageComponent = GetComponent<Image>(); // Automatically get the Image component if not assigned
+    }
+
+    pointerEventData = new PointerEventData(eventSystem)
+    {
+        position = Input.mousePosition
+    };
+
+    // Perform a UI Raycast to check if the click is on any UI elements (header, footer, etc.)
+    List<RaycastResult> results = new List<RaycastResult>();
+    raycaster.Raycast(pointerEventData, results);
+
+    // Check if the click is on a UI element in the "UI" layer (header/footer)
+    foreach (RaycastResult result in results)
+    {
+        if (result.gameObject.layer == LayerMask.NameToLayer("UI"))
+        {
+            // If the click is on a UI element (header/footer), return Vector2.zero (ignore background click)
+            return Vector2.zero;
+        }
+    }
+
+    // Perform a raycast on the background (only if it's not blocked by header/footer)
+    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(pointerEventData.position), Vector2.zero);
+    if (hit.collider != null && hit.collider.gameObject == imageComponent.gameObject)
+    {
+        // Now ensure that the click happens within the bounds of the duplicated base texture (not mask or number texture)
+        RectTransform rectTransform = imageComponent.rectTransform;
+
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, pointerEventData.position, Camera.main, out localPos);
+
+        Vector2 pivotAdjustedPos = localPos + (rectTransform.rect.size * rectTransform.pivot);
+
+        Vector2 uv = new Vector2(
+            pivotAdjustedPos.x / rectTransform.rect.width,
+            pivotAdjustedPos.y / rectTransform.rect.height
+        );
+
+        uv.x *= duplicateTex.width;  // Use duplicateTex width instead of baseTex
+        uv.y *= duplicateTex.height; // Use duplicateTex height instead of baseTex
+
+        uv.x = Mathf.Clamp(uv.x, 0, duplicateTex.width - 1);  // Clamp within duplicateTex
+        uv.y = Mathf.Clamp(uv.y, 0, duplicateTex.height - 1); // Clamp within duplicateTex
+
+        return uv;
+    }
+
+    return Vector2.zero; // Return zero if click is outside the paint area or on another layer
+}
         void RevealClickedRegion(Vector2 clickedUV)
         {
             // Get the pixel position from the UV coordinates
