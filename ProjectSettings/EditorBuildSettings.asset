@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Game/_Scenes/ColorByNumber.unity
     guid: 7f0082a3c59f1424a85fd799d042f47d
+  - enabled: 1
+    path: Assets/_Game/_Scenes/ColorByGlitter.unity
+    guid: 7e57a369723014ce4ac189cc8429ec15
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

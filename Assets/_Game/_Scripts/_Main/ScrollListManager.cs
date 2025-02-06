@@ -174,6 +174,48 @@ public class ScrollListManager : MonoBehaviour
         SceneManager.LoadScene("PaintScene");
     }
 
+    public void LoadGlitterScene(int index)
+    {
+         MusicController.USE.PlaySound(MusicController.USE.clickSound);
+
+        PlayerPrefs.SetInt(saveIndexString, index);
+        PlayerPrefs.Save();
+
+        if (transform.GetChild(index).childCount > 0)
+        {
+            ColoringBookManager.maskTexIndex = index;
+        }
+        else
+        {
+            ColoringBookManager.maskTexIndex = -1;
+        }
+
+        ColoringBookManager.ID = saveIndexString + index.ToString();
+        UIManager.Instance.HidePreviousScreen();
+        SceneManager.LoadScene("ColorByGlitter");
+    }
+
+    public void LoadColorBNumScene(int index)
+    {
+         MusicController.USE.PlaySound(MusicController.USE.clickSound);
+
+        PlayerPrefs.SetInt(saveIndexString, index);
+        PlayerPrefs.Save();
+
+        if (transform.GetChild(index).childCount > 0)
+        {
+            ColoringBookManager.maskTexIndex = index;
+        }
+        else
+        {
+            ColoringBookManager.maskTexIndex = -1;
+        }
+
+        ColoringBookManager.ID = saveIndexString + index.ToString();
+        UIManager.Instance.HidePreviousScreen();
+        SceneManager.LoadScene("ColorByNumber");
+    }
+
     private void Start()
     {
         // Ensure textures are loaded when starting the scene
