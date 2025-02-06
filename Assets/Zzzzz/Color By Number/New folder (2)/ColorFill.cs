@@ -16,10 +16,10 @@ public class ColorFill : MonoBehaviour
     public Collider2D boxCollider;
     public Color paintColor = Color.white; // The color to fill
 
-    public List<Color> availableColors;
+    public List<Color> availableColors = new();
     [SerializeField]
     private Dictionary<Color, bool> colorFillStatus = new Dictionary<Color, bool>();
-    public List<Button> colorButtons;
+    public List<Button> colorButtons = new();
     public float colorTolerance = 0.1f; // Tolerance for color matching
     public Material fillMaterial;
     public Image imageComponent;
