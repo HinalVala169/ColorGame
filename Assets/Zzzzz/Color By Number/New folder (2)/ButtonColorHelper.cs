@@ -8,6 +8,13 @@ public class ButtonColorHelper : MonoBehaviour
 
     public void OnButtonClicked()
     {
+       if (ColorManager.Instance.colorFill != null)
+    {
         ColorManager.Instance.colorFill.SetPaintColor(colorIndex);
+    }
+    else
+    {
+        Debug.LogError("ColorFill reference is not assigned!");
+    }
     }
 }

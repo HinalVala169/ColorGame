@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21e75a02a7ce142a88141ffbe0029fd1, type: 3}
   m_Name: ColorPalette1
   m_EditorClassIdentifier: 
+  baseTexture: {fileID: 2800000, guid: 9e6ec310dba414c34b89e01cbf3e3ed8, type: 3}
+  maskNumTexture: {fileID: 2800000, guid: 862237d8bb5f24ffdb92afff071ab3e2, type: 3}
+  maskColTexture: {fileID: 2800000, guid: 9356a56de5ca6469c9946a31ec54390c, type: 3}
   colors:
   - {r: 0.92156863, g: 0.9098039, b: 0.9529412, a: 1}
   - {r: 0.58431375, g: 0.42352942, b: 0.7137255, a: 1}

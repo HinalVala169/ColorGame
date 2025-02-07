@@ -64,11 +64,11 @@ public class ColorManager : MonoBehaviour
     helper.colorIndex = no;  
     button.onClick.AddListener(helper.OnButtonClicked);
 
-    Debug.Log("Button instantiated for color: " + color);
+   // Debug.Log("Button instantiated for color: " + color);
     colorFill.availableColors.Add(color);
 }
     void OnColorButtonClick(Color selectedColor)
     {
-        Debug.Log("Selected Color: " + selectedColor);
+       // Debug.Log("Selected Color: " + selectedColor);
     }
 }

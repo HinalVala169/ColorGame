@@ -9,8 +9,8 @@ using UnityEngine.SceneManagement;
 
 public class ColorFill : MonoBehaviour
 {
-    public Texture2D baseTex; // Single texture for both base and mask
-    public Texture2D maskNumberTex;
+    // public Texture2D baseTex; // Single texture for both base and mask
+    // public Texture2D maskNumberTex;
     public Texture2D hightLightTex;
 
     public Collider2D boxCollider;
@@ -39,7 +39,7 @@ public class ColorFill : MonoBehaviour
 
     private int lastUserSelectedIndex = 0;
 
-    private Texture2D duplicateTex, duplicatedMaskTex , duplicateHighlight; // Duplicate texture for painting
+    private Texture2D duplicateTex, duplicatedNumTex ,duplicatedMaskTex , duplicateHighlight ; // Duplicate texture for painting
    [SerializeField]
     
     
@@ -49,13 +49,22 @@ public class ColorFill : MonoBehaviour
     void Start()
     {
 
+        Initialized(0);
+    }
+
+    void Initialized(int No)
+    {
+        ColorPalette palette = ColorManager.Instance.colorDatabase.GetColorsForLevel(No);
         boxCollider = GetComponent<BoxCollider2D>();
 
         if (boxCollider == null)
     {
         boxCollider = gameObject.AddComponent<BoxCollider2D>();
     }
-     texWidth = baseTex.width;
+        Texture2D baseTex = palette.baseTexture;
+        Texture2D numTex = palette.maskNumTexture;
+        Texture2D maskColTex = palette.maskColTexture;
+        texWidth = baseTex.width;
         texHeight = baseTex.height;
         texPixels = new byte[texWidth * texHeight * 4];
 
@@ -63,12 +72,16 @@ public class ColorFill : MonoBehaviour
         duplicateTex.SetPixels(baseTex.GetPixels());
         duplicateTex.Apply();
 
+        duplicatedNumTex = new Texture2D(numTex.width, numTex.height);
+        duplicatedNumTex.SetPixels(baseTex.GetPixels());
+        duplicatedNumTex.Apply();
+
         duplicateHighlight = new Texture2D(hightLightTex.width, hightLightTex.height);
         duplicateHighlight.SetPixels(hightLightTex.GetPixels());
         duplicateHighlight.Apply();
 
-        duplicatedMaskTex = new Texture2D(maskNumberTex.width, maskNumberTex.height);
-        duplicatedMaskTex.SetPixels(maskNumberTex.GetPixels());
+        duplicatedMaskTex = new Texture2D(maskColTex.width, maskColTex.height);
+        duplicatedMaskTex.SetPixels(maskColTex.GetPixels());
         duplicatedMaskTex.Apply();
 
         Color[] baseTexColors = baseTex.GetPixels();
@@ -616,23 +629,8 @@ bool IsColorMatch(Color color1, Color color2, float tolerance = 0.1f)
 
      public void OnClearButtonClicked()
     {
-        duplicateTex.SetPixels(baseTex.GetPixels());
-        duplicateTex.Apply();  
-        Color[] baseTexColors = baseTex.GetPixels();
-        for (int i = 0; i < baseTexColors.Length; i++)
-        {
-            texPixels[i * 4 + 0] = (byte)(baseTexColors[i].r * 255);
-            texPixels[i * 4 + 1] = (byte)(baseTexColors[i].g * 255);
-            texPixels[i * 4 + 2] = (byte)(baseTexColors[i].b * 255);
-            texPixels[i * 4 + 3] = (byte)(baseTexColors[i].a * 255);
-        }
-        duplicatedMaskTex.SetPixels(maskNumberTex.GetPixels()); 
-        duplicatedMaskTex.Apply(); 
-        instanceMaterial.SetTexture("_MainTex", duplicateTex); 
-        instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex); 
-        instanceMaterial.SetFloat("_RegionNumber", 0f);
-        instanceMaterial.SetFloat("_RevealAndMask", 1f);
-        ResetAllButtonFillAmounts();
+       Initialized(0);
+       ResetAllButtonFillAmounts();
     }
 
       public void OnHomeButtonClicked()
