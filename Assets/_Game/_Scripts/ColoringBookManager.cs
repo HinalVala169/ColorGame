@@ -13,7 +13,7 @@ public class ColoringBookManager : MonoBehaviour
     #region variables
 
     public bool isColorByNumber = false;
-    public Image imageComponent;
+    //public Image imageComponent;
 
      public Collider2D boxCollider;
 
@@ -344,7 +344,7 @@ public class ColoringBookManager : MonoBehaviour
         {
             boxCollider = gameObject.AddComponent<BoxCollider2D>();
         }
-        UpdateColliderSize();
+        
 
         // locking mask enabled
         if (useLockArea)
@@ -353,22 +353,6 @@ public class ColoringBookManager : MonoBehaviour
         }
     }
 
-    void UpdateColliderSize()
-{
-    if (imageComponent == null ||boxCollider == null)
-        return;
-
-    RectTransform rectTransform = imageComponent.rectTransform;
-    
-    // Ensure boxCollider is a BoxCollider2D
-    BoxCollider2D box = boxCollider as BoxCollider2D;
-    if (box != null)
-    {
-        // Set size using RectTransform's width and height (LOCAL UI SPACE)
-        box.size = rectTransform.rect.size;
-       // Debug.Log("Collider Size Updated: " + box.size);
-    }
-}
     private void CreateFullScreenQuad()
     {
         Image image = GetComponent<Image>();
