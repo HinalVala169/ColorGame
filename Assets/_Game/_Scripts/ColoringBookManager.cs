@@ -13,6 +13,9 @@ public class ColoringBookManager : MonoBehaviour
     #region variables
 
     public bool isColorByNumber = false;
+    public Image imageComponent;
+
+     public Collider2D boxCollider;
 
     public Material maskTexMaterial;
     private Texture2D maskTex;
@@ -335,18 +338,43 @@ public class ColoringBookManager : MonoBehaviour
             System.Array.Copy(pixels, undoPixels[0], pixels.Length);
         }
 
+        boxCollider = GetComponent<BoxCollider2D>();
+
+        if (boxCollider == null)
+        {
+            boxCollider = gameObject.AddComponent<BoxCollider2D>();
+        }
+        UpdateColliderSize();
+
         // locking mask enabled
         if (useLockArea)
         {
             lockMaskPixels = new byte[texWidth * texHeight * 4];
         }
     }
+
+    void UpdateColliderSize()
+{
+    if (imageComponent == null ||boxCollider == null)
+        return;
+
+    RectTransform rectTransform = imageComponent.rectTransform;
+    
+    // Ensure boxCollider is a BoxCollider2D
+    BoxCollider2D box = boxCollider as BoxCollider2D;
+    if (box != null)
+    {
+        // Set size using RectTransform's width and height (LOCAL UI SPACE)
+        box.size = rectTransform.rect.size;
+       // Debug.Log("Collider Size Updated: " + box.size);
+    }
+}
     private void CreateFullScreenQuad()
     {
         Image image = GetComponent<Image>();
         if (image == null)
         {
-            Debug.LogError("No Image component found! Please attach this script to a UI Image.");
+            //Debug.LogError("No Image component found! Please attach this script to a UI Image.");
             return;
         }
 
@@ -366,7 +394,7 @@ public class ColoringBookManager : MonoBehaviour
         {
             int textureWidth = image.sprite.texture.width;
             int textureHeight = image.sprite.texture.height;
-            Debug.Log($"Texture Width: {textureWidth}, Texture Height: {textureHeight}");
+            //Debug.Log($"Texture Width: {textureWidth}, Texture Height: {textureHeight}");
         }
         else
         {
@@ -507,11 +535,11 @@ private void SaveImage(string key)
             pixelUV.x = (pixelUV.x - hit2D.collider.bounds.min.x) / hit2D.collider.bounds.size.x * texWidth;
             pixelUV.y = (pixelUV.y - hit2D.collider.bounds.min.y) / hit2D.collider.bounds.size.y * texHeight;
 
-            // 🔥 Strict Clamping Before Using pixelUV
+            //  Strict Clamping Before Using pixelUV
             pixelUV.x = Mathf.Clamp(pixelUV.x, 0, texWidth - 1);
             pixelUV.y = Mathf.Clamp(pixelUV.y, 0, texHeight - 1);
 
-            Debug.Log($"[DEBUG] 2D Raycast Clamped UV: {pixelUV.x}, {pixelUV.y} | Texture Size: {texWidth}x{texHeight}");
+          //  Debug.Log($"[DEBUG] 2D Raycast Clamped UV: {pixelUV.x}, {pixelUV.y} | Texture Size: {texWidth}x{texHeight}");
         }
     }
 
@@ -558,13 +586,13 @@ private void SaveImage(string key)
             pixelUV.y *= texHeight;
         }
 
-        // 🔥 Strict Clamping Before Using pixelUV
+        // Strict Clamping Before Using pixelUV
         pixelUV.x = Mathf.Clamp(pixelUV.x, 0, texWidth - 1);
         pixelUV.y = Mathf.Clamp(pixelUV.y, 0, texHeight - 1);
 
         if (wentOutside) { pixelUVOld = pixelUV; wentOutside = false; }
 
-        Debug.Log($"[DEBUG] Drawing Mode: {drawMode} at {pixelUV.x}, {pixelUV.y}");
+       // Debug.Log($"[DEBUG] Drawing Mode: {drawMode} at {pixelUV.x}, {pixelUV.y}");
 
         switch (drawMode)
         {
@@ -580,7 +608,7 @@ private void SaveImage(string key)
 
     if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
     {
-        Debug.Log($"[DEBUG] Mouse Painting at {pixelUV.x}, {pixelUV.y}");
+        //Debug.Log($"[DEBUG] Mouse Painting at {pixelUV.x}, {pixelUV.y}");
 
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1))
         {
@@ -600,15 +628,15 @@ private void SaveImage(string key)
             pixelUV.y *= texHeight;
         }
 
-        // 🔥 Strict Clamping Before Using pixelUV
+        // Strict Clamping Before Using pixelUV
         pixelUV.x = Mathf.Clamp(pixelUV.x, 0, texWidth - 1);
         pixelUV.y = Mathf.Clamp(pixelUV.y, 0, texHeight - 1);
 
-        Debug.Log($"[DEBUG] Final Clamped UV: {pixelUV.x}, {pixelUV.y}");
+        //Debug.Log($"[DEBUG] Final Clamped UV: {pixelUV.x}, {pixelUV.y}");
 
         if (wentOutside) { pixelUVOld = pixelUV; wentOutside = false; }
 
-        Debug.Log($"[DEBUG] Performing Draw Operation at {pixelUV.x}, {pixelUV.y}");
+        //Debug.Log($"[DEBUG] Performing Draw Operation at {pixelUV.x}, {pixelUV.y}");
 
         switch (drawMode)
         {
@@ -908,7 +936,7 @@ private void SaveImage(string key)
                         // Increase the y position by adding an offset.
                         // min.x = 0f;
                         // max.x = 0.66f;
-                        Debug.Log("selectedNumber  --- " + selectedNumber); 
+                        //Debug.Log("selectedNumber  --- " + selectedNumber); 
                         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y + yOffsetPixels);
                          if (img != null)
                          img.raycastTarget = false;
