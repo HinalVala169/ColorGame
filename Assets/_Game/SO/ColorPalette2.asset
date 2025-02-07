@@ -12,4 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21e75a02a7ce142a88141ffbe0029fd1, type: 3}
   m_Name: ColorPalette2
   m_EditorClassIdentifier: 
-  colors: []
+  baseTexture: {fileID: 2800000, guid: 6f95bea4715e9467881926e968372f46, type: 3}
+  maskNumTexture: {fileID: 2800000, guid: 5f8c6402c75cb492a9066e244d005c89, type: 3}
+  maskColTexture: {fileID: 2800000, guid: bc015e2869e574fc085fa9023fdc5d78, type: 3}
+  colors:
+  - {r: 1, g: 0, b: 0.9411765, a: 1}
+  - {r: 0.3529412, g: 0, b: 1, a: 1}
+  - {r: 0.3137255, g: 0.7529412, b: 0.7372549, a: 1}
+  - {r: 0.5882353, g: 0.38039216, b: 0.9647059, a: 1}
+  - {r: 0.9254902, g: 0.29411766, b: 0.07058824, a: 1}
+  - {r: 0.7529412, g: 0.7490196, b: 0.3137255, a: 1}
+  - {r: 0.48235294, g: 0.8392157, b: 0.42352942, a: 1}
+  colNum:
+  - {fileID: 21300000, guid: 046ee0ebca0a64157bd42af021062c1f, type: 3}
+  - {fileID: 21300000, guid: 4f8404c1e2d9840bf99b308b538b6d1e, type: 3}
+  - {fileID: 21300000, guid: c7aa179e7a62841d9a90b321b0c07894, type: 3}
+  - {fileID: 21300000, guid: de9f3fbd4378946dab9c7ee17410dea6, type: 3}
+  - {fileID: 21300000, guid: 91f696007029b464b862f5f2a1d83996, type: 3}
+  - {fileID: 21300000, guid: 647f88974c44d46a9a0b919a74171e8c, type: 3}
+  - {fileID: 21300000, guid: 4e580368949414934845709e09fda146, type: 3}
