@@ -43,13 +43,13 @@ public class ColorFill : MonoBehaviour
    [SerializeField]
     
     
-
+    public static int currentIndex;
 
 
     void Start()
     {
 
-        Initialized(0);
+        Initialized(currentIndex);
     }
 
     void Initialized(int No)
@@ -73,7 +73,7 @@ public class ColorFill : MonoBehaviour
         duplicateTex.Apply();
 
         duplicatedNumTex = new Texture2D(numTex.width, numTex.height);
-        duplicatedNumTex.SetPixels(baseTex.GetPixels());
+        duplicatedNumTex.SetPixels(numTex.GetPixels());
         duplicatedNumTex.Apply();
 
         duplicateHighlight = new Texture2D(hightLightTex.width, hightLightTex.height);
@@ -95,7 +95,9 @@ public class ColorFill : MonoBehaviour
 
         instanceMaterial = new Material(fillMaterial) { name = fillMaterial.name + "InstanceMaterial_" };
         instanceMaterial.mainTexture = duplicateTex;
+        instanceMaterial.SetTexture("_NumberTex", duplicatedNumTex);
         instanceMaterial.SetTexture("_Highlight", duplicateHighlight);
+        
         instanceMaterial.SetTexture("_MaskTex", duplicatedMaskTex);
         imageComponent.material = instanceMaterial;
         instanceMaterial.SetFloat("_RevealAndMask", 1f);

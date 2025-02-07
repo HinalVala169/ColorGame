@@ -17,7 +17,7 @@ public class ColorManager : MonoBehaviour
     }
     void Start()
     {
-        LoadLevelColors(currentLevel);
+        LoadLevelColors(ColorFill.currentIndex);
     }
 
     void LoadLevelColors(int levelIndex)

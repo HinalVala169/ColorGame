@@ -204,11 +204,11 @@ public class ScrollListManager : MonoBehaviour
 
         if (transform.GetChild(index).childCount > 0)
         {
-            ColoringBookManager.maskTexIndex = index;
+            ColorFill.currentIndex = index;
         }
         else
         {
-            ColoringBookManager.maskTexIndex = -1;
+            ColorFill.currentIndex = -1;
         }
 
         ColoringBookManager.ID = saveIndexString + index.ToString();
