@@ -197,22 +197,22 @@ public class ScrollListManager : MonoBehaviour
 
     public void LoadColorBNumScene(int index)
     {
-         MusicController.USE.PlaySound(MusicController.USE.clickSound);
+     //    MusicController.USE.PlaySound(MusicController.USE.clickSound);
 
         PlayerPrefs.SetInt(saveIndexString, index);
         PlayerPrefs.Save();
 
-        if (transform.GetChild(index).childCount > 0)
-        {
-            ColorFill.currentIndex = index;
-        }
-        else
-        {
-            ColorFill.currentIndex = -1;
-        }
+        // if (transform.GetChild(index).childCount > 0)
+        // {
+        //     ColorFill.currentIndex = index;
+        // }
+        // else
+        // {
+        //     ColorFill.currentIndex = -1;
+        // }
 
-        ColoringBookManager.ID = saveIndexString + index.ToString();
-        UIManager.Instance.HidePreviousScreen();
+    //    ColoringBookManager.ID = saveIndexString + index.ToString();
+      //  UIManager.Instance.HidePreviousScreen();
         SceneManager.LoadScene("ColorByNumber");
     }
 

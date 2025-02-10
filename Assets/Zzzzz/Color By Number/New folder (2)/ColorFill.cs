@@ -649,7 +649,7 @@ bool IsColorMatch(Color color1, Color color2, float tolerance = 0.1f)
             yield return new WaitForSeconds(0f);
 
             // Now load the scene after the delay
-            SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene("new");
 
             // Use the sceneLoaded event to wait for the scene to load completely
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -657,9 +657,9 @@ bool IsColorMatch(Color color1, Color color2, float tolerance = 0.1f)
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainScene")
+        if (scene.name == "new")
         {
-            UIManager.Instance.ReturnToPreviousScreen();
+         //   UIManager.Instance.ReturnToPreviousScreen();
         }
     }
      void OnApplicationQuit()
