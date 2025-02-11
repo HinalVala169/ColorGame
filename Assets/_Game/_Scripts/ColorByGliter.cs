@@ -70,9 +70,9 @@ public class ColorByGliter : MonoBehaviour
 
     private Texture2D tex; 
     
-    public int texWidth = 576;
+    public int texWidth = 640;
     
-    public int texHeight = 1024;
+    public int texHeight = 814;
     private RaycastHit hit;
     private bool wentOutside = false;
 
@@ -676,7 +676,8 @@ private void SaveImage(string key)
         return;
     }
 
-             paintColor = sender.GetComponent<Image>().color;
+           //  paintColor = sender.GetComponent<Image>().color;
+           paintColor = sender.transform.GetChild(0).GetComponent<Image>().color;
 
       Debug.Log(" paintColor : " + paintColor);
     
